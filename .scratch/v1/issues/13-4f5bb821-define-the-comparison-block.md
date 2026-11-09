@@ -8,9 +8,13 @@ Define the inline `comparison` block from jamesryan-sites' `apps/marketing-site/
 
 **Blocked by:** none
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The block renders through a test sections map for every variant.
-- [ ] Rows and columns reach the section as typed props.
+- [x] The block renders through a test sections map for every variant.
+- [x] Rows and columns reach the section as typed props.
 
 ## Comments
+
+**2026-11-09 Orchestrator:** Risk: medium (package code: new block type). Helper: copilot (default model).
+
+**2026-11-09 Orchestrator:** Done in 91795c8, merged to master with no fix round. Inline `comparison` block: variant `table`; up to three columns (position + label) and rows (optional group, feature name, a value per position). Its repeater sub-field select keeps its choices in `options`, which is where EmDash reads them for sub-fields (`block-type-contract.ts` line 110), unlike a top-level select's `validation.options`.
