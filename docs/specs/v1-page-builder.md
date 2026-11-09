@@ -68,12 +68,14 @@ Exact fields and each block's variant vocabulary are settled in its ticket, star
 
 ## Adopting it in jamesryan-sites (marketing site)
 
-1. Add `pages.layout` (a `blocks` field) and a `service` reference on pages.
-2. Apply the five block types with the CLI.
+Decided 2026-11-09, after finding that marketing-blocks registers ten block types (hero, features, testimonials, pricing, CTA, plus document, FAQ, comparison, stats and team), not five: the page builder is added **alongside** marketing-blocks, which stays untouched until the page builder's blocks are proven on the live site.
+
+1. Add `pages.layout` (a `blocks` field) and a `service` reference on pages. A page renders its `layout` when it has blocks, and its Portable Text `content` otherwise.
+2. Apply the five block types with the CLI (locally first; production only with James's approval).
 3. Map each block's variants to `@jamesryan/ui` sections; write sources for testimonials and pricing from the existing collections.
-4. Check production for marketing blocks before migrating. If it holds no more than the seed (home's one `marketing.hero`), migrate that hero into `home.layout` with a script. If it holds more, stop and report.
-5. Remove the marketing-blocks plugin. `pages.content` stays for prose pages (privacy-policy keeps its `marketing.document` until a prose block exists).
+4. Prove it on home: home's hero moves into `home.layout` and renders the same. Locally with a script; on production only after checking production's marketing blocks and with James's approval.
+5. marketing-blocks keeps all ten types. Later tickets add the five blocks the package lacks (document as a prose block, FAQ, comparison, stats, team) and then retire the plugin once every page renders from `layout`.
 
 ## Out of v1
 
-On the [backlog](../../.scratch/backlog.md): the plugin entry, default visuals, a prose block on the way to all-blocks sites, gallery, conditional logic.
+On the [backlog](../../.scratch/backlog.md): the plugin entry, default visuals, gallery, conditional logic. The five blocks marketing-blocks still provides, and retiring it, are tickets 09 to 14.
