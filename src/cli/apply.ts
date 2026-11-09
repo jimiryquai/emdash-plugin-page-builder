@@ -13,6 +13,21 @@ import type {
 	StoredBlock,
 } from "./types.js";
 
+/** An error in the CLI's own logic, located like an EmDash error. */
+export class PlanError extends Error {
+	readonly operation: string;
+	readonly blockType?: string;
+	readonly version?: number;
+
+	constructor(init: { operation: string; message: string; blockType?: string; version?: number }) {
+		super(init.message);
+		this.name = "PlanError";
+		this.operation = init.operation;
+		this.blockType = init.blockType;
+		this.version = init.version;
+	}
+}
+
 export interface ApplyOptions {
 	/** Perform the plan; without it nothing is written. */
 	apply: boolean;
@@ -88,10 +103,14 @@ export async function executePlan(
 				action.version,
 			);
 			if (!updated.versions.some((version) => version.version === action.version)) {
-				throw new Error(
-					`${definition.slug} v${action.version} is not a breaking change against v${action.version - 1} ` +
+				throw new PlanError({
+					operation: `create block type ${definition.slug} v${action.version}`,
+					message:
+						`${definition.slug} v${action.version} is not a breaking change against v${action.version - 1} ` +
 						`(EmDash updated v${updated.currentVersion} in place); fold it into that version`,
-				);
+					blockType: definition.slug,
+					version: action.version,
+				});
 			}
 			remoteBySlug = republish(remoteBySlug, updated);
 			action.result = "done";

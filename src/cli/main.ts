@@ -18,7 +18,7 @@ import { parseArgs } from "node:util";
 
 import type { BlockType } from "../blocks/core.js";
 import { EmdashClient, EmdashError, fetchTransport, type Transport } from "./client.js";
-import { executePlan, findPendingMigrations, isStale, migrateStoredBlocks } from "./apply.js";
+import { executePlan, findPendingMigrations, isStale, migrateStoredBlocks, PlanError } from "./apply.js";
 import { addMigrations, buildPlan } from "./plan.js";
 import { renderTable } from "./table.js";
 import type { BlockTypeDefinition, Plan, RemoteField } from "./types.js";
@@ -54,21 +54,20 @@ interface CliErrorPayload {
 	plan?: Plan;
 }
 
+function errorFields(error: EmdashError | PlanError): CliErrorPayload["errors"][number] {
+	return {
+		message: `${error.operation}: ${error.message}`,
+		operation: error.operation,
+		...(error instanceof EmdashError ? { code: error.code, status: error.status } : {}),
+		...(error.blockType !== undefined ? { blockType: error.blockType } : {}),
+		...(error.version !== undefined ? { version: error.version } : {}),
+	};
+}
+
 export function errorPayload(error: unknown, plan?: Plan): CliErrorPayload {
 	const base: CliErrorPayload =
-		error instanceof EmdashError
-			? {
-					errors: [
-						{
-							message: `${error.operation}: ${error.message}`,
-							operation: error.operation,
-							code: error.code,
-							status: error.status,
-							blockType: error.blockType,
-							version: error.version,
-						},
-					],
-				}
+		error instanceof EmdashError || error instanceof PlanError
+			? { errors: [errorFields(error)] }
 			: { errors: [{ message: error instanceof Error ? error.message : String(error) }] };
 	if (plan !== undefined) base.plan = plan;
 	return base;
@@ -131,27 +130,21 @@ export async function run(
 				},
 			});
 		} catch (error) {
-			io.out(
-				JSON.stringify(
-					{ errors: [{ message: error instanceof Error ? error.message : String(error) }] },
-					null,
-					2,
-				),
-			);
+			io.out(JSON.stringify(errorPayload(error), null, 2));
 			io.err(USAGE);
 			return 2;
 		}
 		const flags = parsed.values;
 		const [command, site] = parsed.positionals;
 		if (command !== "apply" || !site) {
-			io.out(JSON.stringify({ errors: [{ message: "expected: apply <site-url>" }] }, null, 2));
+			io.out(JSON.stringify(errorPayload(new Error("expected: apply <site-url>")), null, 2));
 			io.err(USAGE);
 			return 2;
 		}
 
 		const token = options.token ?? flags.token ?? process.env.EMDASH_TOKEN;
 		if (!options.transport && !token) {
-			io.out(JSON.stringify({ errors: [{ message: "EMDASH_TOKEN is not set and no --token was given" }] }, null, 2));
+			io.out(JSON.stringify(errorPayload(new Error("EMDASH_TOKEN is not set and no --token was given")), null, 2));
 			return 1;
 		}
 
@@ -272,7 +265,13 @@ async function allowInField(
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-	run(process.argv.slice(2), {}).then((code) => {
-		process.exitCode = code;
-	});
+	run(process.argv.slice(2), {}).then(
+		(code) => {
+			process.exitCode = code;
+		},
+		(error) => {
+			process.stdout.write(`${JSON.stringify(errorPayload(error), null, 2)}\n`);
+			process.exitCode = 1;
+		},
+	);
 }

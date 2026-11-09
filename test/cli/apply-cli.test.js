@@ -101,6 +101,8 @@ test("a version that is not breaking against its predecessor is a located error,
 	const error = result.errors[0];
 	ok(error.message.includes("card v2 is not a breaking change"), error.message);
 	ok(error.message.includes("fold"), error.message);
+	strictEqual(error.blockType, "card");
+	strictEqual(error.version, 2);
 	// The plan travels with the error so a partial apply is auditable: the
 	// create for card v2 is listed without a completed result.
 	ok(result.plan);
