@@ -68,12 +68,17 @@ Migrations must remain pure, including any nested content they transform.
 ### Shared-content seam
 
 `PageBuilder` optionally accepts `sources`, keyed by block slug, and `group`, a
-site-supplied group identifier. A `Source` receives `{ scope, group }` and returns
-an array (or a promise of an array), passed to the section as `items`. A stored
-`scope: 'page'` remains `page` when a group is configured; without a group it
-becomes `all`. A stored `all` stays `all`. Inline blocks need no source. This is
-the minimal seam for the shared-content tickets, which will add typed shapes and
-collection mappings.
+site-supplied group identifier. A `Source<T>` receives `{ scope, group, count }`
+and returns either an array of shape `T` or `{ items, cacheHints }`; the items
+are passed to the section as `items`, and the cache hints (EmDash query results
+carry them) are merged and applied to the page's `Astro.cache` when it is
+enabled. A stored `scope: 'page'` remains `page` when a group is configured;
+without a group it becomes `all`. A stored `all` stays `all`. A stored `count`
+passes through when it is a positive number. Inline blocks need no source.
+Shared-content blocks build their scope select with `scopeField()` and their
+count field with `countField()`, sharing the `SCOPE_FIELD_SLUG` and
+`COUNT_FIELD_SLUG` constants beside `variantField` and `VARIANT_FIELD_SLUG`;
+`PageBuilder` reads all three through the constants.
 
 ### Checks
 
@@ -110,3 +115,24 @@ An inline content block representing a list or grid of capabilities, product fea
 - `three-column-demos`: Three-column grid showcasing features alongside screenshots or demo assets.
 - `alternating`: Full-width stacked rows alternating between feature description and visual demo assets.
 
+### testimonials
+
+Customer quotes pulled from a shared testimonials collection (`src/blocks/types/testimonials.ts`).
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `single` (one large quote with a photo), `grid` (several quotes side by side) or `split` (one quote beside a large photo); unmapped variants use the site's default section |
+| `scope` | select | `page` (entries in the page's group) or `all` (every entry); `page` behaves as `all` when no group is configured; built with `scopeField()` |
+| `count` | integer | How many entries to show (1–24, optional); built with `countField()` |
+
+**Shape.** `Testimonial`: `{ quote, author, role?, company?, avatar? }`, the
+contract between a testimonials source and a testimonials section.
+
+**Sources.** A site maps its own collection through a `Source<Testimonial>`
+typed against its generated collection types, so a renamed field fails the
+build. `createTestimonialsSource({ collection?, groupField?, query? })` is the
+default source: it reads the starter collection (or another collection with
+the same field names, via `collection`) with no mapping, takes EmDash's query
+API as an injectable `query` for tests, follows the query cursor until `scope:
+page` has grouped enough entries, applies `count`, and returns
+`{ items, cacheHints }` with the hints of every list and get it read.

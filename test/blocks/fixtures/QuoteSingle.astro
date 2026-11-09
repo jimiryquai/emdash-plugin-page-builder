@@ -1,0 +1,5 @@
+---
+const { items = [] } = Astro.props;
+const first = items[0];
+---
+<blockquote data-section="single">{first?.quote}<footer>{first?.author}</footer></blockquote>
