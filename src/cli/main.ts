@@ -13,6 +13,7 @@
  * rule 6): importing this module runs nothing.
  */
 
+import { realpathSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
 
@@ -40,6 +41,8 @@ options:
   --group <collection>    the site's grouping collection starters reference
   --from <module>         module whose block-type exports to apply
                           (default: emdash-plugin-page-builder/blocks)
+  --types <slug,...>      limit the run to the listed block types
+                          (default: every block type the module exports)
   --token <token>         API token; prefer EMDASH_TOKEN (a --token shows in ps)`;
 
 interface CliErrorPayload {
@@ -106,6 +109,31 @@ export interface RunResult {
 	fieldUpdates: string[];
 }
 
+/**
+ * Restrict a run to the block types `--types` lists. An unknown slug fails
+ * before any request, located on the slug and naming what is available.
+ */
+function selectBlockTypes(loaded: readonly BlockType[], spec: string): BlockType[] {
+	const listed = spec.split(",").map((slug) => slug.trim()).filter(Boolean);
+	if (listed.length === 0) {
+		throw new PlanError({ operation: "select --types", message: "--types lists no block types (expected: <slug,...>)" });
+	}
+	const bySlug = new Map(loaded.map((block) => [block.definition.slug, block]));
+	const selected = new Map<string, BlockType>();
+	for (const slug of listed) {
+		const block = bySlug.get(slug);
+		if (!block) {
+			throw new PlanError({
+				operation: "select --types",
+				message: `unknown block type "${slug}"; the module exports: ${[...bySlug.keys()].sort().join(", ")}`,
+				blockType: slug,
+			});
+		}
+		selected.set(slug, block);
+	}
+	return [...selected.values()];
+}
+
 export async function run(
 	argv: readonly string[],
 	options: { transport?: Transport; token?: string },
@@ -129,6 +157,7 @@ export async function run(
 					from: { type: "string" },
 					group: { type: "string" },
 					token: { type: "string" },
+					types: { type: "string" },
 				},
 			});
 		} catch (error) {
@@ -151,7 +180,8 @@ export async function run(
 		}
 
 		const from = flags.from ?? "emdash-plugin-page-builder/blocks";
-		const blockTypes = await loadBlockTypes(from);
+		const loaded = await loadBlockTypes(from);
+		const blockTypes = flags.types !== undefined ? selectBlockTypes(loaded, flags.types) : loaded;
 		const definitions = blockTypes.map((block) => block.definition);
 		const client = new EmdashClient(options.transport ?? fetchTransport(site, token));
 
@@ -285,7 +315,23 @@ async function allowInField(
 	return additions;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+/**
+ * The entry-point guard (rule 6): importing this module runs nothing. Node
+ * loads the main module by its real path, while `process.argv[1]` keeps the
+ * path as invoked — through an installed package's `.bin` symlink that is the
+ * link, not the file — so compare real paths or the CLI never runs. Guarded:
+ * argv[1] may be missing (e.g. `node -e`) or name no file on disk.
+ */
+function invokedAsEntry(): boolean {
+	if (!process.argv[1]) return false;
+	try {
+		return import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
+	} catch {
+		return false;
+	}
+}
+
+if (invokedAsEntry()) {
 	run(process.argv.slice(2), {}).then(
 		(code) => {
 			process.exitCode = code;
