@@ -1,16 +1,6 @@
-import type { ApplySeedBlockTypeInput, BlockFieldDefinition } from 'emdash';
+import type { ApplySeedBlockTypeInput } from 'emdash';
 
-export const VARIANT_FIELD_SLUG = 'variant';
-
-/** Build the shared select field from a block's fixed variant vocabulary. */
-export function variantField(variants: readonly string[]): BlockFieldDefinition {
-  return {
-    slug: VARIANT_FIELD_SLUG,
-    label: 'Variant',
-    type: 'select',
-    validation: { options: [...variants] },
-  };
-}
+export { VARIANT_FIELD_SLUG, variantField } from './variant.js';
 
 export interface StoredBlock {
   _type: string;
@@ -70,3 +60,6 @@ export function migrateBlocks(
     return block;
   });
 }
+
+export { hero } from './types/hero.js';
+export { cta } from './types/cta.js';

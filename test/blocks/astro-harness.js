@@ -14,5 +14,9 @@ export async function createAstroServer(root = process.cwd()) {
     }],
     define: { 'import.meta.env.DEV': false },
   }, { root, devToolbar: { enabled: false } })({ mode: 'test', command: 'serve' });
+  config.server ??= {};
+  // Several block tests each start a server. Vite still opens its websocket
+  // unless this is set, and the second server then fails on port 24678.
+  config.server.ws = false;
   return createServer(config);
 }

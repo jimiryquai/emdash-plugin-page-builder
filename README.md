@@ -84,3 +84,47 @@ installed peer dependencies, and imports and renders the exported `.astro`
 component there. Successful tests remove their temporary consumer; failed tests
 retain it and report its path for inspection and cleanup. The test harness
 disables Astro telemetry; no new dependencies are needed for the block layer.
+
+## Block types
+
+Inline blocks store their content on the page. Each module below is a version 1
+`BlockType`: import it from `emdash-plugin-page-builder/blocks`, then attach the
+site's sections. The first entry in `links` is the primary action and the second
+is an optional alternative. `body` is plain text.
+
+### hero
+
+The opening section of a page. Priced plans belong on the pricing block.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `centered` (default), `photo`, `demo` |
+| `eyebrow` | string | Short announcement above the heading. Set with `eyebrow_url` and `eyebrow_action`. |
+| `eyebrow_url` | url | Makes the eyebrow a link. |
+| `eyebrow_action` | string | Action text on that link. |
+| `heading` | string | Required. |
+| `body` | text | Optional supporting copy. |
+| `image` | image | Optional. Includes a dark-color-scheme slot. Unused for `centered`. |
+| `links` | repeater | `label` (string) and `url` (url), both required on each item. |
+
+| Variant | When to use it |
+| --- | --- |
+| `centered` | The heading, body and links sit in a centered stack and no image is shown. |
+| `photo` | The copy is aligned to the start and the image is a photograph shown with it. |
+| `demo` | The copy is aligned to the start and the image is a product screenshot or interface shown as a demo. |
+
+### cta
+
+A later prompt to act. Use `hero` for the opening section.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `start` (default), `centered` |
+| `heading` | string | Required. |
+| `body` | text | Optional supporting copy. |
+| `links` | repeater | `label` (string) and `url` (url), both required on each item. |
+
+| Variant | When to use it |
+| --- | --- |
+| `start` | The heading, body and links line up with the start of the section. |
+| `centered` | The heading, body and links sit in the middle of the section. |
