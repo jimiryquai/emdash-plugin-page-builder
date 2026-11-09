@@ -1,4 +1,4 @@
-import { variantField, type BlockType, type StoredBlock } from '../index.js';
+import { variantField, type BlockType, type StoredBlock } from '../core.js';
 
 export const featureVariants = [
   'two-column',
@@ -27,7 +27,6 @@ export interface FeatureItem {
   icon?: string;
   ctaLabel?: string;
   ctaUrl?: string;
-  [key: string]: unknown;
 }
 
 export interface FeaturesBlockValue extends StoredBlock {
@@ -44,50 +43,42 @@ export interface FeaturesSectionProps {
   value: FeaturesBlockValue;
   index: number;
   blockKey: string;
-  items?: readonly unknown[];
 }
 
-let cachedDefinition: BlockType['definition'] | undefined;
-
 export const features = {
-  get definition(): BlockType['definition'] {
-    if (!cachedDefinition) {
-      cachedDefinition = {
-        slug: 'features',
-        label: 'Features',
-        description:
-          'Grid or alternating list of product features, capabilities, or value propositions with optional images, icons, and links. Use "two-column" for a two-column card grid with visual demos, "three-column" for a compact three-column grid with text and icons, "three-column-demos" for three columns with screenshots, or "alternating" for stacked rows alternating between description and media.',
-        currentVersion: 1,
-        versions: [
+  definition: {
+    slug: 'features',
+    label: 'Features',
+    description:
+      'Grid or alternating list of product features, capabilities, or value propositions with optional images, icons, and links. Use "two-column" for a two-column card grid with visual demos, "three-column" for a compact three-column grid with text and icons, "three-column-demos" for three columns with screenshots, or "alternating" for stacked rows alternating between description and media.',
+    currentVersion: 1,
+    versions: [
+      {
+        version: 1,
+        fields: [
+          { slug: 'eyebrow', label: 'Eyebrow', type: 'string' },
+          { slug: 'heading', label: 'Heading', type: 'string', required: true },
+          { slug: 'subheadline', label: 'Subheadline', type: 'text' },
+          variantField(featureVariants),
           {
-            version: 1,
-            fields: [
-              { slug: 'eyebrow', label: 'Eyebrow', type: 'string' },
-              { slug: 'heading', label: 'Heading', type: 'string', required: true },
-              { slug: 'subheadline', label: 'Subheadline', type: 'text' },
-              variantField(featureVariants),
-              {
-                slug: 'items',
-                label: 'Items',
-                type: 'repeater',
-                validation: {
-                  minItems: 1,
-                  subFields: [
-                    { slug: 'title', label: 'Title', type: 'string', required: true },
-                    { slug: 'description', label: 'Description', type: 'text' },
-                    { slug: 'image', label: 'Image', type: 'image' },
-                    { slug: 'icon', label: 'Icon', type: 'string' },
-                    { slug: 'ctaLabel', label: 'CTA label', type: 'string' },
-                    { slug: 'ctaUrl', label: 'CTA URL', type: 'url' },
-                  ],
-                },
-              },
-            ],
+            slug: 'items',
+            label: 'Items',
+            type: 'repeater',
+            validation: {
+              minItems: 1,
+              subFields: [
+                { slug: 'title', label: 'Title', type: 'string', required: true },
+                { slug: 'description', label: 'Description', type: 'text' },
+                { slug: 'image', label: 'Image', type: 'image' },
+                { slug: 'icon', label: 'Icon', type: 'string' },
+                { slug: 'ctaLabel', label: 'CTA label', type: 'string' },
+                { slug: 'ctaUrl', label: 'CTA URL', type: 'url' },
+              ],
+            },
           },
         ],
-      };
-    }
-    return cachedDefinition;
+      },
+    ],
   },
   variants: featureVariants,
   migrations: {},
