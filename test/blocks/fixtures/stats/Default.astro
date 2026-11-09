@@ -1,0 +1,16 @@
+---
+import type { StatsSectionProps } from 'emdash-plugin-page-builder/blocks';
+
+type Props = StatsSectionProps;
+
+const { value, blockKey } = Astro.props;
+const { heading, eyebrow, body, items = [] } = value;
+---
+<section data-section="default" data-key={blockKey}>
+  {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+  <h2>{heading}</h2>
+  {body && <p class="body">{body}</p>}
+  {items.map((item) => (
+    <p data-value={item.value}>{item.label}</p>
+  ))}
+</section>
