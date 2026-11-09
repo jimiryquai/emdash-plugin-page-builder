@@ -7,8 +7,8 @@ const { columns = [], rows = [] } = value;
   {rows.map((row) => (
     <span
       data-row={row.name}
-      data-group={row.groupName}
-      data-values={[row.firstValue, row.secondValue, row.thirdValue].join('|')}
+      data-group={row.group_name}
+      data-values={[row.first_value, row.second_value, row.third_value].join('|')}
     >{row.name}</span>
   ))}
 </section>

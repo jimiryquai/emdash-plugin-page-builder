@@ -25,8 +25,8 @@ export interface FeatureItem {
   description?: string;
   image?: unknown;
   icon?: string;
-  ctaLabel?: string;
-  ctaUrl?: string;
+  cta_label?: string;
+  cta_url?: string;
 }
 
 export interface FeaturesBlockValue extends StoredBlock {
@@ -71,8 +71,8 @@ export const features = {
                 { slug: 'description', label: 'Description', type: 'text' },
                 { slug: 'image', label: 'Image', type: 'image' },
                 { slug: 'icon', label: 'Icon', type: 'string' },
-                { slug: 'ctaLabel', label: 'CTA label', type: 'string' },
-                { slug: 'ctaUrl', label: 'CTA URL', type: 'url' },
+                { slug: 'cta_label', label: 'CTA label', type: 'string' },
+                { slug: 'cta_url', label: 'CTA URL', type: 'url' },
               ],
             },
           },

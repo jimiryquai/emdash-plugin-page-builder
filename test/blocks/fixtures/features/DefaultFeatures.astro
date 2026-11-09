@@ -17,7 +17,7 @@ const { heading, eyebrow, subheadline, items = [] } = value;
         {item.description && <p>{item.description}</p>}
         {item.icon && <span class="icon">{item.icon}</span>}
         {item.image && <img src={String((item.image as any)?.url || item.image)} alt="" />}
-        {item.ctaLabel && <a href={item.ctaUrl || '#'}>{item.ctaLabel}</a>}
+        {item.cta_label && <a href={item.cta_url || '#'}>{item.cta_label}</a>}
       </div>
     ))}
   </div>

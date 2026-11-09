@@ -14,11 +14,11 @@ export interface ComparisonColumn {
 }
 
 export interface ComparisonRow {
-  groupName?: string;
+  group_name?: string;
   name: string;
-  firstValue?: string;
-  secondValue?: string;
-  thirdValue?: string;
+  first_value?: string;
+  second_value?: string;
+  third_value?: string;
 }
 
 export interface ComparisonBlockValue extends StoredBlock {
@@ -77,11 +77,11 @@ export const comparison = {
             validation: {
               minItems: 1,
               subFields: [
-                { slug: 'groupName', label: 'Group name', type: 'string' },
+                { slug: 'group_name', label: 'Group name', type: 'string' },
                 { slug: 'name', label: 'Feature name', type: 'string', required: true },
-                { slug: 'firstValue', label: 'First column value', type: 'text' },
-                { slug: 'secondValue', label: 'Second column value', type: 'text' },
-                { slug: 'thirdValue', label: 'Third column value', type: 'text' },
+                { slug: 'first_value', label: 'First column value', type: 'text' },
+                { slug: 'second_value', label: 'Second column value', type: 'text' },
+                { slug: 'third_value', label: 'Third column value', type: 'text' },
               ],
             },
           },

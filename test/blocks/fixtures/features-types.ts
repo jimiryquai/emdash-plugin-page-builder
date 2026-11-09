@@ -5,8 +5,8 @@ export const validItem: FeatureItem = {
   description: 'Valid description',
   icon: 'star',
   image: '/img/feat.png',
-  ctaLabel: 'Learn More',
-  ctaUrl: 'https://example.com',
+  cta_label: 'Learn More',
+  cta_url: 'https://example.com',
 };
 
 // @ts-expect-error Typo'd field on FeatureItem must be a type error
