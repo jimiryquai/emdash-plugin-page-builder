@@ -198,3 +198,18 @@ pricing collection in EmDash's seed `collections` shape.
 source, built on `createCollectionSource`: it reads the starter collection (or
 another collection with the same field names, via `collection` and `groupField`)
 with no mapping, resolves `scope`, and returns `{ items, cacheHints }`.
+
+### comparison
+
+An inline block for comparing features across up to three options. Its only
+variant, `table`, is a grouped comparison table.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `table` (the grouped comparison table) |
+| `columns` | repeater | One to three columns. Each column has a `key` (`first`, `second` or `third`) and a required `label`. |
+| `rows` | repeater | At least one row. Each row has a required `name`, optional `groupName`, and optional `firstValue`, `secondValue` and `thirdValue` text fields. |
+
+`ComparisonBlockValue`, `ComparisonColumn` and `ComparisonRow` describe the
+values passed to a site's section. Column keys select which row value is shown
+under each label.

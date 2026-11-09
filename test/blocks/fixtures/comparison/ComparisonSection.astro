@@ -1,0 +1,14 @@
+---
+const { value, blockKey, index } = Astro.props;
+const { columns = [], rows = [] } = value;
+---
+<section data-variant={value.variant ?? 'default'} data-key={blockKey} data-index={index}>
+  {columns.map((column) => <span data-column={column.key}>{column.label}</span>)}
+  {rows.map((row) => (
+    <span
+      data-row={row.name}
+      data-group={row.groupName}
+      data-values={[row.firstValue, row.secondValue, row.thirdValue].join('|')}
+    >{row.name}</span>
+  ))}
+</section>
