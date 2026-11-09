@@ -13,6 +13,7 @@ Build `<PageBuilder>`, the block layer around EmDash's `<Blocks>` (spec: "What t
 - [ ] A stored v1 block renders through its v2 section after the migration chain runs, with `_key` unchanged.
 - [ ] An unmapped variant renders the block's default section; a block type with no default section is a type error for the site.
 - [ ] An unknown block type renders EmDash's fallback, not an exception.
+- [ ] The package ships `.astro` components (packaged and exported, not only compiled TS), proven by importing one from the packed package in a consumer.
 - [ ] The block-type module format is documented in the README for the next tickets.
 
 ## Comments
