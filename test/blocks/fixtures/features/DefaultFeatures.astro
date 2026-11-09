@@ -1,0 +1,24 @@
+---
+import type { FeaturesSectionProps } from 'emdash-plugin-page-builder/blocks';
+
+type Props = FeaturesSectionProps;
+
+const { value, blockKey, index } = Astro.props;
+const { heading, eyebrow, subheadline, items = [] } = value;
+---
+<section data-variant="default" data-key={blockKey} data-index={index}>
+  {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+  <h2>{heading}</h2>
+  {subheadline && <p class="subheadline">{subheadline}</p>}
+  <div class="features-list">
+    {items.map((item) => (
+      <div class="feature-item" data-title={item.title}>
+        <h3>{item.title}</h3>
+        {item.description && <p>{item.description}</p>}
+        {item.icon && <span class="icon">{item.icon}</span>}
+        {item.image && <img src={String((item.image as any)?.url || item.image)} alt="" />}
+        {item.ctaLabel && <a href={item.ctaUrl || '#'}>{item.ctaLabel}</a>}
+      </div>
+    ))}
+  </div>
+</section>

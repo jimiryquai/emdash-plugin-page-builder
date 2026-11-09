@@ -49,13 +49,14 @@ A null or omitted `value` renders nothing.
 Each block module exports an object satisfying `BlockType`. Keep all its fields,
 numbered versions, migrations, fixed variants and description in that module;
 the CLI and block layer import it rather than maintaining another schema.
-Block modules import the shared pieces (`BlockType`, `variantField`, `migrateBlocks`) from `src/blocks/core.ts`, never from `src/blocks/index.ts`, which re-exports the block modules and would make the import circular. The working two-version example is
+Block modules import the shared pieces (`BlockType`, `variantField`, `linksField`, `migrateBlocks`) from `src/blocks/core.ts`, never from `src/blocks/index.ts`, which re-exports the block modules and would make the import circular. The working two-version example is
 [test/blocks/fixtures/example.ts](test/blocks/fixtures/example.ts).
 
 | Member | Contract |
 | --- | --- |
 | `definition` | EmDash's seed `blockTypes` entry: `{ slug, label, description, icon?, category?, currentVersion, versions: [{ version, fields }] }`. Fields use EmDash's `BlockFieldDefinition`; there is no separate package schema. The CLI takes an array of these definitions. |
 | `variants` | The fixed variant vocabulary. Use the exported `variantField(variants)` to build its select field in each version's `fields`; the helper and renderer share the exported `VARIANT_FIELD_SLUG` constant. |
+| `links` | Use the exported `linksField()` for a repeater of label and URL pairs. The first item is the primary action and the second is an optional alternative. |
 | `migrations` | A map keyed by the version being upgraded. Function `N` returns version `N + 1`, preserving `_key` and `_type`, without mutating the input. Keep one function and test per step. Use an empty map for a block with only version 1. |
 | `sections` | Added by the site when rendering, producing a `SiteBlockType`; the package definition has no visual components. `default` is required, other keys map variants. |
 
@@ -68,12 +69,17 @@ Migrations must remain pure, including any nested content they transform.
 ### Shared-content seam
 
 `PageBuilder` optionally accepts `sources`, keyed by block slug, and `group`, a
-site-supplied group identifier. A `Source` receives `{ scope, group }` and returns
-an array (or a promise of an array), passed to the section as `items`. A stored
-`scope: 'page'` remains `page` when a group is configured; without a group it
-becomes `all`. A stored `all` stays `all`. Inline blocks need no source. This is
-the minimal seam for the shared-content tickets, which will add typed shapes and
-collection mappings.
+site-supplied group identifier. A `Source<T>` receives `{ scope, group, count }`
+and returns either an array of shape `T` or `{ items, cacheHints }`; the items
+are passed to the section as `items`, and the cache hints (EmDash query results
+carry them) are merged and applied to the page's `Astro.cache` when it is
+enabled. A stored `scope: 'page'` remains `page` when a group is configured;
+without a group it becomes `all`. A stored `all` stays `all`. A stored `count`
+passes through when it is a positive number. Inline blocks need no source.
+Shared-content blocks build their scope select with `scopeField()` and their
+count field with `countField()`, sharing the `SCOPE_FIELD_SLUG` and
+`COUNT_FIELD_SLUG` constants beside `variantField` and `VARIANT_FIELD_SLUG`;
+`PageBuilder` reads all three through the constants.
 
 ### Checks
 
@@ -84,3 +90,87 @@ installed peer dependencies, and imports and renders the exported `.astro`
 component there. Successful tests remove their temporary consumer; failed tests
 retain it and report its path for inspection and cleanup. The test harness
 disables Astro telemetry; no new dependencies are needed for the block layer.
+
+## Block types
+
+### features
+
+An inline content block representing a list or grid of capabilities, product features, or value propositions with optional images, icons, and CTA links.
+
+**Fields (v1):**
+- `eyebrow` (`string`): Optional small lead text displayed above the heading.
+- `heading` (`string`, required): Main section heading.
+- `subheadline` (`text`): Supporting multiline descriptive text.
+- `variant` (`select`): Layout variant selection.
+- `items` (`repeater`, min 1 item): Feature entries:
+  - `title` (`string`, required): Feature headline.
+  - `description` (`text`): Detailed copy describing the feature.
+  - `image` (`image`): Screenshot, diagram, or illustration asset.
+  - `icon` (`string`): Icon identifier (e.g. `mail`, `zap`).
+  - `ctaLabel` (`string`): Call-to-action link text.
+  - `ctaUrl` (`url`): Destination URL for the CTA.
+
+**Variants:**
+- `two-column`: Two-column card grid with visual demo screenshots or graphics.
+- `three-column`: Compact three-column grid highlighting values or capabilities with icons and text.
+- `three-column-demos`: Three-column grid showcasing features alongside screenshots or demo assets.
+- `alternating`: Full-width stacked rows alternating between feature description and visual demo assets.
+
+### testimonials
+
+Customer quotes pulled from a shared testimonials collection (`src/blocks/types/testimonials.ts`).
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `single` (one large quote with a photo), `grid` (several quotes side by side) or `split` (one quote beside a large photo); unmapped variants use the site's default section |
+| `scope` | select | `page` (entries in the page's group) or `all` (every entry); `page` behaves as `all` when no group is configured; built with `scopeField()` |
+| `count` | integer | How many entries to show (1–24, optional); built with `countField()` |
+
+**Shape.** `Testimonial`: `{ quote, author, role?, company?, avatar? }`, the
+contract between a testimonials source and a testimonials section.
+
+**Sources.** A site maps its own collection through a `Source<Testimonial>`
+typed against its generated collection types, so a renamed field fails the
+build. `createTestimonialsSource({ collection?, groupField?, query? })` is the
+default source: it reads the starter collection (or another collection with
+the same field names, via `collection`) with no mapping, takes EmDash's query
+API as an injectable `query` for tests, follows the query cursor until `scope:
+page` has grouped enough entries, applies `count`, and returns
+`{ items, cacheHints }` with the hints of every list and get it read.
+
+### hero
+
+The opening section of a page. Priced plans belong on the pricing block.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `centered` (default), `photo`, `demo` |
+| `eyebrow` | string | Short announcement above the heading. Set with `eyebrow_url` and `eyebrow_action`. |
+| `eyebrow_url` | url | Makes the eyebrow a link. |
+| `eyebrow_action` | string | Action text on that link. |
+| `heading` | string | Required. |
+| `body` | text | Optional supporting copy. |
+| `image` | image | Optional. Includes a dark-color-scheme slot. Unused for `centered`. |
+| `links` | repeater | Built with `linksField()`. `label` (string) and `url` (url), both required on each item. The first item is the primary action. |
+
+| Variant | When to use it |
+| --- | --- |
+| `centered` | The heading, body and links sit in a centered stack and no image is shown. |
+| `photo` | The copy is aligned to the start and the image is a photograph shown with it. |
+| `demo` | The copy is aligned to the start and the image is a product screenshot or interface shown as a demo. |
+
+### cta
+
+A later prompt to act. Use `hero` for the opening section.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `start` (default), `centered` |
+| `heading` | string | Required. |
+| `body` | text | Optional supporting copy. |
+| `links` | repeater | Built with `linksField()`. `label` (string) and `url` (url), both required on each item. The first item is the primary action. |
+
+| Variant | When to use it |
+| --- | --- |
+| `start` | The heading, body and links line up with the start of the section. |
+| `centered` | The heading, body and links sit in the middle of the section. |
