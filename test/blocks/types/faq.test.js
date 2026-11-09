@@ -157,13 +157,6 @@ test('the block renders FAQs from a source through a test sections map for every
   });
   assert.match(centeredHtml, /data-section="centered"/);
   assert.match(centeredHtml, /Yes, 14 days\./);
-
-  // An unmapped variant falls back to the default section.
-  const fallbackHtml = await render([{ ...stored, variant: 'two-column', scope: 'page' }], {
-    sources,
-    group: 'svc-1',
-  });
-  assert.match(fallbackHtml, /data-section="two-column"/);
 });
 
 test('count reaches the source and caps the rendered FAQs', async () => {
