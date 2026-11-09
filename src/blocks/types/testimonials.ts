@@ -1,7 +1,7 @@
 import type { ApplySeedBlockTypeInput, BlockFieldDefinition, MediaValue, SeedCollection } from 'emdash';
 import { getEmDashCollection, getEmDashEntry } from 'emdash';
-import { scopeField, variantField } from '../fields.js';
-import type { BlockType, Source } from '../index.js';
+import { scopeField, variantField } from '../core.js';
+import type { BlockType, Source } from '../core.js';
 
 /** The shape a testimonials source produces and a testimonials section renders. */
 export interface Testimonial {
