@@ -6,7 +6,7 @@ EmDash already has the custom fields. This project is the page-building layer on
 
 It's an npm package, not an EmDash runtime plugin: EmDash plugins can't define block types (see [ADR 0001](docs/adr/0001-package-owns-data-sites-own-collections-and-visuals.md) and the spec). An optional native plugin entry for Portable Text blocks comes later.
 
-Status: designed, not built. See [the v1 spec](docs/specs/v1-page-builder.md), [the glossary](docs/GLOSSARY.md), and `docs/research/` for what EmDash 1.4 provides.
+Status: block layer built; block types, CLI and adoption in progress. See [the v1 spec](docs/specs/v1-page-builder.md), [the glossary](docs/GLOSSARY.md), and `docs/research/` for what EmDash 1.4 provides.
 
 Licence: MIT.
 
@@ -55,7 +55,7 @@ The working two-version example is
 | Member | Contract |
 | --- | --- |
 | `definition` | EmDash's seed `blockTypes` entry: `{ slug, label, description, icon?, category?, currentVersion, versions: [{ version, fields }] }`. Fields use EmDash's `BlockFieldDefinition`; there is no separate package schema. The CLI takes an array of these definitions. |
-| `variants` | The fixed variant vocabulary, also used to build the definition's `variant` select options in the same module. |
+| `variants` | The fixed variant vocabulary. Use the exported `variantField(variants)` to build its select field in each version's `fields`; the helper and renderer share the exported `VARIANT_FIELD_SLUG` constant. |
 | `migrations` | A map keyed by the version being upgraded. Function `N` returns version `N + 1`, preserving `_key` and `_type`, without mutating the input. Keep one function and test per step. Use an empty map for a block with only version 1. |
 | `sections` | Added by the site when rendering, producing a `SiteBlockType`; the package definition has no visual components. `default` is required, other keys map variants. |
 
@@ -81,6 +81,6 @@ collection mappings.
 Astro container rendering and the required-default type fixture. Its package test
 packs the library, installs the tarball in a temporary consumer, reuses the exact
 installed peer dependencies, and imports and renders the exported `.astro`
-component there. It reports the retained consumer directory for inspection and
-cleanup. The test harness disables Astro telemetry; no new dependencies are
-needed for the block layer.
+component there. Successful tests remove their temporary consumer; failed tests
+retain it and report its path for inspection and cleanup. The test harness
+disables Astro telemetry; no new dependencies are needed for the block layer.

@@ -1,8 +1,7 @@
-import type { BlockType } from 'emdash-plugin-page-builder/blocks';
+import { variantField, type BlockType } from 'emdash-plugin-page-builder/blocks';
 
 const variants = ['plain', 'featured'] as const;
-const variant = { slug: 'variant', label: 'Variant', type: 'select' as const,
-  validation: { options: [...variants] } };
+const variant = variantField(variants);
 
 export const example = {
   definition: {

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtemp, writeFile, mkdir, symlink, copyFile, readdir, cp } from 'node:fs/promises';
+import { mkdtemp, writeFile, mkdir, symlink, copyFile, readdir, cp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { experimental_AstroContainer } from 'astro/container';
@@ -9,7 +9,14 @@ import { createAstroServer } from './astro-harness.js';
 
 test('packed Astro export imports and renders in an installed consumer', async (t) => {
   const consumer = await mkdtemp(join(tmpdir(), 'page-builder-consumer-'));
-  t.diagnostic(`Consumer retained at ${consumer}`);
+  let passed = false;
+  t.after(async () => {
+    if (passed) {
+      await rm(consumer, { recursive: true, force: true });
+    } else {
+      t.diagnostic(`Consumer retained at ${consumer}`);
+    }
+  });
   const env = { ...process.env, ASTRO_TELEMETRY_DISABLED: '1' };
   const packed = JSON.parse(execFileSync('npm', ['pack', '--json', '--pack-destination', consumer], { env, encoding: 'utf8' }));
   assert.ok(packed[0].files.some(({ path }) => path === 'src/blocks/PageBuilder.astro'));
@@ -42,4 +49,5 @@ import { example } from './example';
   } finally {
     await server.close();
   }
+  passed = true;
 });
