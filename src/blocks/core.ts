@@ -12,6 +12,21 @@ export function variantField(variants: readonly string[]): BlockFieldDefinition 
   };
 }
 
+/** Label and URL pairs. The first item is the primary action. */
+export function linksField(): BlockFieldDefinition {
+  return {
+    slug: 'links',
+    label: 'Links',
+    type: 'repeater',
+    validation: {
+      subFields: [
+        { slug: 'label', label: 'Label', type: 'string', required: true },
+        { slug: 'url', label: 'URL', type: 'url', required: true },
+      ],
+    },
+  };
+}
+
 export const SCOPE_FIELD_SLUG = 'scope';
 export const SCOPES = ['page', 'all'] as const;
 
