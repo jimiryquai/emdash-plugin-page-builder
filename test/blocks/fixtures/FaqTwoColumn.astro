@@ -1,0 +1,4 @@
+---
+const { items = [] } = Astro.props;
+---
+<div data-section="two-column">{items.map((item) => <details data-question={item.question}>{item.answer}</details>)}</div>
