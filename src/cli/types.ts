@@ -106,6 +106,8 @@ export interface PlanAction {
 	detail?: string;
 	/** Set once an attempt was made. */
 	result?: "done" | "skipped";
+	/** True when activation is part of a brand-new type's create (needs no --activate). */
+	autoActivate?: boolean;
 }
 
 export interface PlanCounts {

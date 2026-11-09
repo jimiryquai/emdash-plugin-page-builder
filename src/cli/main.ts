@@ -16,8 +16,8 @@ import { pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
 
 import { EmdashClient, EmdashError, fetchTransport } from "./client.js";
-import { executePlan, findPendingMigrations, migrateStoredBlocks } from "./apply.js";
-import { buildPlan } from "./plan.js";
+import { executePlan, findPendingMigrations, isStale, migrateStoredBlocks } from "./apply.js";
+import { addMigrations, buildPlan } from "./plan.js";
 import { renderTable } from "./table.js";
 import type { BlockTypeDefinition, BlockTypeInput, Plan, RemoteField } from "./types.js";
 
@@ -135,12 +135,14 @@ async function runChecked(
 			},
 		});
 	} catch (error) {
-		io.err(`${USAGE}\n${error instanceof Error ? error.message : String(error)}`);
+		io.out(JSON.stringify({ errors: [{ message: error instanceof Error ? error.message : String(error) }] }, null, 2));
+		io.err(USAGE);
 		return 2;
 	}
 	const flags = parsed.values;
 	const [command, site] = parsed.positionals;
 	if (command !== "apply" || !site) {
+		io.out(JSON.stringify({ errors: [{ message: "expected: apply <site-url>" }] }, null, 2));
 		io.err(USAGE);
 		return 2;
 	}
@@ -151,27 +153,23 @@ async function runChecked(
 		return 1;
 	}
 
-	const definitions = await loadDefinitions(
-		flags.from ?? "emdash-plugin-page-builder/blocks",
-	);
+	const from = flags.from ?? "emdash-plugin-page-builder/blocks";
+	const definitions = await loadDefinitions(from);
 	const client = new EmdashClient(
 		options.transport ?? fetchTransport(site, token),
 	);
 
 	const remote = await client.listBlockTypes();
-	const plan = buildPlan(definitions, remote.items);
+	let plan = buildPlan(definitions, remote.items);
 	const pending = await findPendingMigrations(client, definitions);
-	for (const item of pending) {
-		plan.actions.push({
-			blockType: [...item.targetVersions.keys()].find((slug) =>
-				item.blocks.some((block) => block._type === slug && block._version < (item.targetVersions.get(slug) ?? 0)),
-			) ?? "?",
-			version: null,
-			action: "migrate",
+	plan = addMigrations(
+		plan,
+		pending.map((item) => ({
+			blockType:
+				item.blocks.find((block) => isStale(block, item.targetVersions))?._type ?? "?",
 			detail: `${item.collection}/${item.entryId}.${item.field}`,
-		});
-	}
-	plan.counts.migrate = pending.length;
+		})),
+	);
 
 	await executePlan(client, plan, definitions, {
 		apply: flags.apply ?? false,
@@ -181,11 +179,14 @@ async function runChecked(
 
 	let collectionsCreated: string[] = [];
 	let fieldUpdates: string[] = [];
-	if (flags.apply && flags.collections) {
-		collectionsCreated = await applyStarterCollections(client, flags.from);
+	if (flags.collections) {
+		const planned = await planStarterCollections(client, from);
+		if (flags.apply) collectionsCreated = await applyStarterCollections(client, from, planned);
+		else collectionsCreated = planned;
 	}
-	if (flags.apply && flags.field) {
-		fieldUpdates = await allowInField(client, flags.field, definitions);
+	if (flags.field) {
+		// The plan reports what --field would add; the write happens only with --apply.
+		fieldUpdates = await allowInField(client, flags.field, definitions, flags.apply ?? false);
 	}
 	if (flags.apply && flags.migrate && pending.length > 0) {
 		await migrateStoredBlocks(client, pending);
@@ -204,28 +205,40 @@ async function runChecked(
 	io.out(flags.table ? renderTable(result) : JSON.stringify(result, null, 2));
 	return 0;
 }
-/** Apply the `starterCollections` a definitions module exports, if any. */
-async function applyStarterCollections(client: EmdashClient, from?: string): Promise<string[]> {
-	if (!from) return [];
+/** The starter collections a module exports that the site lacks. */
+async function planStarterCollections(client: EmdashClient, from: string): Promise<string[]> {
 	const module: Record<string, unknown> = await import(from);
 	const starters = module.starterCollections;
 	if (!Array.isArray(starters)) return [];
 	const existing = new Set((await client.listCollections()).items.map((c) => c.slug));
-	const created: string[] = [];
-	for (const starter of starters) {
-		const body = starter as Record<string, unknown>;
-		if (typeof body.slug !== "string" || existing.has(body.slug)) continue;
-		await client.createCollection(body);
-		created.push(body.slug);
-	}
-	return created;
+	return starters
+		.map((starter) => (starter as Record<string, unknown>).slug)
+		.filter((slug): slug is string => typeof slug === "string" && !existing.has(slug));
 }
 
-/** Add the block types' slugs to a blocks field's allowedTypes. */
+/** Create the planned starter collections. */
+async function applyStarterCollections(
+	client: EmdashClient,
+	from: string,
+	planned: readonly string[],
+): Promise<string[]> {
+	if (planned.length === 0) return [];
+	const module: Record<string, unknown> = await import(from);
+	const starters = module.starterCollections as Array<Record<string, unknown>>;
+	for (const body of starters) {
+		if (typeof body.slug === "string" && planned.includes(body.slug)) {
+			await client.createCollection(body);
+		}
+	}
+	return [...planned];
+}
+
+/** Compute the slugs --field would add to a blocks field's allowedTypes; write only when applying. */
 async function allowInField(
 	client: EmdashClient,
 	spec: string,
 	definitions: readonly BlockTypeDefinition[],
+	write: boolean,
 ): Promise<string[]> {
 	const match = /^([\w-]+)\/([\w-]+)$/.exec(spec);
 	if (!match) throw new Error(`--field expects <collection>/<fieldSlug>, got "${spec}"`);
@@ -241,8 +254,10 @@ async function allowInField(
 	const existing = Array.isArray(validation.allowedTypes) ? (validation.allowedTypes as string[]) : [];
 	const additions = definitions.map((d) => d.slug).filter((slug) => !existing.includes(slug));
 	if (additions.length === 0) return [];
-	validation.allowedTypes = [...existing, ...additions];
-	await client.updateField(collection, fieldSlug, { validation });
+	if (write) {
+		validation.allowedTypes = [...existing, ...additions];
+		await client.updateField(collection, fieldSlug, { validation });
+	}
 	return additions;
 }
 

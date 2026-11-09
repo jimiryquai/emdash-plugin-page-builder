@@ -185,6 +185,20 @@ test("--field adds the block types to a named blocks field's allowedTypes", asyn
 	deepStrictEqual(site.collections.get("pages").fields.get("layout").validation.allowedTypes, ["banner", "hero", "cta"]);
 });
 
+test("--collections applies starter collections only on request", async () => {
+	const site = createFakeSite();
+	const args = ["apply", "https://site.example", "--from", fixturePath, "--apply"];
+	let writer = io();
+	strictEqual(await run([...args], { transport: site.transport }, writer), 0);
+	strictEqual(site.collections.size, 0, "no collections without --collections");
+
+	writer = io();
+	strictEqual(await run([...args, "--collections"], { transport: site.transport }, writer), 0);
+	const result = jsonOutput(writer);
+	deepStrictEqual(result.collectionsCreated, ["testimonials"]);
+	ok(site.collections.has("testimonials"));
+});
+
 test("no token and no injected transport: the CLI fails before any request", async () => {
 	const previous = process.env.EMDASH_TOKEN;
 	delete process.env.EMDASH_TOKEN;

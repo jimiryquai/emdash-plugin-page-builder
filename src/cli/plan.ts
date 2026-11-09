@@ -10,7 +10,6 @@ import type {
 	BlockTypeDefinition,
 	Plan,
 	PlanAction,
-	PlanActionKind,
 	PlanCounts,
 	RemoteBlockType,
 } from "./types.js";
@@ -65,6 +64,7 @@ export function buildPlan(
 				blockType: definition.slug,
 				version: definition.currentVersion,
 				action: "activate",
+				autoActivate: true,
 				detail: "new block type: activating its own current version",
 			});
 			continue;
@@ -125,17 +125,16 @@ export function buildPlan(
 	return { actions, counts: countActions(actions), warnings };
 }
 
-/** Migration actions are appended after a content scan (see apply.ts). */
-export function appendMigrationAction(
+/** Append migration actions (one per pending entry) after a content scan. */
+export function addMigrations(
 	plan: Plan,
-	action: Omit<PlanAction, "action">,
+	pending: ReadonlyArray<{ blockType: string; detail: string }>,
 ): Plan {
-	const actions: PlanAction[] = [...plan.actions, { ...action, action: "migrate" }];
+	const actions: PlanAction[] = [
+		...plan.actions,
+		...pending.map((item) => ({ ...item, version: null, action: "migrate" as const })),
+	];
 	return { actions, counts: countActions(actions), warnings: plan.warnings };
-}
-
-export function actionLabel(action: PlanActionKind): string {
-	return action;
 }
 
 function sortedVersions(definition: BlockTypeDefinition) {

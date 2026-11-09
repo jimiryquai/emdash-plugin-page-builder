@@ -4,8 +4,8 @@
  * migrate last).
  */
 
-import type { EmdashClient, ContentEntry } from "./client.js";
-import type { BlockTypeDefinition, Plan, PlanAction, RemoteBlockType, StoredBlock } from "./types.js";
+import type { EmdashClient } from "./client.js";
+import type { BlockTypeDefinition, Plan, RemoteBlockType, StoredBlock } from "./types.js";
 
 export interface ApplyOptions {
 	/** Perform the plan; without it nothing is written. */
@@ -96,9 +96,7 @@ export async function executePlan(
 		}
 
 		if (action.action === "activate" && action.version !== null) {
-			const detail = action.detail ?? "";
-			const newType = detail.includes("new block type");
-			if (!newType && !options.activate) {
+			if (!action.autoActivate && !options.activate) {
 				action.result = "skipped";
 				continue;
 			}
@@ -135,6 +133,18 @@ function versionFields(definition: BlockTypeDefinition, version: number): unknow
 	return declared.fields;
 }
 
+/** The page size the migration scan reads content with. */
+const PAGE_SIZE = 100;
+
+/** A stored block is stale when its type is one of ours and below the version we target. */
+export function isStale(
+	block: StoredBlock,
+	targets: ReadonlyMap<string, number>,
+): boolean {
+	const target = targets.get(block._type);
+	return target !== undefined && typeof block._version === "number" && block._version < target;
+}
+
 /**
  * Find stored blocks of the given types that sit below their definition's
  * current version. Returns one pending migration per (collection, entry).
@@ -161,17 +171,12 @@ export async function findPendingMigrations(
 
 		let page = 1;
 		for (;;) {
-			const result = await client.listContent(collection.slug, page);
+			const result = await client.listContent(collection.slug, page, PAGE_SIZE);
 			for (const entry of result.items) {
 				for (const field of blockFields) {
 					const value = entry.data?.[field.slug];
 					if (!Array.isArray(value)) continue;
-					const stale = (value as StoredBlock[]).filter(
-						(block) =>
-							targets.has(block._type) &&
-							typeof block._version === "number" &&
-							block._version < (targets.get(block._type) ?? 0),
-					);
+					const stale = (value as StoredBlock[]).filter((block) => isStale(block, targets));
 					if (stale.length === 0) continue;
 					pending.push({
 						collection: collection.slug,
@@ -182,7 +187,7 @@ export async function findPendingMigrations(
 					});
 				}
 			}
-			if (result.items.length < 100) break;
+			if (result.items.length < PAGE_SIZE) break;
 			page += 1;
 		}
 	}
@@ -200,13 +205,11 @@ export async function migrateStoredBlocks(
 	pending: readonly PendingMigration[],
 ): Promise<void> {
 	for (const item of pending) {
-		const migrated = item.blocks.map((block) => {
-			const target = item.targetVersions.get(block._type);
-			if (target === undefined || typeof block._version !== "number" || block._version >= target) {
-				return block;
-			}
-			return { ...block, _version: target };
-		});
+		const migrated = item.blocks.map((block) =>
+			isStale(block, item.targetVersions)
+				? { ...block, _version: item.targetVersions.get(block._type) as number }
+				: block,
+		);
 		await client.migrateEntryBlocks(item.collection, item.entryId, {
 			[item.field]: migrated,
 		});
@@ -219,13 +222,9 @@ export function describeMigrations(pending: readonly PendingMigration[]): string
 		(item) =>
 			`${item.collection}/${item.entryId}.${item.field}: ` +
 			item.blocks
-				.filter((block) => {
-					const target = item.targetVersions.get(block._type);
-					return target !== undefined && typeof block._version === "number" && block._version < target;
-				})
+				.filter((block) => isStale(block, item.targetVersions))
 				.map((block) => `${block._type} v${block._version}→v${item.targetVersions.get(block._type)}`)
 				.join(", "),
 	);
 }
 
-export type { ContentEntry, PlanAction };

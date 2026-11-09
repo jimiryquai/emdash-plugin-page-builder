@@ -38,3 +38,8 @@ export const cta = {
 };
 
 export default [hero, cta];
+
+/** Starter collections a site with none of its own could apply with --collections. */
+export const starterCollections = [
+	{ slug: "testimonials", label: "Testimonials" },
+];
