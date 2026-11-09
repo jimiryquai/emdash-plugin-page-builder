@@ -3,7 +3,7 @@ import { Blocks } from 'emdash/ui';
 import type { BlockComponent } from 'emdash/ui';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { createComponent } from 'astro/runtime/server/index.js';
-import { migrateBlocks, SCOPE_FIELD_SLUG, VARIANT_FIELD_SLUG } from 'emdash-plugin-page-builder/blocks';
+import { COUNT_FIELD_SLUG, isSourceResult, mergeCacheHints, migrateBlocks, SCOPE_FIELD_SLUG, VARIANT_FIELD_SLUG } from 'emdash-plugin-page-builder/blocks';
 import type { SiteBlockType, Source, StoredBlock } from 'emdash-plugin-page-builder/blocks';
 
 export interface Props {
@@ -16,14 +16,25 @@ export interface Props {
 
 const { value, blocks, sources = {}, group, fallback } = Astro.props;
 const upgraded = migrateBlocks(value ?? [], blocks);
+const cacheHints: import('emdash').CacheHint[] = [];
 const items = new Map(await Promise.all(upgraded.map(async (block) => {
   const source = sources[block._type];
   const storedScope = block[SCOPE_FIELD_SLUG];
   const scope = storedScope === 'page' && group !== undefined ? 'page' : 'all';
-  const storedCount = block.count;
+  const storedCount = block[COUNT_FIELD_SLUG];
   const count = typeof storedCount === 'number' && storedCount > 0 ? storedCount : undefined;
-  return [block, source ? await source({ scope, group, count }) : []] as const;
+  if (!source) return [block, []] as const;
+  const result = await source({ scope, group, count });
+  const read = isSourceResult(result) ? result : { items: result };
+  if (read.cacheHints) cacheHints.push(...read.cacheHints);
+  return [block, read.items] as const;
 })));
+// Sources may report the cache hints of what they read; apply them when the
+// page renders with Astro's cache enabled (same pattern as EmDash's templates).
+if (Astro.cache?.enabled) {
+  const hint = mergeCacheHints(cacheHints);
+  if (hint.tags?.length || hint.lastModified) Astro.cache.set(hint);
+}
 const components = Object.fromEntries(blocks.map(({ definition, sections }) => [
   definition.slug,
   createComponent((result, props, slots) => {

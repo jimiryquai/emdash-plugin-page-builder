@@ -69,13 +69,16 @@ Migrations must remain pure, including any nested content they transform.
 
 `PageBuilder` optionally accepts `sources`, keyed by block slug, and `group`, a
 site-supplied group identifier. A `Source<T>` receives `{ scope, group, count }`
-and returns an array (or a promise of an array) of shape `T`, passed to the
-section as `items`. A stored
-`scope: 'page'` remains `page` when a group is configured; without a group it
-becomes `all`. A stored `all` stays `all`. A stored `count` passes through when
-it is a positive number. Inline blocks need no source. Shared-content blocks
-build their scope select with `scopeField()` and the shared `SCOPE_FIELD_SLUG`
-constant, beside `variantField` and `VARIANT_FIELD_SLUG`.
+and returns either an array of shape `T` or `{ items, cacheHints }`; the items
+are passed to the section as `items`, and the cache hints (EmDash query results
+carry them) are merged and applied to the page's `Astro.cache` when it is
+enabled. A stored `scope: 'page'` remains `page` when a group is configured;
+without a group it becomes `all`. A stored `all` stays `all`. A stored `count`
+passes through when it is a positive number. Inline blocks need no source.
+Shared-content blocks build their scope select with `scopeField()` and their
+count field with `countField()`, sharing the `SCOPE_FIELD_SLUG` and
+`COUNT_FIELD_SLUG` constants beside `variantField` and `VARIANT_FIELD_SLUG`;
+`PageBuilder` reads all three through the constants.
 
 ### Checks
 
@@ -95,9 +98,9 @@ Customer quotes pulled from a shared testimonials collection (`src/blocks/types/
 
 | Field | Type | Notes |
 | --- | --- | --- |
-| `variant` | select | `single` (one large quote with a photo) or `grid` (several quotes side by side); unmapped variants use the site's default section |
+| `variant` | select | `single` (one large quote with a photo), `grid` (several quotes side by side) or `split` (one quote beside a large photo); unmapped variants use the site's default section |
 | `scope` | select | `page` (entries in the page's group) or `all` (every entry); `page` behaves as `all` when no group is configured; built with `scopeField()` |
-| `count` | integer | How many entries to show (1–24, optional) |
+| `count` | integer | How many entries to show (1–24, optional); built with `countField()` |
 
 **Shape.** `Testimonial`: `{ quote, author, role?, company?, avatar? }`, the
 contract between a testimonials source and a testimonials section.
@@ -105,8 +108,8 @@ contract between a testimonials source and a testimonials section.
 **Sources.** A site maps its own collection through a `Source<Testimonial>`
 typed against its generated collection types, so a renamed field fails the
 build. `createTestimonialsSource({ collection?, groupField?, query? })` is the
-default source: it needs no mapping with the starter collection
-(`starterTestimonialsCollection(groupCollection)`, whose `group` reference
-matches entries against the page's group), takes EmDash's query API as an
-injectable `query` for tests, applies `scope` and `count`, and returns
-`Testimonial[]`.
+default source: it reads the starter collection (or another collection with
+the same field names, via `collection`) with no mapping, takes EmDash's query
+API as an injectable `query` for tests, follows the query cursor until `scope:
+page` has grouped enough entries, applies `count`, and returns
+`{ items, cacheHints }` with the hints of every list and get it read.

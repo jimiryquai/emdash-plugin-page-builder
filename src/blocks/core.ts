@@ -1,4 +1,4 @@
-import type { ApplySeedBlockTypeInput, BlockFieldDefinition } from 'emdash';
+import type { ApplySeedBlockTypeInput, BlockFieldDefinition, CacheHint } from 'emdash';
 
 export const VARIANT_FIELD_SLUG = 'variant';
 
@@ -24,6 +24,31 @@ export function scopeField(): BlockFieldDefinition {
     defaultValue: 'all',
     validation: { options: [...SCOPES] },
   };
+}
+
+export const COUNT_FIELD_SLUG = 'count';
+
+/** Build the shared count field for shared-content blocks. */
+export function countField(options: { min?: number; max?: number } = {}): BlockFieldDefinition {
+  return {
+    slug: COUNT_FIELD_SLUG,
+    label: 'Count',
+    type: 'integer',
+    validation: { min: options.min ?? 1, max: options.max ?? 24 },
+  };
+}
+
+/** Union of every hint a source read, for the page's `Astro.cache`. */
+export function mergeCacheHints(hints: readonly CacheHint[]): CacheHint {
+  const tags = new Set<string>();
+  let lastModified;
+  for (const hint of hints) {
+    for (const tag of hint.tags ?? []) tags.add(tag);
+    if (hint.lastModified && (!lastModified || hint.lastModified > lastModified)) {
+      lastModified = hint.lastModified;
+    }
+  }
+  return tags.size || lastModified ? { tags: [...tags], lastModified } : {};
 }
 
 export interface StoredBlock {
@@ -53,12 +78,25 @@ export interface SiteBlockType extends BlockType {
   sections: Sections;
 }
 
+/** What a source read: its items plus the cache hints of everything it queried. */
+export interface SourceResult<T = unknown> {
+  items: readonly T[];
+  cacheHints?: readonly CacheHint[];
+}
+
+/** Narrow a source's return to the result form (Array.isArray cannot narrow readonly arrays). */
+export function isSourceResult<T>(value: SourceResult<T> | readonly T[]): value is SourceResult<T> {
+  return !Array.isArray(value);
+}
+
 /** A site's typed mapping from its collection's entries to a shape. */
-export type Source<T = unknown> = (context: {
-  scope: 'page' | 'all';
-  group?: string;
-  count?: number;
-}) => readonly T[] | Promise<readonly T[]>;
+export type Source<T = unknown> = (
+  context: {
+    scope: 'page' | 'all';
+    group?: string;
+    count?: number;
+  },
+) => SourceResult<T> | readonly T[] | Promise<SourceResult<T> | readonly T[]>;
 
 /** The same pure chain serves stored-content migration and render-time upgrades. */
 export function migrateBlocks(

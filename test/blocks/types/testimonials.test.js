@@ -11,6 +11,9 @@ import {
   SCOPE_FIELD_SLUG,
   variantField,
   VARIANT_FIELD_SLUG,
+  countField,
+  COUNT_FIELD_SLUG,
+  mergeCacheHints,
 } from 'emdash-plugin-page-builder/blocks';
 
 // ---------------------------------------------------------------------------
@@ -29,11 +32,14 @@ function fakeQuery(entries) {
     calls,
     list: async (collection, filter) => {
       calls.list.push({ collection, filter });
-      return { entries: filter?.limit ? entries.slice(0, filter.limit) : entries };
+      return {
+        entries: filter?.limit ? entries.slice(0, filter.limit) : entries,
+        cacheHint: { tags: [`list:${collection}`] },
+      };
     },
     get: async (collection, id, options) => {
       calls.get.push({ collection, id, options });
-      return { entry: byId.get(id) ?? null };
+      return { entry: byId.get(id) ?? null, cacheHint: { tags: [`get:${id}`] } };
     },
   };
 }
@@ -47,19 +53,19 @@ const entries = [
 test('scope page returns only entries in the page\'s group', async () => {
   const source = createTestimonialsSource({ query: fakeQuery(entries) });
   const items = await source({ scope: 'page', group: 'svc-1' });
-  assert.deepEqual(items.map((item) => item.author), ['Ann', 'Cy']);
+  assert.deepEqual(items.items.map((item) => item.author), ['Ann', 'Cy']);
 });
 
 test('scope all returns every entry', async () => {
   const source = createTestimonialsSource({ query: fakeQuery(entries) });
   const items = await source({ scope: 'all' });
-  assert.equal(items.length, 3);
+  assert.equal(items.items.length, 3);
 });
 
 test('scope page with no group behaves as all', async () => {
   const source = createTestimonialsSource({ query: fakeQuery(entries) });
   const items = await source({ scope: 'page' });
-  assert.equal(items.length, 3);
+  assert.equal(items.items.length, 3);
 });
 
 test('count limits the entries for all scope (pushed into the query) and page scope', async () => {
@@ -68,7 +74,37 @@ test('count limits the entries for all scope (pushed into the query) and page sc
   assert.deepEqual(all.calls.list, [{ collection: 'testimonials', filter: { limit: 2 } }]);
   const page = fakeQuery(entries);
   const items = await createTestimonialsSource({ query: page })({ scope: 'page', group: 'svc-1', count: 1 });
-  assert.deepEqual(items.map((item) => item.author), ['Ann']);
+  assert.deepEqual(items.items.map((item) => item.author), ['Ann']);
+});
+
+test('page scope follows the query cursor until a match is found and stops once count is reached', async () => {
+  const pageOne = starterEntry('t1', { quote: 'Off group', author: 'Ann' }, ['svc-2']);
+  const pageTwo = starterEntry('t2', { quote: 'On group', author: 'Bo' }, ['svc-1']);
+  const calls = [];
+  const paged = {
+    list: async (collection, filter) => {
+      calls.push(filter ?? {});
+      return filter?.cursor === 'page-2'
+        ? { entries: [pageTwo] }
+        : { entries: [pageOne], nextCursor: 'page-2' };
+    },
+    get: async (collection, id) => ({ entry: id === 't1' ? pageOne : pageTwo }),
+  };
+  const items = await createTestimonialsSource({ query: paged })({ scope: 'page', group: 'svc-1', count: 1 });
+  assert.deepEqual(items.items.map((item) => item.author), ['Bo']);
+  assert.deepEqual(calls, [{}, { cursor: 'page-2' }]);
+  // A satisfied count stops paging: page two is not requested again.
+  const calls2 = [];
+  const firstMatch = starterEntry('m1', { quote: 'Here', author: 'Cy' }, ['svc-1']);
+  const single = {
+    list: async () => {
+      calls2.push('list');
+      return { entries: [firstMatch], nextCursor: 'never' };
+    },
+    get: async () => ({ entry: firstMatch }),
+  };
+  await createTestimonialsSource({ query: single })({ scope: 'page', group: 'svc-1', count: 1 });
+  assert.deepEqual(calls2, ['list']);
 });
 
 test('the default source works with the starter collection with no mapping', async () => {
@@ -77,7 +113,18 @@ test('the default source works with the starter collection with no mapping', asy
     starterEntry('t1', { quote: 'Superb', author: 'Ann', role: 'CTO', company: 'Acme', avatar }, ['svc-1']),
   ];
   const items = await createTestimonialsSource({ query: fakeQuery(withAvatar) })({ scope: 'page', group: 'svc-1' });
-  assert.deepEqual(items, [{ quote: 'Superb', author: 'Ann', role: 'CTO', company: 'Acme', avatar }]);
+  assert.deepEqual(items.items, [{ quote: 'Superb', author: 'Ann', role: 'CTO', company: 'Acme', avatar }]);
+});
+
+test('a source reports the cache hints of every list and get it read', async () => {
+  const source = createTestimonialsSource({ query: fakeQuery(entries) });
+  const { items, cacheHints } = await source({ scope: 'page', group: 'svc-1' });
+  assert.equal(items.length, 2);
+  // One list page plus one get per entry, each carrying its hint.
+  assert.deepEqual(cacheHints, [
+    { tags: ['list:testimonials'] },
+    ...entries.map(({ id }) => ({ tags: [`get:${id}`] })),
+  ]);
 });
 
 test('the starter collection matches the Testimonial shape and points its group reference at the site\'s groups', () => {
@@ -99,12 +146,31 @@ test('the block definition carries variant, scope and count fields from their sh
   assert.deepEqual(fields, [
     variantField(testimonials.variants),
     scopeField(),
-    { slug: 'count', label: 'Count', type: 'integer', validation: { min: 1, max: 24 } },
+    countField(),
   ]);
-  assert.deepEqual(testimonials.variants, ['single', 'grid']);
+  assert.deepEqual(testimonials.variants, ['single', 'grid', 'split']);
   assert.deepEqual(testimonials.migrations, {});
   assert.equal(fields[0].slug, VARIANT_FIELD_SLUG);
   assert.equal(fields[1].slug, SCOPE_FIELD_SLUG);
+  assert.equal(fields[2].slug, COUNT_FIELD_SLUG);
+});
+
+test('the blocks entry imports in plain Node, as the apply CLI needs', async () => {
+  const module = await import('emdash-plugin-page-builder/blocks');
+  assert.equal(module.testimonials.definition.slug, 'testimonials');
+});
+
+test('merged hints union tags and keep the latest lastModified', () => {
+  const earlier = new Date('2026-01-01T00:00:00Z');
+  const later = new Date('2026-02-02T00:00:00Z');
+  assert.deepEqual(
+    mergeCacheHints([
+      { tags: ['a'], lastModified: later },
+      { tags: ['a', 'b'], lastModified: earlier },
+    ]),
+    { tags: ['a', 'b'], lastModified: later },
+  );
+  assert.deepEqual(mergeCacheHints([]), {});
 });
 
 test('scope fields use the shared slug and the fixed vocabulary', () => {
@@ -177,4 +243,18 @@ test('the single variant uses its section and an unmapped variant falls back to 
   const sources = { testimonials: async () => items };
   assert.match(await render([{ ...stored, variant: 'single' }], { sources }), /data-section="single"/);
   assert.match(await render([{ ...stored, variant: 'grid' }], { sources }), /data-section="grid"/);
+});
+
+test('a source may return { items, cacheHints } and both forms render the items', async () => {
+  const items = [{ quote: 'Hinted', author: 'Ann' }];
+  const sources = {
+    testimonials: async () => ({ items, cacheHints: [{ tags: ['testimonials'] }] }),
+  };
+  // The container harness never enables Astro.cache, so applying the hints to
+  // the page cache is covered by the mergeCacheHints unit test above and the
+  // Astro.cache?.enabled guard in PageBuilder; here we prove the seam accepts
+  // the result form and its items still reach the section.
+  const html = await render([stored], { sources });
+  assert.match(html, /data-section="grid"/);
+  assert.match(html, /<li data-author="Ann">Hinted<\/li>/);
 });

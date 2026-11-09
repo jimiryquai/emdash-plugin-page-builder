@@ -1,6 +1,6 @@
-import type { ApplySeedBlockTypeInput, BlockFieldDefinition, MediaValue, SeedCollection } from 'emdash';
+import type { ApplySeedBlockTypeInput, CacheHint, MediaValue, SeedCollection } from 'emdash';
 import { getEmDashCollection, getEmDashEntry } from 'emdash';
-import { scopeField, variantField } from '../core.js';
+import { countField, scopeField, variantField } from '../core.js';
 import type { BlockType, Source } from '../core.js';
 
 /** The shape a testimonials source produces and a testimonials section renders. */
@@ -20,6 +20,14 @@ export interface TestimonialEntry {
   references?: Readonly<Record<string, { entries: readonly TestimonialEntry[] }>>;
 }
 
+/** One page of a collection query, as the query API returns it. */
+export interface TestimonialsQueryListResult {
+  entries: readonly TestimonialEntry[];
+  nextCursor?: string;
+  cacheHint?: CacheHint;
+  error?: unknown;
+}
+
 /**
  * The supported runtime query API, injectable so tests use a fake
  * (CODING_STANDARDS rule 7). The default wraps EmDash's query functions.
@@ -27,20 +35,20 @@ export interface TestimonialEntry {
 export interface TestimonialsQueryApi {
   list(
     collection: string,
-    filter?: { limit?: number },
-  ): Promise<{ entries: readonly TestimonialEntry[]; error?: unknown }>;
+    filter?: { limit?: number; cursor?: string },
+  ): Promise<TestimonialsQueryListResult>;
   get(
     collection: string,
     id: string,
     options?: { references: Record<string, true> },
-  ): Promise<{ entry?: TestimonialEntry | null; error?: unknown }>;
+  ): Promise<{ entry?: TestimonialEntry | null; cacheHint?: CacheHint; error?: unknown }>;
 }
 
 const emdashQuery: TestimonialsQueryApi = {
   async list(collection, filter) {
-    // The public shape (entries, error) already matches; the extra fields a
-    // real result carries (cacheHint, cursors) are irrelevant to the source.
-    return getEmDashCollection(collection, filter?.limit !== undefined ? { limit: filter.limit } : undefined);
+    // The public shape (entries, error, cursors, cacheHint) already matches;
+    // the extra fields a real result carries are irrelevant to the source.
+    return getEmDashCollection(collection, filter);
   },
   async get(collection, id, options) {
     return getEmDashEntry(collection, id, options);
@@ -96,10 +104,9 @@ function inGroup(entry: TestimonialEntry, groupField: string, group: string): bo
 }
 
 /**
- * The default testimonials source. It needs no mapping with the starter
- * collection; a site with its own collection passes that collection's slug
- * only if the fields differ in name, in which case it writes its own source
- * against its own generated types instead.
+ * The default testimonials source. It reads the starter collection (or another
+ * collection with the same field names, via `collection`); a site whose fields
+ * differ writes its own `Source<Testimonial>` against its own generated types.
  */
 export function createTestimonialsSource(options: {
   collection?: string;
@@ -110,36 +117,37 @@ export function createTestimonialsSource(options: {
   const groupField = options.groupField ?? TESTIMONIAL_GROUP_FIELD;
   const query = options.query ?? emdashQuery;
   return async ({ scope, group, count }) => {
+    const cacheHints = [];
     if (scope === 'page' && group !== undefined) {
-      // Reference selections are per entry, so page scope reads the collection
-      // and keeps the entries whose group reference resolves to this group.
-      const { entries } = await query.list(collection);
-      const grouped = await Promise.all(
-        entries.map(async (entry) => {
-          const { entry: full } = await query.get(collection, entry.id, {
-            references: { [groupField]: true },
-          });
-          return full && inGroup(full, groupField, group) ? entry : null;
-        }),
-      );
-      return grouped
-        .filter((entry): entry is TestimonialEntry => entry !== null)
-        .slice(0, count)
-        .map(toTestimonial);
+      // Reference selections are per entry, so page scope walks the collection
+      // page by page and keeps the entries whose group reference resolves to
+      // this group, stopping once count is reached or the collection ends.
+      const grouped = [];
+      let cursor;
+      do {
+        const page = await query.list(collection, cursor !== undefined ? { cursor } : undefined);
+        if (page.cacheHint) cacheHints.push(page.cacheHint);
+        const matches = await Promise.all(
+          page.entries.map(async (entry) => {
+            const { entry: full, cacheHint } = await query.get(collection, entry.id, {
+              references: { [groupField]: true },
+            });
+            if (cacheHint) cacheHints.push(cacheHint);
+            return full && inGroup(full, groupField, group) ? entry : null;
+          }),
+        );
+        grouped.push(...matches.filter((entry): entry is TestimonialEntry => entry !== null));
+        cursor = page.nextCursor;
+      } while (cursor !== undefined && (count === undefined || grouped.length < count));
+      return { items: grouped.slice(0, count).map(toTestimonial), cacheHints };
     }
-    const { entries } = await query.list(collection, count !== undefined ? { limit: count } : undefined);
-    return entries.map(toTestimonial);
+    const page = await query.list(collection, count !== undefined ? { limit: count } : undefined);
+    if (page.cacheHint) cacheHints.push(page.cacheHint);
+    return { items: page.entries.map(toTestimonial), cacheHints };
   };
 }
 
-const variants = ['single', 'grid'] as const;
-
-const countField: BlockFieldDefinition = {
-  slug: 'count',
-  label: 'Count',
-  type: 'integer',
-  validation: { min: 1, max: 24 },
-};
+const variants = ['single', 'grid', 'split'] as const;
 
 export const testimonials = {
   definition: {
@@ -148,9 +156,10 @@ export const testimonials = {
     description:
       'Customer quotes pulled from a shared testimonials collection rather than written inline. ' +
       'Scope picks whether the quotes come from the page\'s group or the whole collection; ' +
-      'count caps how many. Variant single shows one large quote with a photo; grid shows several quotes side by side.',
+      'count caps how many. Variant single shows one large quote with a photo; grid shows ' +
+      'several quotes side by side; split shows one quote beside a large photo.',
     currentVersion: 1,
-    versions: [{ version: 1, fields: [variantField(variants), scopeField(), countField] }],
+    versions: [{ version: 1, fields: [variantField(variants), scopeField(), countField()] }],
   } satisfies ApplySeedBlockTypeInput & { description: string },
   variants,
   migrations: {},
