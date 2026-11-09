@@ -1,0 +1,9 @@
+---
+import { PortableText } from 'emdash/ui';
+const { value, blockKey } = Astro.props;
+---
+<section data-section="centered" data-key={blockKey}>
+  <h1>{value.heading}</h1>
+  {value.body && <p data-field="body">{value.body}</p>}
+  <div data-field="content"><PortableText value={value.content} /></div>
+</section>

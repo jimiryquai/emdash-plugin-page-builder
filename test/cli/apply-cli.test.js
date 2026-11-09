@@ -277,7 +277,7 @@ test("the package's own block modules plan against an empty site with no --from"
 	const created = [
 		...new Set(result.plan.actions.filter((a) => a.action === "create").map((a) => a.blockType)),
 	];
-	deepStrictEqual(created.sort(), ["comparison", "cta", "faq", "features", "hero", "pricing", "stats", "team", "testimonials"]);
+	deepStrictEqual(created.sort(), ["comparison", "cta", "faq", "features", "hero", "pricing", "prose", "stats", "team", "testimonials"]);
 });
 
 test("--collections derives starters from the block modules and needs --group", async () => {

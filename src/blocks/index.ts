@@ -8,3 +8,4 @@ export * from './types/comparison.js';
 export * from './types/team.js';
 export * from './types/faq.js';
 export * from './types/stats.js';
+export * from './types/prose.js';
