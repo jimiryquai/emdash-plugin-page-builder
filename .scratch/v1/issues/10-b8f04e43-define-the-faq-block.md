@@ -8,9 +8,13 @@ Define the shared-content `faq` block on `createCollectionSource`: a `Faq` shape
 
 **Blocked by:** none
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The block renders FAQs from a source through a test sections map for every variant, honouring scope and count.
-- [ ] The default source works with the starter collection with no mapping.
+- [x] The block renders FAQs from a source through a test sections map for every variant, honouring scope and count.
+- [x] The default source works with the starter collection with no mapping.
 
 ## Comments
+
+**2026-11-09 Orchestrator:** Risk: medium (package code: new block type). Helper: pi (default model).
+
+**2026-11-09 Orchestrator:** Done in d604fdc and 9e6d064, merged to master (c6a9e72) with no fix round. Shared-content `faq` block on `createCollectionSource`: the `Faq` shape (question, answer), variants `two-column` and `centered`, `scope` and `count`, a starter `faqs` collection and `createFaqSource`, `starter` set.
