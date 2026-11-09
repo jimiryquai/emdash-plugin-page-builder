@@ -78,7 +78,10 @@ passes through when it is a positive number. Inline blocks need no source.
 Shared-content blocks build their scope select with `scopeField()` and their
 count field with `countField()`, sharing the `SCOPE_FIELD_SLUG` and
 `COUNT_FIELD_SLUG` constants beside `variantField` and `VARIANT_FIELD_SLUG`;
-`PageBuilder` reads all three through the constants.
+`PageBuilder` reads all three through the constants. Default sources share
+`createCollectionSource({ collection, groupField?, query?, mapEntry })` in
+`src/blocks/core.ts`, which handles cursor paging, group reference matching,
+optional `count` capping, cache hint collection, and the injectable query API.
 
 ### Checks
 
@@ -136,3 +139,24 @@ the same field names, via `collection`) with no mapping, takes EmDash's query
 API as an injectable `query` for tests, follows the query cursor until `scope:
 page` has grouped enough entries, applies `count`, and returns
 `{ items, cacheHints }` with the hints of every list and get it read.
+
+### pricing
+
+Pricing tiers pulled from a shared pricing collection (`src/blocks/types/pricing.ts`).
+Pricing blocks carry `variant` and `scope` (no `count`, because a pricing
+table displays the complete set of tiers to compare rather than a capped sample).
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `tiers` (several plans side by side), `toggle` (several plans with a monthly/yearly billing switcher) or `single` (one plan beside its feature list); unmapped variants use the site's default section |
+| `scope` | select | `page` (entries in the page's group) or `all` (every entry); `page` behaves as `all` when no group is configured; built with `scopeField()` |
+
+**Shape.** `PricingTier`: `{ name, price, price_monthly?, price_yearly?, period?, description?, features?, cta_label?, cta_url?, badge?, highlighted? }`,
+the contract between a pricing source and a pricing section.
+
+**Sources.** `starterPricingCollection(groupCollection)` defines the starter
+pricing collection in EmDash's seed `collections` shape.
+`createPricingSource({ collection?, groupField?, query? })` is the default
+source, built on `createCollectionSource`: it reads the starter collection (or
+another collection with the same field names, via `collection` and `groupField`)
+with no mapping, resolves `scope`, and returns `{ items, cacheHints }`.

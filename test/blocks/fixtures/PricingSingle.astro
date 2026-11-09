@@ -1,0 +1,5 @@
+---
+const { items = [] } = Astro.props;
+const first = items[0];
+---
+<article data-section="single">{first && `${first.name}: ${first.price}`}</article>
