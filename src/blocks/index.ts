@@ -5,3 +5,4 @@ export * from './types/hero.js';
 export * from './types/cta.js';
 export * from './types/pricing.js';
 export * from './types/comparison.js';
+export * from './types/team.js';
