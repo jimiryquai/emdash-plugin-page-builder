@@ -1,0 +1,4 @@
+---
+const { items = [] } = Astro.props;
+---
+<div data-section="toggle">{items.map((item) => <div data-tier={item.name} data-monthly={item.price_monthly ?? item.price} data-yearly={item.price_yearly} />)}</div>

@@ -1,0 +1,4 @@
+---
+const { items = [] } = Astro.props;
+---
+<ul data-section="tiers">{items.map((item) => <li data-tier={item.name} data-highlighted={item.highlighted ? 'true' : undefined}>{item.price}</li>)}</ul>
