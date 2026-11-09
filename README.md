@@ -6,9 +6,44 @@ EmDash already has the custom fields. This project is the page-building layer on
 
 It's an npm package, not an EmDash runtime plugin: EmDash plugins can't define block types (see [ADR 0001](docs/adr/0001-package-owns-data-sites-own-collections-and-visuals.md) and the spec). An optional native plugin entry for Portable Text blocks comes later.
 
-Status: block layer built; block types, CLI and adoption in progress. See [the v1 spec](docs/specs/v1-page-builder.md), [the glossary](docs/GLOSSARY.md), and `docs/research/` for what EmDash 1.4 provides.
+Status: release 0.1.0 prepared; site adoption in progress. See [the v1 spec](docs/specs/v1-page-builder.md), [the glossary](docs/GLOSSARY.md), and `docs/research/` for what EmDash 1.4 provides.
 
 Licence: MIT.
+
+## Install
+
+```bash
+npm install emdash-plugin-page-builder
+```
+
+Requires Node.js 24 or newer and peer dependencies `astro ^6.4.8` and
+`emdash ^1.4.0` in the consuming site.
+
+- `emdash-plugin-page-builder/blocks`: block types, shapes, sources, starter
+  collections and migration helpers for Node and Astro consumers.
+- `emdash-plugin-page-builder/blocks/PageBuilder.astro`: the renderer, imported
+  separately from the runtime entry.
+- `emdash-page-builder`: the installed CLI. Run
+  `npx emdash-page-builder apply <site-url>` with `EMDASH_TOKEN` set to plan
+  block-type changes; add `--apply` to write them. See the
+  [CLI contract](docs/specs/v1-page-builder.md#the-apply-cli).
+
+## Release 0.1.0
+
+The first release includes ten block types: hero, cta, features, testimonials,
+pricing, comparison, team, faq, stats and prose. The block layer supplies
+versioned schemas, migrations, source resolution and rendering through each
+site's own sections. The apply CLI plans and applies block-type definitions
+through EmDash's API.
+
+For later releases, update the package and lockfile versions, then publish a
+GitHub release with a matching version tag. This triggers
+[publish.yml](.github/workflows/publish.yml), which runs `npm ci` and
+`npm run check` before publishing publicly with provenance through npm trusted
+publishing (OIDC). The npm package's trusted publisher must authorize owner
+`jimiryquai`, repository `emdash-plugin-page-builder` and workflow `publish.yml`;
+no npm token secret is required. The first publish and account setup are handled
+by the maintainer; preparing this release does not publish anything.
 
 ## Block layer
 
@@ -31,9 +66,9 @@ const blocks = [{
 <PageBuilder value={Astro.props.layout} blocks={blocks} />
 ```
 
-`hero` here is a site's imported block module; the production block modules arrive
-in subsequent tickets. The package currently supplies the block layer without
-visual sections. Every registered block requires `sections.default`; omitting it
+`hero` here is the package's block module, re-exported by a site module.
+The package supplies block definitions and the block layer; sites supply visual
+sections. Every registered block requires `sections.default`; omitting it
 is a site type error. Other section keys map the block's fixed variants. An
 unmapped variant uses the default. Sections receive EmDash's `value`, `index`, and
 `blockKey`, plus `items` when a source is supplied. `value` is always upgraded to
