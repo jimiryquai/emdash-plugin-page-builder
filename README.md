@@ -198,3 +198,25 @@ pricing collection in EmDash's seed `collections` shape.
 source, built on `createCollectionSource`: it reads the starter collection (or
 another collection with the same field names, via `collection` and `groupField`)
 with no mapping, resolves `scope`, and returns `{ items, cacheHints }`.
+
+### faq
+
+Frequently asked questions pulled from a shared FAQs collection
+(`src/blocks/types/faq.ts`). A question-and-answer section; use `cta` for a
+prompt to act and `pricing` for priced plans.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `two-column` (questions beside a heading and supporting copy; default) or `centered` (questions under a centered heading); unmapped variants use the site's default section |
+| `scope` | select | `page` (entries in the page's group) or `all` (every entry); `page` behaves as `all` when no group is configured; built with `scopeField()` |
+| `count` | integer | How many entries to show (1–24, optional); built with `countField()` |
+
+**Shape.** `Faq`: `{ question, answer }`, the contract between an FAQ source
+and an FAQ section.
+
+**Sources.** `starterFaqCollection(groupCollection)` defines the starter FAQs
+collection in EmDash's seed `collections` shape.
+`createFaqSource({ collection?, groupField?, query? })` is the default source,
+built on `createCollectionSource`: it reads the starter collection (or another
+collection with the same field names, via `collection` and `groupField`) with
+no mapping, resolves `scope`, applies `count`, and returns `{ items, cacheHints }`.
