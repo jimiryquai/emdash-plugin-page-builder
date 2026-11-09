@@ -88,7 +88,7 @@ test("a definition with reordered field keys plans unchanged (canonical comparis
 	deepStrictEqual(result.plan.counts, { create: 0, update: 0, activate: 0, migrate: 0, unchanged: 2 });
 });
 
-test("a version that is not breaking against its predecessor is a located error, not a silent in-place update", async () => {
+test("a version that is not breaking against its predecessor errors before any write", async () => {
 	const site = createFakeSite();
 	await site.seed({
 		blockTypes: [{ ...cardModule.definition, currentVersion: 1, versions: [cardModule.definition.versions[0]] }],
@@ -101,14 +101,12 @@ test("a version that is not breaking against its predecessor is a located error,
 	const error = result.errors[0];
 	ok(error.message.includes("card v2 is not a breaking change"), error.message);
 	ok(error.message.includes("fold"), error.message);
-	strictEqual(error.blockType, "card");
-	strictEqual(error.version, 2);
-	// The plan travels with the error so a partial apply is auditable: the
-	// create for card v2 is listed without a completed result.
-	ok(result.plan);
-	const create = result.plan.actions.find((action) => action.blockType === "card" && action.action === "create");
-	ok(create, "the plan lists card v2's create");
-	strictEqual(create.result, undefined, "the create never completed");
+	// The site was never touched: no in-place rewrite of v1, no new version.
+	const card = site.blockTypes.get("card");
+	strictEqual(card.versions.length, 1);
+	strictEqual(card.currentVersion, 1);
+	deepStrictEqual(card.versions[0].fields, cardModule.definition.versions[0].fields);
+	ok(result.plan.errors.some((message) => message.includes("card v2")));
 });
 
 test("a breaking version is created inactive and only activated with --activate; --migrate runs the migration chain and preserves _key", async () => {
@@ -270,18 +268,51 @@ test("--field adds the block types to a named blocks field's allowedTypes", asyn
 	deepStrictEqual([...site.collections.get("pages").fields.get("layout").validation.allowedTypes].sort(), ["banner", "cta", "hero"]);
 });
 
-test("--collections applies starter collections only on request", async () => {
+test("the package's own block modules plan against an empty site with no --from", async () => {
 	const site = createFakeSite();
-	const args = ["apply", "https://site.example", "--from", fixturePath, "--apply"];
-	let writer = io();
-	strictEqual(await run([...args], { transport: site.transport }, writer), 0);
-	strictEqual(site.collections.size, 0, "no collections without --collections");
+	const writer = io();
+	const code = await run(["apply", "https://site.example"], { transport: site.transport }, writer);
+	strictEqual(code, 0);
+	const result = jsonOutput(writer);
+	const created = [
+		...new Set(result.plan.actions.filter((a) => a.action === "create").map((a) => a.blockType)),
+	];
+	deepStrictEqual(created.sort(), ["cta", "features", "hero", "testimonials"]);
+});
 
+test("--collections derives starters from the block modules and needs --group", async () => {
+	const site = createFakeSite();
+	let writer = io();
+	const code = await run(
+		["apply", "https://site.example", "--apply", "--collections"],
+		{ transport: site.transport },
+		writer,
+	);
+	strictEqual(code, 1);
+	ok(jsonOutput(writer).errors[0].message.includes("--collections needs --group"));
+
+	// With --group: the testimonials starter arrives as a collection plus its
+	// fields (EmDash's create body carries no fields), referencing the group.
 	writer = io();
-	strictEqual(await run([...args, "--collections"], { transport: site.transport }, writer), 0);
+	strictEqual(
+		await run(["apply", "https://site.example", "--apply", "--collections", "--group", "services"], { transport: site.transport }, writer),
+		0,
+	);
 	const result = jsonOutput(writer);
 	deepStrictEqual(result.collectionsCreated, ["testimonials"]);
-	ok(site.collections.has("testimonials"));
+	const collection = site.collections.get("testimonials");
+	ok(collection, "the starter collection was created");
+	deepStrictEqual(
+		[...collection.fields.keys()].sort(),
+		["author", "avatar", "company", "group", "quote", "role"],
+	);
+	strictEqual(collection.fields.get("group").validation.targetCollection, "services");
+	strictEqual(collection.titleField, "author");
+	// The create-collection body never carried fields (EmDash rejects that).
+	const createCollection = site.requests.find(
+		(request) => request.method === "POST" && request.path === "/_emdash/api/schema/collections",
+	);
+	ok(!("fields" in createCollection.body));
 });
 
 test("no token and no injected transport: the CLI fails before any request", async () => {

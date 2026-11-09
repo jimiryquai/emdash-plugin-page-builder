@@ -27,6 +27,9 @@ export function renderTable(input: { site: string; applied: boolean; plan: Plan 
 	for (const warning of input.plan.warnings) {
 		lines.push(`warning: ${warning}`);
 	}
+	for (const error of input.plan.errors ?? []) {
+		lines.push(`error: ${error}`);
+	}
 	return lines.join("\n");
 }
 

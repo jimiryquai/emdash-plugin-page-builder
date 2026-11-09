@@ -163,4 +163,5 @@ export const testimonials = {
   } satisfies ApplySeedBlockTypeInput & { description: string },
   variants,
   migrations: {},
+  starter: starterTestimonialsCollection,
 } satisfies BlockType;

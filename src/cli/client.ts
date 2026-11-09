@@ -256,6 +256,23 @@ export class EmdashClient {
 		return itemOf<RemoteCollection>(data);
 	}
 
+	/** POST /_emdash/api/schema/collections/{slug}/fields — one field at a time. */
+	async createField(collection: string, body: Record<string, unknown>): Promise<unknown> {
+		return this.#request(
+			`create field ${collection}.${String(body.slug ?? "")}`,
+			"POST",
+			`/_emdash/api/schema/collections/${collection}/fields`,
+			{ body, expectStatus: 201 },
+		);
+	}
+
+	/** PUT /_emdash/api/schema/collections/{slug} — e.g. set titleField after fields exist. */
+	async updateCollection(slug: string, body: Record<string, unknown>): Promise<unknown> {
+		return this.#request(`update collection ${slug}`, "PUT", `/_emdash/api/schema/collections/${slug}`, {
+			body,
+		});
+	}
+
 	/** PUT /_emdash/api/schema/collections/{slug}/fields/{fieldSlug} */
 	async updateField(
 		collection: string,

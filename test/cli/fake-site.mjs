@@ -171,6 +171,12 @@ export function createFakeSite() {
 		}
 
 		const collectionMatch = /^schema\/collections\/([\w-]+)$/.exec(path.join("/"));
+		if (request.method === "PUT" && collectionMatch) {
+			const collection = collections.get(collectionMatch[1]);
+			if (!collection) return fail(404, "NOT_FOUND", `Collection not found: ${collectionMatch[1]}`);
+			Object.assign(collection, request.body);
+			return ok({ item: collection });
+		}
 		if (request.method === "GET" && collectionMatch) {
 			const collection = collections.get(collectionMatch[1]);
 			if (!collection) return fail(404, "NOT_FOUND", `Collection not found: ${collectionMatch[1]}`);
@@ -185,10 +191,25 @@ export function createFakeSite() {
 		}
 		if (request.method === "POST" && path.join("/") === "schema/collections") {
 			const slug = request.body.slug;
+			if ("fields" in request.body) {
+				// EmDash's createCollectionBody is strict and carries no fields.
+				return fail(400, "INVALID_INPUT", "create collection body must not carry fields; create them through the fields endpoint");
+			}
 			if (collections.has(slug)) return fail(409, "COLLECTION_EXISTS", `Collection "${slug}" already exists`);
-			collections.set(slug, { slug, label: request.body.label ?? slug, fields: new Map() });
+			collections.set(slug, { slug, label: request.body.label ?? slug, fields: new Map(), titleField: request.body.titleField });
 			content.set(slug, new Map());
 			return ok({ item: { id: `col_${slug}`, slug, label: request.body.label ?? slug, fields: [] } }, 201);
+		}
+
+		const fieldsEndpointMatch = /^schema\/collections\/([\w-]+)\/fields$/.exec(path.join("/"));
+		if (request.method === "POST" && fieldsEndpointMatch) {
+			const collection = collections.get(fieldsEndpointMatch[1]);
+			if (!collection) return fail(404, "NOT_FOUND", `Collection not found: ${fieldsEndpointMatch[1]}`);
+			if (collection.fields.has(request.body.slug)) {
+				return fail(409, "FIELD_EXISTS", `Field "${request.body.slug}" already exists in collection "${collection.slug}"`);
+			}
+			collection.fields.set(request.body.slug, { id: `fld_${request.body.slug}`, ...request.body });
+			return ok({ item: collection.fields.get(request.body.slug) }, 201);
 		}
 
 		const fieldMatch = /^schema\/collections\/([\w-]+)\/fields\/([\w-]+)$/.exec(path.join("/"));

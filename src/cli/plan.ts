@@ -6,7 +6,7 @@
  * would create, update, activate or leave it alone.
  */
 
-import { blockFieldsEqual } from "./contract.js";
+import { blockFieldsEqual, compareBlockFields } from "./contract.js";
 import type {
 	BlockTypeDefinition,
 	Plan,
@@ -41,9 +41,26 @@ export function buildPlan(
 ): Plan {
 	const actions: PlanAction[] = [];
 	const warnings: string[] = [];
+	const errors: string[] = [];
 	const bySlug = new Map(remote.map((type) => [type.slug, type]));
 
 	for (const definition of definitions) {
+		// A declared version N > 1 must be breaking against N-1: EmDash would
+		// otherwise update the earlier version in place, rewriting a contract
+		// stored blocks already follow. Checked before any write, so a bad
+		// definition never reaches the site (the post-PUT check is a safety net).
+		const declared = sortedVersions(definition);
+		for (let index = 1; index < declared.length; index += 1) {
+			const compatibility = compareBlockFields(declared[index - 1].fields, declared[index].fields);
+			if (compatibility.compatible) {
+				errors.push(
+					`${definition.slug} v${declared[index].version} is not a breaking change against ` +
+						`v${declared[index - 1].version} (${compatibility.differences.map((d) => `${d.path}: ${d.change}`).join(", ") || "no differences"}); ` +
+						`fold it into v${declared[index - 1].version}`,
+				);
+			}
+		}
+
 		const existing = bySlug.get(definition.slug);
 		if (!existing) {
 			for (const version of sortedVersions(definition)) {
@@ -116,7 +133,7 @@ export function buildPlan(
 		}
 	}
 
-	return { actions, counts: countActions(actions), warnings };
+	return { actions, counts: countActions(actions), warnings, errors };
 }
 
 /** Append migration actions (one per pending entry) after a content scan. */
@@ -128,7 +145,7 @@ export function addMigrations(
 		...plan.actions,
 		...pending.map((item) => ({ ...item, version: null, action: "migrate" as const })),
 	];
-	return { actions, counts: countActions(actions), warnings: plan.warnings };
+	return { actions, counts: countActions(actions), warnings: plan.warnings, errors: plan.errors };
 }
 
 function sortedVersions(definition: BlockTypeDefinition) {

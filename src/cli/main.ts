@@ -36,7 +36,8 @@ options:
   --migrate               migrate stored blocks through the package's migration chain
   --table                 print a human view instead of JSON
   --field <col>/<field>   add the block types to a blocks field's allowedTypes
-  --collections           apply starter collections from the definitions module
+  --collections           apply the block modules' starter collections (needs --group)
+  --group <collection>    the site's grouping collection starters reference
   --from <module>         module whose block-type exports to apply
                           (default: emdash-plugin-page-builder/blocks)
   --token <token>         API token; prefer EMDASH_TOKEN (a --token shows in ps)`;
@@ -126,6 +127,7 @@ export async function run(
 					field: { type: "string" },
 					collections: { type: "boolean" },
 					from: { type: "string" },
+					group: { type: "string" },
 					token: { type: "string" },
 				},
 			});
@@ -154,6 +156,20 @@ export async function run(
 		const client = new EmdashClient(options.transport ?? fetchTransport(site, token));
 
 		currentPlan = buildPlan(definitions, (await client.listBlockTypes()).items);
+		if (currentPlan.errors.length > 0) {
+			// A bad definition writes nothing, not even with --apply.
+			io.out(
+				JSON.stringify(
+					errorPayload(
+						new PlanError({ operation: "check definitions", message: currentPlan.errors.join("; ") }),
+						currentPlan,
+					),
+					null,
+					2,
+				),
+			);
+			return 1;
+		}
 		await executePlan(client, currentPlan, blockTypes, {
 			apply: flags.apply ?? false,
 			activate: flags.activate ?? false,
@@ -184,9 +200,23 @@ export async function run(
 		let collectionsCreated: string[] = [];
 		let fieldUpdates: string[] = [];
 		if (flags.collections) {
-			const planned = await planStarterCollections(client, from);
-			if (flags.apply) collectionsCreated = await applyStarterCollections(client, from, planned);
-			else collectionsCreated = planned;
+			if (!flags.group) {
+				throw new PlanError({
+					operation: "apply starter collections",
+					message: "--collections needs --group <collection>: the site's grouping collection the starters reference",
+				});
+			}
+			// Starters derive from the block modules themselves (`starter`), never a
+			// hand-kept list.
+			const starters = blockTypes
+				.filter((block) => block.starter !== undefined)
+				.map((block) => block.starter!(flags.group!));
+			const existing = new Set((await client.listCollections()).items.map((c) => c.slug));
+			const planned = starters.filter((starter) => !existing.has(starter.slug));
+			if (flags.apply) {
+				for (const starter of planned) await applyStarterCollection(client, starter);
+			}
+			collectionsCreated = planned.map((starter) => starter.slug);
 		}
 		if (flags.field) {
 			// The plan reports what --field would add; the write happens only with --apply.
@@ -208,32 +238,23 @@ export async function run(
 	}
 }
 
-/** The starter collections a module exports that the site lacks. */
-async function planStarterCollections(client: EmdashClient, from: string): Promise<string[]> {
-	const module: Record<string, unknown> = await import(from);
-	const starters = module.starterCollections;
-	if (!Array.isArray(starters)) return [];
-	const existing = new Set((await client.listCollections()).items.map((c) => c.slug));
-	return starters
-		.map((starter) => (starter as Record<string, unknown>).slug)
-		.filter((slug): slug is string => typeof slug === "string" && !existing.has(slug));
-}
-
-/** Create the planned starter collections. */
-async function applyStarterCollections(
+/**
+ * Create one starter collection: the collection itself (EmDash's create body
+ * carries no fields), then each field through the collection-fields endpoint,
+ * then the title field once its column exists.
+ */
+async function applyStarterCollection(
 	client: EmdashClient,
-	from: string,
-	planned: readonly string[],
-): Promise<string[]> {
-	if (planned.length === 0) return [];
-	const module: Record<string, unknown> = await import(from);
-	const starters = module.starterCollections as Array<Record<string, unknown>>;
-	for (const body of starters) {
-		if (typeof body.slug === "string" && planned.includes(body.slug)) {
-			await client.createCollection(body);
-		}
+	starter: import("emdash").SeedCollection,
+): Promise<void> {
+	const { fields, titleField, ...collectionBody } = starter;
+	await client.createCollection(collectionBody);
+	for (const field of fields) {
+		await client.createField(starter.slug, field as unknown as Record<string, unknown>);
 	}
-	return [...planned];
+	if (titleField !== undefined) {
+		await client.updateCollection(starter.slug, { titleField });
+	}
 }
 
 /** Compute the slugs --field would add to a blocks field's allowedTypes; write only when applying. */

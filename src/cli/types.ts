@@ -89,6 +89,8 @@ export interface Plan {
 	counts: PlanCounts;
 	/** Problems the CLI will not act on: the site holds a contract it cannot express. */
 	warnings: string[];
+	/** Definition errors: with any, the CLI writes nothing, not even with --apply. */
+	errors: string[];
 }
 
 export type { BlockFieldDefinition, StoredBlock };
