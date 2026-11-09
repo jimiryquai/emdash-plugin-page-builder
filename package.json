@@ -14,12 +14,16 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.7",
+    "@types/node": "24.19.2",
     "astro": "6.4.8",
     "emdash": "1.4.0",
     "mcporter": "0.17.0",
     "typescript": "5.9.3"
   },
   "type": "module",
+  "bin": {
+    "emdash-page-builder": "dist/cli/main.js"
+  },
   "exports": {
     "./blocks": {
       "types": "./dist/blocks/index.d.ts",
