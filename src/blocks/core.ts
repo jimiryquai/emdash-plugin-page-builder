@@ -1,4 +1,4 @@
-import type { ApplySeedBlockTypeInput, BlockFieldDefinition, CacheHint } from 'emdash';
+import type { ApplySeedBlockTypeInput, BlockFieldDefinition, CacheHint, SeedCollection } from 'emdash';
 import { getEmDashCollection, getEmDashEntry } from 'emdash';
 
 export const VARIANT_FIELD_SLUG = 'variant';
@@ -80,6 +80,8 @@ export interface BlockType {
   variants: readonly string[];
   /** Keyed by the version being upgraded; each step returns version N + 1. */
   migrations: Readonly<Record<number, (block: Readonly<StoredBlock>) => StoredBlock>>;
+  /** Optional starter collection, parameterised by the site's grouping collection. */
+  starter?: (groupCollection: string) => SeedCollection;
 }
 
 export type Section = (props: { value: StoredBlock; index: number; blockKey: string; items?: readonly unknown[] }) => unknown;

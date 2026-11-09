@@ -123,4 +123,5 @@ export const pricing = {
   } satisfies ApplySeedBlockTypeInput & { description: string },
   variants,
   migrations: {},
+  starter: starterPricingCollection,
 } satisfies BlockType;
