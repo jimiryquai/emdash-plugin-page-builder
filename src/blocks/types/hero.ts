@@ -1,19 +1,6 @@
-import type { BlockType } from '../index.js';
-import { variantField } from '../variant.js';
+import { linksField, variantField, type BlockType } from '../core.js';
 
 const variants = ['centered', 'photo', 'demo'] as const;
-
-const links = {
-  slug: 'links',
-  label: 'Links',
-  type: 'repeater' as const,
-  validation: {
-    subFields: [
-      { slug: 'label', label: 'Label', type: 'string' as const, required: true },
-      { slug: 'url', label: 'URL', type: 'url' as const, required: true },
-    ],
-  },
-};
 
 export const hero = {
   definition: {
@@ -34,7 +21,7 @@ export const hero = {
           { slug: 'heading', label: 'Heading', type: 'string', required: true },
           { slug: 'body', label: 'Body', type: 'text' },
           { slug: 'image', label: 'Image', type: 'image', options: { darkVariant: true } },
-          links,
+          linksField(),
         ],
       },
     ],

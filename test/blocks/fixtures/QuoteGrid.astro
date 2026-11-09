@@ -1,0 +1,4 @@
+---
+const { items = [] } = Astro.props;
+---
+<ul data-section="grid">{items.map((item) => <li data-author={item.author}>{item.quote}</li>)}</ul>

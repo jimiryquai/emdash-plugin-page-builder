@@ -2,19 +2,7 @@ import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { experimental_AstroContainer } from 'astro/container';
 import { createAstroServer } from '../astro-harness.js';
-import { cta, variantField } from 'emdash-plugin-page-builder/blocks';
-
-const links = {
-  slug: 'links',
-  label: 'Links',
-  type: 'repeater',
-  validation: {
-    subFields: [
-      { slug: 'label', label: 'Label', type: 'string', required: true },
-      { slug: 'url', label: 'URL', type: 'url', required: true },
-    ],
-  },
-};
+import { cta, linksField, variantField } from 'emdash-plugin-page-builder/blocks';
 
 test('cta is a version 1 seed definition', () => {
   assert.equal(cta.definition.slug, 'cta');
@@ -28,7 +16,7 @@ test('cta is a version 1 seed definition', () => {
     { ...variantField(['start', 'centered']), defaultValue: 'start' },
     { slug: 'heading', label: 'Heading', type: 'string', required: true },
     { slug: 'body', label: 'Body', type: 'text' },
-    links,
+    linksField(),
   ]);
 });
 
