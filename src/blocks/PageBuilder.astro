@@ -3,7 +3,7 @@ import { Blocks } from 'emdash/ui';
 import type { BlockComponent } from 'emdash/ui';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { createComponent } from 'astro/runtime/server/index.js';
-import { migrateBlocks, VARIANT_FIELD_SLUG } from 'emdash-plugin-page-builder/blocks';
+import { migrateBlocks, SCOPE_FIELD_SLUG, VARIANT_FIELD_SLUG } from 'emdash-plugin-page-builder/blocks';
 import type { SiteBlockType, Source, StoredBlock } from 'emdash-plugin-page-builder/blocks';
 
 export interface Props {
@@ -18,8 +18,11 @@ const { value, blocks, sources = {}, group, fallback } = Astro.props;
 const upgraded = migrateBlocks(value ?? [], blocks);
 const items = new Map(await Promise.all(upgraded.map(async (block) => {
   const source = sources[block._type];
-  const scope = block.scope === 'page' && group !== undefined ? 'page' : 'all';
-  return [block, source ? await source({ scope, group }) : []] as const;
+  const storedScope = block[SCOPE_FIELD_SLUG];
+  const scope = storedScope === 'page' && group !== undefined ? 'page' : 'all';
+  const storedCount = block.count;
+  const count = typeof storedCount === 'number' && storedCount > 0 ? storedCount : undefined;
+  return [block, source ? await source({ scope, group, count }) : []] as const;
 })));
 const components = Object.fromEntries(blocks.map(({ definition, sections }) => [
   definition.slug,

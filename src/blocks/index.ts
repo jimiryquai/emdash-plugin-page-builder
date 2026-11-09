@@ -1,16 +1,12 @@
 import type { ApplySeedBlockTypeInput, BlockFieldDefinition } from 'emdash';
 
-export const VARIANT_FIELD_SLUG = 'variant';
-
-/** Build the shared select field from a block's fixed variant vocabulary. */
-export function variantField(variants: readonly string[]): BlockFieldDefinition {
-  return {
-    slug: VARIANT_FIELD_SLUG,
-    label: 'Variant',
-    type: 'select',
-    validation: { options: [...variants] },
-  };
-}
+export {
+  variantField,
+  VARIANT_FIELD_SLUG,
+  scopeField,
+  SCOPE_FIELD_SLUG,
+  SCOPES,
+} from './fields.js';
 
 export interface StoredBlock {
   _type: string;
@@ -39,10 +35,12 @@ export interface SiteBlockType extends BlockType {
   sections: Sections;
 }
 
-export type Source = (context: {
+/** A site's typed mapping from its collection's entries to a shape. */
+export type Source<T = unknown> = (context: {
   scope: 'page' | 'all';
   group?: string;
-}) => readonly unknown[] | Promise<readonly unknown[]>;
+  count?: number;
+}) => readonly T[] | Promise<readonly T[]>;
 
 /** The same pure chain serves stored-content migration and render-time upgrades. */
 export function migrateBlocks(
@@ -70,3 +68,5 @@ export function migrateBlocks(
     return block;
   });
 }
+
+export * from './types/testimonials.js';
