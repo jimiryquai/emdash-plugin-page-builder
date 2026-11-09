@@ -5,7 +5,40 @@
   "description": "A page builder for EmDash: versioned block types and the Astro components that render them, on EmDash's own fields.",
   "license": "MIT",
   "author": "James Ryan (https://jamesryan.dev)",
-  "repository": { "type": "git", "url": "git+https://github.com/jimiryquai/emdash-plugin-page-builder.git" },
-  "engines": { "node": ">=24" },
-  "devDependencies": { "mcporter": "0.17.0" }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jimiryquai/emdash-plugin-page-builder.git"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.7",
+    "astro": "6.4.8",
+    "emdash": "1.4.0",
+    "mcporter": "0.17.0",
+    "typescript": "5.9.3"
+  },
+  "type": "module",
+  "exports": {
+    "./blocks": {
+      "types": "./dist/blocks/index.d.ts",
+      "default": "./dist/blocks/index.js"
+    }
+  },
+  "scripts": {
+    "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "test": "node --test",
+    "check": "npm run typecheck && npm test",
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
+    "pretest": "npm run build"
+  },
+  "peerDependencies": {
+    "astro": "^6.4.8",
+    "emdash": "^1.4.0"
+  },
+  "files": [
+    "dist"
+  ]
 }
