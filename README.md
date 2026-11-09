@@ -49,7 +49,7 @@ A null or omitted `value` renders nothing.
 Each block module exports an object satisfying `BlockType`. Keep all its fields,
 numbered versions, migrations, fixed variants and description in that module;
 the CLI and block layer import it rather than maintaining another schema.
-The working two-version example is
+Block modules import the shared pieces (`BlockType`, `variantField`, `migrateBlocks`) from `src/blocks/core.ts`, never from `src/blocks/index.ts`, which re-exports the block modules and would make the import circular. The working two-version example is
 [test/blocks/fixtures/example.ts](test/blocks/fixtures/example.ts).
 
 | Member | Contract |
