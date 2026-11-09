@@ -24,12 +24,13 @@
     "./blocks": {
       "types": "./dist/blocks/index.d.ts",
       "default": "./dist/blocks/index.js"
-    }
+    },
+    "./blocks/PageBuilder.astro": "./src/blocks/PageBuilder.astro"
   },
   "scripts": {
     "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "node --test",
-    "check": "npm run typecheck && npm test",
+    "check": "npm test && npm run typecheck",
     "build": "tsc -p tsconfig.build.json",
     "prepack": "npm run build",
     "pretest": "npm run build"
@@ -39,6 +40,7 @@
     "emdash": "^1.4.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/blocks/**/*.astro"
   ]
 }
