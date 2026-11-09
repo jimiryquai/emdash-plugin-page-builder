@@ -8,9 +8,13 @@ Define the shared-content `team` block on `createCollectionSource`: a `TeamMembe
 
 **Blocked by:** none
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The block renders team members from a source through a test sections map for every variant, honouring scope.
-- [ ] The default source works with the starter collection with no mapping.
+- [x] The block renders team members from a source through a test sections map for every variant, honouring scope.
+- [x] The default source works with the starter collection with no mapping.
 
 ## Comments
+
+**2026-11-09 Orchestrator:** Risk: medium (package code: new block type). Helper: pi (default model).
+
+**2026-11-09 Orchestrator:** Done in 36914bd, merged to master (389e3c3) with no fix round. Shared-content `team` block on `createCollectionSource`: the `TeamMember` shape (name, role, image), variants `four-column` and `three-column`, `scope` and `count`, starter collection and `createTeamSource`, `starter` set.
