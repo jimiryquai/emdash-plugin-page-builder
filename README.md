@@ -254,3 +254,19 @@ collection in EmDash's seed `collections` shape.
 built on `createCollectionSource`: it reads the starter collection (or another
 collection with the same field names, via `collection` and `groupField`) with
 no mapping, resolves `scope`, applies `count`, and returns `{ items, cacheHints }`.
+
+### stats
+
+A row of figures that support a claim. A quote belongs on the testimonials block.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `graph` (default) |
+| `eyebrow` | string | Optional short line above the heading. Shown with `graph`. |
+| `heading` | string | Required. |
+| `body` | text | Optional supporting copy. |
+| `items` | repeater | At least one. `value` (string, required) is the figure, such as `99%`. `label` (string) is its caption. |
+
+| Variant | When to use it |
+| --- | --- |
+| `graph` | The figures sit over a graph and an optional eyebrow can sit above the heading. |

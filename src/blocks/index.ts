@@ -7,3 +7,4 @@ export * from './types/pricing.js';
 export * from './types/comparison.js';
 export * from './types/team.js';
 export * from './types/faq.js';
+export * from './types/stats.js';
