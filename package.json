@@ -30,7 +30,7 @@
   "scripts": {
     "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
     "test": "node --test",
-    "check": "npm run typecheck && npm test",
+    "check": "npm test && npm run typecheck",
     "build": "tsc -p tsconfig.build.json",
     "prepack": "npm run build",
     "pretest": "npm run build"
