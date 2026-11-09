@@ -8,9 +8,13 @@ Define the inline `stats` block (heading plus a repeater of value and label, as 
 
 **Blocked by:** none
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The block renders through a test sections map for every variant.
-- [ ] Repeater items reach the section as typed props.
+- [x] The block renders through a test sections map for every variant.
+- [x] Repeater items reach the section as typed props.
 
 ## Comments
+
+**2026-11-09 Orchestrator:** Risk: medium (package code: new block type). Helper: grok (default model).
+
+**2026-11-09 Orchestrator:** Done in 31411e4, merged to master (af03ad4) with no fix round. Inline `stats` block: variant `graph`, eyebrow, heading, body, and an items repeater of value and label.
