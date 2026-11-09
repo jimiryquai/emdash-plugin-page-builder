@@ -4,8 +4,14 @@
  * migrate last).
  */
 
-import type { EmdashClient } from "./client.js";
-import type { BlockTypeDefinition, Plan, RemoteBlockType, StoredBlock } from "./types.js";
+import { migrateBlocks, type BlockType } from "../blocks/core.js";
+import type { EmdashClient, ContentEntry } from "./client.js";
+import type {
+	BlockTypeDefinition,
+	Plan,
+	RemoteBlockType,
+	StoredBlock,
+} from "./types.js";
 
 export interface ApplyOptions {
 	/** Perform the plan; without it nothing is written. */
@@ -27,6 +33,12 @@ function activeFingerprint(type: RemoteBlockType): string {
  *
  * EmDash creates one breaking version per PUT, so versions are created in
  * ascending order, each PUT carrying the *active* version's fingerprint.
+ * Breaking-ness is EmDash's decision (`compareBlockFields`): a compatible
+ * change updates the active version in place even when `breaking: true` is
+ * sent, so each PUT's response is checked — if version N didn't appear, the
+ * definition declared a version that isn't breaking against its predecessor
+ * and must be folded into it.
+ *
  * A brand-new type's own `currentVersion` is activated as part of its
  * create (no stored blocks can exist for it); later activations need
  * `--activate`.
@@ -34,7 +46,7 @@ function activeFingerprint(type: RemoteBlockType): string {
 export async function executePlan(
 	client: EmdashClient,
 	plan: Plan,
-	definitions: readonly BlockTypeDefinition[],
+	blockTypes: readonly BlockType[],
 	options: ApplyOptions,
 ): Promise<Plan> {
 	if (!options.apply) {
@@ -42,38 +54,45 @@ export async function executePlan(
 		return plan;
 	}
 
-	const bySlug = new Map(definitions.map((definition) => [definition.slug, definition]));
+	const definitions = new Map(blockTypes.map((block) => [block.definition.slug, block.definition]));
 	const remote = await client.listBlockTypes();
 	let remoteBySlug = new Map(remote.items.map((type) => [type.slug, type]));
 
 	for (const action of plan.actions) {
-		const definition = bySlug.get(action.blockType);
+		const definition = definitions.get(action.blockType);
 		if (!definition) continue;
 
 		if (action.action === "create" && action.version !== null) {
 			const current = remoteBySlug.get(action.blockType);
 			if (!current) {
-				const first = versionFields(definition, 1);
 				const created = await client.createBlockType({
 					slug: definition.slug,
 					label: definition.label,
 					description: definition.description,
 					icon: definition.icon,
 					category: definition.category,
-					fields: first,
+					fields: versionFields(definition, 1),
 				});
 				remoteBySlug = republish(remoteBySlug, created);
 				action.result = "done";
 				continue;
 			}
 			// A later version: one breaking PUT per version, in order.
-			const expected = activeFingerprint(current);
-			const fields = versionFields(definition, action.version);
 			const updated = await client.updateBlockType(
 				definition.slug,
-				{ expectedFingerprint: expected, fields, breaking: true },
+				{
+					expectedFingerprint: activeFingerprint(current),
+					fields: versionFields(definition, action.version),
+					breaking: true,
+				},
 				action.version,
 			);
+			if (!updated.versions.some((version) => version.version === action.version)) {
+				throw new Error(
+					`${definition.slug} v${action.version} is not a breaking change against v${action.version - 1} ` +
+						`(EmDash updated v${updated.currentVersion} in place); fold it into that version`,
+				);
+			}
 			remoteBySlug = republish(remoteBySlug, updated);
 			action.result = "done";
 			continue;
@@ -145,26 +164,54 @@ export function isStale(
 	return target !== undefined && typeof block._version === "number" && block._version < target;
 }
 
-/**
- * Find stored blocks of the given types that sit below their definition's
- * current version. Returns one pending migration per (collection, entry).
- */
 export interface PendingMigration {
 	collection: string;
 	entryId: string;
 	field: string;
 	blocks: StoredBlock[];
+	rev?: string;
+	/** The modules whose stored blocks this entry holds below their target. */
 	targetVersions: Map<string, number>;
 }
 
+export interface MigrationScan {
+	pending: PendingMigration[];
+	/** Types whose migration waits for --activate (the target isn't active yet). */
+	warnings: string[];
+}
+
+/**
+ * Find stored blocks of the given types that sit below the version the site
+ * can migrate to. EmDash only accepts a `_version` change to the type's
+ * **active** version, so the target is the site's active version where it
+ * matches the definition's `currentVersion`; anything else is reported as a
+ * warning, not a pending migration.
+ */
 export async function findPendingMigrations(
 	client: EmdashClient,
-	definitions: readonly BlockTypeDefinition[],
-): Promise<PendingMigration[]> {
-	const targets = new Map(definitions.map((definition) => [definition.slug, definition.currentVersion]));
-	const collections = await client.listCollections();
-	const pending: PendingMigration[] = [];
+	blockTypes: readonly BlockType[],
+	remote: readonly RemoteBlockType[],
+): Promise<MigrationScan> {
+	const warnings: string[] = [];
+	const targets = new Map<string, number>();
+	for (const block of blockTypes) {
+		const site = remote.find((type) => type.slug === block.definition.slug);
+		if (!site) continue;
+		if (site.currentVersion !== block.definition.currentVersion) {
+			warnings.push(
+				`${block.definition.slug}: stored blocks wait on --activate (site active v${site.currentVersion}, definition v${block.definition.currentVersion})`,
+			);
+			continue;
+		}
+		if (site.versions.some((version) => version.version < site.currentVersion)) {
+			targets.set(block.definition.slug, site.currentVersion);
+		}
+	}
 
+	const pending: PendingMigration[] = [];
+	if (targets.size === 0) return { pending, warnings };
+
+	const collections = await client.listCollections();
 	for (const collection of collections.items) {
 		const blockFields = (collection.fields ?? []).filter((field) => field.type === "blocks");
 		if (blockFields.length === 0) continue;
@@ -183,6 +230,7 @@ export async function findPendingMigrations(
 						entryId: entry.id,
 						field: field.slug,
 						blocks: value as StoredBlock[],
+						rev: entry._rev,
 						targetVersions: targets,
 					});
 				}
@@ -192,39 +240,38 @@ export async function findPendingMigrations(
 		}
 	}
 
-	return pending;
+	return { pending, warnings };
 }
 
 /**
- * Move each pending entry's stale blocks to the definition's current version
- * through EmDash's `migrateBlocks` write. `_key` and the other blocks in the
- * field are left exactly as stored.
+ * Move each pending entry's stale blocks up the package's own migration
+ * chain (`migrateBlocks` from the blocks core — the same functions that
+ * upgrade at render time), then write the result back with EmDash's
+ * `migrateBlocks: true`, carrying the entry's `_rev` so a lost update
+ * surfaces as a conflict. `_key` is preserved by the chain; sibling blocks
+ * of other types pass through untouched.
  */
 export async function migrateStoredBlocks(
 	client: EmdashClient,
 	pending: readonly PendingMigration[],
+	blockTypes: readonly BlockType[],
 ): Promise<void> {
+	const relevant = blockTypes.filter((block) =>
+		pending.some((item) => item.targetVersions.has(block.definition.slug)),
+	);
 	for (const item of pending) {
-		const migrated = item.blocks.map((block) =>
-			isStale(block, item.targetVersions)
-				? { ...block, _version: item.targetVersions.get(block._type) as number }
-				: block,
-		);
+		let migrated: StoredBlock[];
+		try {
+			migrated = migrateBlocks(item.blocks, relevant);
+		} catch (error) {
+			throw new Error(
+				`migrating ${item.collection}/${item.entryId}.${item.field}: ${error instanceof Error ? error.message : String(error)}`,
+			);
+		}
 		await client.migrateEntryBlocks(item.collection, item.entryId, {
 			[item.field]: migrated,
-		});
+		}, item.rev);
 	}
 }
 
-/** Content entries the migration scan touched, for the plan's report. */
-export function describeMigrations(pending: readonly PendingMigration[]): string[] {
-	return pending.map(
-		(item) =>
-			`${item.collection}/${item.entryId}.${item.field}: ` +
-			item.blocks
-				.filter((block) => isStale(block, item.targetVersions))
-				.map((block) => `${block._type} v${block._version}→v${item.targetVersions.get(block._type)}`)
-				.join(", "),
-	);
-}
-
+export type { ContentEntry };

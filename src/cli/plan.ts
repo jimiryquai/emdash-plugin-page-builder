@@ -6,6 +6,7 @@
  * would create, update, activate or leave it alone.
  */
 
+import { blockFieldsEqual } from "./contract.js";
 import type {
 	BlockTypeDefinition,
 	Plan,
@@ -13,13 +14,6 @@ import type {
 	PlanCounts,
 	RemoteBlockType,
 } from "./types.js";
-
-function fieldsEqual(
-	left: readonly unknown[],
-	right: readonly unknown[],
-): boolean {
-	return JSON.stringify(left) === JSON.stringify(right);
-}
 
 const EMPTY_COUNTS: PlanCounts = { create: 0, update: 0, activate: 0, migrate: 0, unchanged: 0 };
 
@@ -81,7 +75,7 @@ export function buildPlan(
 				});
 				continue;
 			}
-			if (fieldsEqual(stored.fields, version.fields)) {
+			if (blockFieldsEqual(stored.fields, version.fields)) {
 				actions.push({ blockType: definition.slug, version: version.version, action: "unchanged" });
 				continue;
 			}

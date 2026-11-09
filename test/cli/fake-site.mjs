@@ -2,13 +2,16 @@
  * A fake EmDash site: an in-memory implementation of the schema and content
  * endpoints the apply CLI uses, behind the injectable transport. No request
  * can leave this module, so tests never touch a real site.
+ *
+ * Versioning follows EmDash's real rules (ported into `src/cli/contract.ts`
+ * from `node_modules/emdash/src/schema/block-type-registry.ts` ~366-470 and
+ * `schema/block-type-contract.ts`): a PUT whose field change is compatible
+ * updates the active version in place even with `breaking: true`; only an
+ * incompatible change with `breaking: true` creates a new inactive version;
+ * fingerprints are canonical.
  */
 
-import { createHash } from "node:crypto";
-
-function fingerprint(fields) {
-	return `fp:${createHash("sha256").update(JSON.stringify(fields)).digest("hex").slice(0, 16)}`;
-}
+import { compareBlockFields, fingerprintBlockFields } from "../../dist/cli/contract.js";
 
 function now() {
 	return new Date().toISOString();
@@ -22,6 +25,7 @@ export function createFakeSite() {
 	/** @type {Map<string, any>} collection slug -> entries by id */
 	const content = new Map();
 	const requests = [];
+	let revCounter = 0;
 
 	const json = (status, body) => ({ status, json: body });
 	const ok = (data, status = 200) => json(status, { success: true, data });
@@ -29,10 +33,6 @@ export function createFakeSite() {
 
 	function activeVersion(type) {
 		return type.versions.find((v) => v.version === type.currentVersion);
-	}
-
-	function fieldsEqual(a, b) {
-		return JSON.stringify(a) === JSON.stringify(b);
 	}
 
 	function blockTypeResponse(type) {
@@ -55,7 +55,7 @@ export function createFakeSite() {
 	 * Seed the site as an earlier `apply` left it: block types straight from
 	 * definitions, plus collections with fields and content entries.
 	 */
-	function seed({ blockTypes: types = [], collections: cols = [] } = {}) {
+	async function seed({ blockTypes: types = [], collections: cols = [] } = {}) {
 		for (const def of types) {
 			blockTypes.set(def.slug, {
 				id: `bt_${def.slug}`,
@@ -65,14 +65,24 @@ export function createFakeSite() {
 				currentVersion: def.currentVersion,
 				createdAt: now(),
 				updatedAt: now(),
-				versions: def.versions.map((v) => ({ ...v, fingerprint: fingerprint(v.fields) })),
+				versions: await Promise.all(
+					def.versions.map(async (v) => ({ ...v, fingerprint: await fingerprintBlockFields(v.fields) })),
+				),
 			});
 		}
 		for (const col of cols) {
 			const fields = new Map();
 			for (const field of col.fields ?? []) fields.set(field.slug, field);
 			collections.set(col.slug, { slug: col.slug, label: col.label ?? col.slug, fields });
-			content.set(col.slug, new Map((col.entries ?? []).map((entry) => [entry.id, entry])));
+			content.set(
+				col.slug,
+				new Map(
+					(col.entries ?? []).map((entry) => [
+						entry.id,
+						{ _rev: `rev-${++revCounter}`, ...entry },
+					]),
+				),
+			);
 		}
 	}
 
@@ -99,7 +109,7 @@ export function createFakeSite() {
 				currentVersion: 1,
 				createdAt: now(),
 				updatedAt: now(),
-				versions: [{ version: 1, fields: body.fields, fingerprint: fingerprint(body.fields) }],
+				versions: [{ version: 1, fields: body.fields, fingerprint: await fingerprintBlockFields(body.fields) }],
 			});
 			return ok({ item: blockTypeResponse(blockTypes.get(body.slug)) }, 201);
 		}
@@ -113,23 +123,23 @@ export function createFakeSite() {
 				return fail(409, "CONFLICT", `Block type "${type.slug}" changed since it was read`);
 			}
 			if (request.body.fields !== undefined) {
-				const storedSame = type.versions.find(
-					(v) => v.fingerprint === fingerprint(request.body.fields),
-				);
-				if (!storedSame && !request.body.breaking) {
+				const compatibility = compareBlockFields(active.fields, request.body.fields);
+				const sameFingerprint = active.fingerprint === (await fingerprintBlockFields(request.body.fields));
+				if (!compatibility.compatible && !request.body.breaking) {
 					return fail(400, "BLOCK_TYPE_BREAKING_CHANGE", `Block type "${type.slug}" update requires a new version`);
 				}
-				const existing = type.versions.find((v) => fieldsEqual(v.fields, request.body.fields));
-				if (existing) {
-					existing.fields = request.body.fields;
-					existing.fingerprint = fingerprint(request.body.fields);
+				if (compatibility.compatible || sameFingerprint) {
+					// A compatible change updates the active version in place —
+					// even when breaking was requested (registry.ts ~447-462).
+					active.fields = request.body.fields;
+					active.fingerprint = await fingerprintBlockFields(request.body.fields);
 				} else {
 					const next = Math.max(...type.versions.map((v) => v.version)) + 1;
 					// A breaking update adds a new version but never activates it.
 					type.versions.push({
 						version: next,
 						fields: request.body.fields,
-						fingerprint: fingerprint(request.body.fields),
+						fingerprint: await fingerprintBlockFields(request.body.fields),
 					});
 				}
 			}
@@ -177,6 +187,7 @@ export function createFakeSite() {
 			const slug = request.body.slug;
 			if (collections.has(slug)) return fail(409, "COLLECTION_EXISTS", `Collection "${slug}" already exists`);
 			collections.set(slug, { slug, label: request.body.label ?? slug, fields: new Map() });
+			content.set(slug, new Map());
 			return ok({ item: { id: `col_${slug}`, slug, label: request.body.label ?? slug, fields: [] } }, 201);
 		}
 
@@ -202,6 +213,9 @@ export function createFakeSite() {
 			const entries = content.get(entryMatch[1]);
 			const entry = entries?.get(entryMatch[2]);
 			if (!entry) return fail(404, "NOT_FOUND", `Content item not found: ${entryMatch[2]}`);
+			if (request.body._rev !== undefined && request.body._rev !== entry._rev) {
+				return fail(409, "CONFLICT", `Content item ${entryMatch[2]} changed since it was read`);
+			}
 			const data = request.body.data ?? {};
 			for (const [fieldSlug, value] of Object.entries(data)) {
 				if (Array.isArray(value) && request.body.migrateBlocks) {
@@ -215,6 +229,7 @@ export function createFakeSite() {
 				}
 				entry.data[fieldSlug] = value;
 			}
+			entry._rev = `rev-${++revCounter}`;
 			return ok({ item: entry });
 		}
 

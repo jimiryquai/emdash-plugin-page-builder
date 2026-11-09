@@ -279,14 +279,16 @@ export class EmdashClient {
 	 * PUT /_emdash/api/content/{collection}/{id} with `migrateBlocks: true` —
 	 * EmDash's one supported way to move a stored block to the active version;
 	 * it preserves `_key` and validates the block against the target schema.
+	 * `rev` is the entry's `_rev`, sent so a lost update returns CONFLICT.
 	 */
 	async migrateEntryBlocks(
 		collection: string,
 		id: string,
 		data: Record<string, unknown>,
+		rev?: string,
 	): Promise<void> {
 		await this.#request(`migrate blocks ${collection}/${id}`, "PUT", `/_emdash/api/content/${collection}/${id}`, {
-			body: { data, migrateBlocks: true },
+			body: { data, migrateBlocks: true, ...(rev !== undefined ? { _rev: rev } : {}) },
 		});
 	}
 }

@@ -1,11 +1,20 @@
 import { deepStrictEqual, ok, strictEqual } from "node:assert";
 import { test } from "node:test";
 
+// Nothing in this file may reach the network: any code path that bypasses the
+// injected transport fails here rather than calling a real site.
+globalThis.fetch = () => {
+	throw new Error("tests must not touch the network");
+};
+
 import { run } from "../../dist/cli/main.js";
 import { createFakeSite } from "./fake-site.mjs";
-import heroCta, { hero as heroDefinition, cta as ctaDefinition } from "./fixtures/definitions.mjs";
+import { hero as heroModule, cta as ctaModule } from "./fixtures/definitions.mjs";
+import { card as cardModule } from "./fixtures/compatible-v2.mjs";
 
 const fixturePath = new URL("./fixtures/definitions.mjs", import.meta.url).pathname;
+const compatiblePath = new URL("./fixtures/compatible-v2.mjs", import.meta.url).pathname;
+const reorderedPath = new URL("./fixtures/reordered.mjs", import.meta.url).pathname;
 
 function io() {
 	const lines = [];
@@ -70,10 +79,40 @@ test("--apply creates the types, and a second --apply reports no changes", async
 	ok(second.plan.actions.every((action) => action.action === "unchanged"));
 });
 
-test("a breaking version is created inactive and only activated with --activate; --migrate preserves _key", async () => {
+test("a definition with reordered field keys plans unchanged (canonical comparison)", async () => {
 	const site = createFakeSite();
-	site.seed({
-		blockTypes: [{ ...heroDefinition, currentVersion: 1, versions: [heroDefinition.versions[0]] }],
+	await site.seed({ blockTypes: [heroModule.definition, ctaModule.definition] });
+	const writer = io();
+	strictEqual(await run(["apply", "https://site.example", "--from", reorderedPath, "--apply"], { transport: site.transport }, writer), 0);
+	const result = jsonOutput(writer);
+	deepStrictEqual(result.plan.counts, { create: 0, update: 0, activate: 0, migrate: 0, unchanged: 2 });
+});
+
+test("a version that is not breaking against its predecessor is a located error, not a silent in-place update", async () => {
+	const site = createFakeSite();
+	await site.seed({
+		blockTypes: [{ ...cardModule.definition, currentVersion: 1, versions: [cardModule.definition.versions[0]] }],
+	});
+	const writer = io();
+	const code = await run(["apply", "https://site.example", "--from", compatiblePath, "--apply"], { transport: site.transport }, writer);
+
+	strictEqual(code, 1);
+	const result = jsonOutput(writer);
+	const error = result.errors[0];
+	ok(error.message.includes("card v2 is not a breaking change"), error.message);
+	ok(error.message.includes("fold"), error.message);
+	// The plan travels with the error so a partial apply is auditable: the
+	// create for card v2 is listed without a completed result.
+	ok(result.plan);
+	const create = result.plan.actions.find((action) => action.blockType === "card" && action.action === "create");
+	ok(create, "the plan lists card v2's create");
+	strictEqual(create.result, undefined, "the create never completed");
+});
+
+test("a breaking version is created inactive and only activated with --activate; --migrate runs the migration chain and preserves _key", async () => {
+	const site = createFakeSite();
+	await site.seed({
+		blockTypes: [{ ...heroModule.definition, currentVersion: 1, versions: [heroModule.definition.versions[0]] }],
 		collections: [
 			{
 				slug: "pages",
@@ -84,9 +123,7 @@ test("a breaking version is created inactive and only activated with --activate;
 						slug: "home",
 						status: "published",
 						data: {
-							layout: [
-								{ _type: "hero", _version: 1, _key: "key-1", heading: "Hello" },
-							],
+							layout: [{ _type: "hero", _version: 1, _key: "key-1", heading: "Hello", body: "World" }],
 						},
 					},
 				],
@@ -94,21 +131,17 @@ test("a breaking version is created inactive and only activated with --activate;
 		],
 	});
 
-	// 1. apply without --activate: v2 is created but stays inactive.
+	// 1. apply without --activate: v2 is created but stays inactive; the stored
+	//    block waits, and the plan says so instead of listing a migration.
 	let writer = io();
 	strictEqual(await run(["apply", "https://site.example", "--from", fixturePath, "--apply"], { transport: site.transport }, writer), 0);
 	const first = jsonOutput(writer);
-	const heroCreate = first.plan.actions.find((action) => action.blockType === "hero" && action.version === 2 && action.action === "create");
-	strictEqual(heroCreate.result, "done");
-	const heroActivate = first.plan.actions.find((action) => action.blockType === "hero" && action.action === "activate");
-	strictEqual(heroActivate.result, "skipped");
+	strictEqual(first.plan.actions.find((a) => a.blockType === "hero" && a.version === 2 && a.action === "create").result, "done");
+	strictEqual(first.plan.actions.find((a) => a.blockType === "hero" && a.action === "activate").result, "skipped");
 	strictEqual(site.blockTypes.get("hero").currentVersion, 1);
-	ok(site.blockTypes.get("hero").versions.some((version) => version.version === 2));
-
-	// The migration is planned but not performed without --migrate.
-	const migration = first.plan.actions.find((action) => action.action === "migrate");
-	ok(migration, "the plan lists the pending migration");
-	strictEqual(migration.result, "skipped");
+	ok(site.blockTypes.get("hero").versions.some((v) => v.version === 2));
+	ok(first.plan.actions.every((a) => a.action !== "migrate"));
+	ok(first.plan.warnings.some((w) => w.includes("hero") && w.includes("--activate")), first.plan.warnings.join("; "));
 	strictEqual(site.content.get("pages").get("home").data.layout[0]._version, 1);
 
 	// 2. activate: the renderer is deployed.
@@ -116,19 +149,29 @@ test("a breaking version is created inactive and only activated with --activate;
 	strictEqual(await run(["apply", "https://site.example", "--from", fixturePath, "--apply", "--activate"], { transport: site.transport }, writer), 0);
 	strictEqual(site.blockTypes.get("hero").currentVersion, 2);
 
-	// 3. migrate: the stored block moves to v2 with its _key intact.
+	// The pending migration shows in the plan, skipped without --migrate.
+	const second = jsonOutput(writer);
+	const migration = second.plan.actions.find((a) => a.action === "migrate");
+	ok(migration, "the plan lists the pending migration");
+	strictEqual(migration.detail, "pages/home.layout");
+	strictEqual(migration.result, "skipped");
+
+	// 3. migrate: the migration chain renames body→text, the value survives,
+	//    and _key and _version move to the active version.
 	writer = io();
 	strictEqual(await run(["apply", "https://site.example", "--from", fixturePath, "--apply", "--migrate"], { transport: site.transport }, writer), 0);
 	const block = site.content.get("pages").get("home").data.layout[0];
 	strictEqual(block._version, 2);
 	strictEqual(block._key, "key-1");
 	strictEqual(block.heading, "Hello");
+	strictEqual(block.text, "World", "the renamed field's value survived the migration");
 
 	const migrateWrite = site.requests.find(
 		(request) => request.method === "PUT" && request.path === "/_emdash/api/content/pages/home",
 	);
 	ok(migrateWrite);
 	strictEqual(migrateWrite.body.migrateBlocks, true);
+	ok(migrateWrite.body._rev, "the entry's _rev travels with the write");
 });
 
 test("an EmDash error names the operation, code and message, and exits non-zero", async () => {
@@ -150,6 +193,46 @@ test("an EmDash error names the operation, code and message, and exits non-zero"
 	strictEqual(error.blockType, "hero");
 	ok(error.message.includes("create block type"), error.message);
 	ok(error.message.includes("token lacks schema:manage"), error.message);
+});
+
+test("a lost update during --migrate surfaces as a located conflict", async () => {
+	const site = createFakeSite();
+	await site.seed({
+		blockTypes: [heroModule.definition],
+		collections: [
+			{
+				slug: "pages",
+				fields: [{ id: "f1", slug: "layout", label: "Layout", type: "blocks", required: false, validation: { allowedTypes: ["hero"] } }],
+				entries: [
+					{ id: "home", slug: "home", status: "published", data: { layout: [{ _type: "hero", _version: 1, _key: "k", heading: "Hi", body: "x" }] } },
+				],
+			},
+		],
+	});
+	// The site has moved on since the CLI read the entry: the scan's _rev is stale.
+	// (Copies, not mutations — the fake's entries are shared references.)
+	const stale = async (request) => {
+		const response = await site.transport(request);
+		if (request.method === "GET" && request.path === "/_emdash/api/content/pages") {
+			response.json = {
+				...response.json,
+				data: {
+					...response.json.data,
+					items: response.json.data.items.map((item) => ({ ...item, _rev: "someone-else-wrote" })),
+				},
+			};
+		}
+		return response;
+	};
+	const writer = io();
+	const code = await run(["apply", "https://site.example", "--from", fixturePath, "--apply", "--migrate"], { transport: stale }, writer);
+
+	strictEqual(code, 1);
+	const result = jsonOutput(writer);
+	const error = result.errors[0];
+	strictEqual(error.code, "CONFLICT");
+	strictEqual(error.status, 409);
+	ok(error.operation.includes("pages/home"), error.operation);
 });
 
 test("--table prints a human view of the same plan", async () => {
@@ -181,8 +264,8 @@ test("--field adds the block types to a named blocks field's allowedTypes", asyn
 	);
 	strictEqual(code, 0);
 	const result = jsonOutput(writer);
-	deepStrictEqual(result.fieldUpdates.sort(), ["cta", "hero"]);
-	deepStrictEqual(site.collections.get("pages").fields.get("layout").validation.allowedTypes, ["banner", "hero", "cta"]);
+	deepStrictEqual(result.fieldUpdates, ["cta", "hero"]);
+	deepStrictEqual([...site.collections.get("pages").fields.get("layout").validation.allowedTypes].sort(), ["banner", "cta", "hero"]);
 });
 
 test("--collections applies starter collections only on request", async () => {
@@ -220,7 +303,9 @@ test("every request in these tests was served by the in-memory fake site", async
 	for (const request of site.requests) {
 		ok(request.path.startsWith("/_emdash/api/"), request.path);
 	}
-	// The definitions fixture carries the seed shape the block modules export.
-	strictEqual(heroDefinition.versions.at(-1).version, heroDefinition.currentVersion);
-	strictEqual(ctaDefinition.currentVersion, 1);
+	// The fixtures carry the module shape the blocks core exports.
+	strictEqual(heroModule.definition.versions.at(-1).version, heroModule.definition.currentVersion);
+	ok(Array.isArray(heroModule.variants));
+	ok(typeof heroModule.migrations[1] === "function");
+	strictEqual(ctaModule.definition.currentVersion, 1);
 });
