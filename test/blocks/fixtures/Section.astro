@@ -1,0 +1,4 @@
+---
+const { value, blockKey, index, items = [] } = Astro.props;
+---
+<section data-key={blockKey} data-version={value._version} data-index={index}><h2>{value.title}</h2>{items.map((item: unknown) => <p>{String(item)}</p>)}</section>

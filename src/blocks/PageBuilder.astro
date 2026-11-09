@@ -1,0 +1,35 @@
+---
+import { Blocks } from 'emdash/ui';
+import type { BlockComponent } from 'emdash/ui';
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import { createComponent } from 'astro/runtime/server/index.js';
+import { migrateBlocks } from 'emdash-plugin-page-builder/blocks';
+import type { SiteBlockType, Source, StoredBlock } from 'emdash-plugin-page-builder/blocks';
+
+export interface Props {
+  value?: readonly StoredBlock[] | null;
+  blocks: readonly SiteBlockType[];
+  sources?: Readonly<Record<string, Source>>;
+  group?: string;
+  fallback?: BlockComponent<StoredBlock>;
+}
+
+const { value, blocks, sources = {}, group, fallback } = Astro.props;
+const upgraded = migrateBlocks(value ?? [], blocks);
+const items = new Map(await Promise.all(upgraded.map(async (block) => {
+  const source = sources[block._type];
+  const scope = block.scope === 'page' && group !== undefined ? 'page' : 'all';
+  return [block, source ? await source({ scope, group }) : []] as const;
+})));
+const components = Object.fromEntries(blocks.map(({ definition, sections }) => [
+  definition.slug,
+  createComponent((result, props, slots) => {
+    const block = props.value as StoredBlock;
+    const variant = typeof block.variant === 'string' ? block.variant : 'default';
+    const Section = Object.hasOwn(sections, variant) ? sections[variant] : sections.default;
+    // Astro files have a props-only public type and a factory signature at runtime.
+    return (Section as unknown as AstroComponentFactory)(result, { ...props, items: items.get(block) }, slots);
+  }),
+])) as unknown as Record<string, BlockComponent<StoredBlock>>;
+---
+<Blocks value={upgraded} components={components} fallback={fallback} />

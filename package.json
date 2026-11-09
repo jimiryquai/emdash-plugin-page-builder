@@ -24,7 +24,8 @@
     "./blocks": {
       "types": "./dist/blocks/index.d.ts",
       "default": "./dist/blocks/index.js"
-    }
+    },
+    "./blocks/PageBuilder.astro": "./src/blocks/PageBuilder.astro"
   },
   "scripts": {
     "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
@@ -39,6 +40,7 @@
     "emdash": "^1.4.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/blocks/**/*.astro"
   ]
 }
