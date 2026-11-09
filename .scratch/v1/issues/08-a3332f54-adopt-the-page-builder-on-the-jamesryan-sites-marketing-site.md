@@ -8,12 +8,12 @@ Add the page builder to jamesryan-sites' marketing site **alongside** marketing-
 
 **Blocked by:** 15-9ab9b40a, 16-fa7db037
 
-**Status:** in progress (resumed after 15 and 16)
+**Status:** needs James (publish the package, then approve the merge and the production steps)
 
-- [ ] Home renders from `layout` locally with the same look as before (screenshots before and after).
-- [ ] The apply CLI planned and applied the five block types to the local dev site, with its JSON output saved.
-- [ ] marketing-blocks is unchanged, and pages without a `layout` (privacy-policy) still render from `content`.
-- [ ] The marketing site's checks (typecheck, build) pass.
+- [x] Home renders from `layout` locally with the same look as before (screenshots before and after).
+- [x] The apply CLI planned and applied the five block types to the local dev site, with its JSON output saved.
+- [x] marketing-blocks is unchanged, and pages without a `layout` (privacy-policy) still render from `content`.
+- [x] The marketing site's checks (typecheck, build) pass.
 - [ ] Production was checked for marketing blocks and the live apply and home migration ran with James's approval (needs James).
 
 ## Comments
@@ -21,3 +21,5 @@ Add the page builder to jamesryan-sites' marketing site **alongside** marketing-
 **2026-11-09 Orchestrator:** Risk: high (another repo; leads to production content). Scope narrowed with James: additive, local only; the live steps need his approval. Helper: codex (default model).
 
 **2026-11-09 Orchestrator:** First run (e8d73f2, f022dcb on feat/page-builder-adoption) proved home, adapters, sources, fallbacks and site checks locally, and found two package defects: features sub-field slugs EmDash rejects, and a CLI entry guard that no-ops under pnpm symlinks. Blocked on 15-9ab9b40a and 16-fa7db037; resumes with a new package build.
+
+**2026-11-09 Orchestrator:** Local work done and verified (jamesryan-sites `feat/page-builder-adoption` at 026ee71, after resume 1). Fresh seed registers exactly the five offered blocks (`offered-blocks.json`, one site-owned list read by `blocks.ts`, the seed sync and the CLI wrapper); CLI plan/apply/plan through the real bin with nothing pending; home renders the same from `layout`; all 15 variants, grouped sources and privacy-policy's fallback proven; my own runs: typecheck 0 errors, 45 tests and cms-helpers pass, build complete, marketing-blocks unchanged. Cross-family review saved in the worktree's evidence. Not mergeable until the package is on npm: the dependency is a gitignored tarball path. Remaining, all James's: first npm publish, then swapping to an exact version and merging into `baseline` (coordinate with the session working there), then the production procedure in the helper's report.
