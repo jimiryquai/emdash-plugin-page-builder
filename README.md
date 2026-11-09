@@ -198,3 +198,25 @@ pricing collection in EmDash's seed `collections` shape.
 source, built on `createCollectionSource`: it reads the starter collection (or
 another collection with the same field names, via `collection` and `groupField`)
 with no mapping, resolves `scope`, and returns `{ items, cacheHints }`.
+
+### team
+
+Team members pulled from a shared team collection (`src/blocks/types/team.ts`).
+Use team for the people behind the page; customer quotes belong on the
+testimonials block.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `four-column` (many compact portrait cards in a dense grid) or `three-column` (fewer, larger cards per row); unmapped variants use the site's default section |
+| `scope` | select | `page` (members in the page's group) or `all` (every member); `page` behaves as `all` when no group is configured; built with `scopeField()` |
+| `count` | integer | How many members to show (1–24, optional); built with `countField()` |
+
+**Shape.** `TeamMember`: `{ name, role, image? }`, the contract between a team
+source and a team section.
+
+**Sources.** `starterTeamCollection(groupCollection)` defines the starter team
+collection in EmDash's seed `collections` shape.
+`createTeamSource({ collection?, groupField?, query? })` is the default source,
+built on `createCollectionSource`: it reads the starter collection (or another
+collection with the same field names, via `collection` and `groupField`) with
+no mapping, resolves `scope`, applies `count`, and returns `{ items, cacheHints }`.
