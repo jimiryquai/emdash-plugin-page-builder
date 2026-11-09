@@ -13,6 +13,7 @@
  * rule 6): importing this module runs nothing.
  */
 
+import { realpathSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
 
@@ -285,7 +286,23 @@ async function allowInField(
 	return additions;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+/**
+ * The entry-point guard (rule 6): importing this module runs nothing. Node
+ * loads the main module by its real path, while `process.argv[1]` keeps the
+ * path as invoked — through an installed package's `.bin` symlink that is the
+ * link, not the file — so compare real paths or the CLI never runs. Guarded:
+ * argv[1] may be missing (e.g. `node -e`) or name no file on disk.
+ */
+function invokedAsEntry(): boolean {
+	if (!process.argv[1]) return false;
+	try {
+		return import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
+	} catch {
+		return false;
+	}
+}
+
+if (invokedAsEntry()) {
 	run(process.argv.slice(2), {}).then(
 		(code) => {
 			process.exitCode = code;
