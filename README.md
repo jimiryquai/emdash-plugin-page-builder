@@ -198,3 +198,20 @@ pricing collection in EmDash's seed `collections` shape.
 source, built on `createCollectionSource`: it reads the starter collection (or
 another collection with the same field names, via `collection` and `groupField`)
 with no mapping, resolves `scope`, and returns `{ items, cacheHints }`.
+
+### prose
+
+Long-form rich text pages (such as privacy policies or terms of service) carried as EmDash Portable Text (`src/blocks/types/prose.ts`).
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `centered` (default), `start` |
+| `heading` | string | Required. |
+| `body` | text | Optional supporting copy or dateline above the document body. |
+| `content` | portableText | Required. Rich text body rendered with EmDash's `<PortableText />`. |
+
+| Variant | When to use it |
+| --- | --- |
+| `centered` | The heading and optional supporting copy are centered above the document body. |
+| `start` | The heading and optional supporting copy line up with the start of the document body. |
+
