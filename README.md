@@ -110,8 +110,8 @@ An inline content block representing a list or grid of capabilities, product fea
   - `description` (`text`): Detailed copy describing the feature.
   - `image` (`image`): Screenshot, diagram, or illustration asset.
   - `icon` (`string`): Icon identifier (e.g. `mail`, `zap`).
-  - `ctaLabel` (`string`): Call-to-action link text.
-  - `ctaUrl` (`url`): Destination URL for the CTA.
+  - `cta_label` (`string`): Call-to-action link text.
+  - `cta_url` (`url`): Destination URL for the CTA.
 
 **Variants:**
 - `two-column`: Two-column card grid with visual demo screenshots or graphics.
@@ -208,7 +208,7 @@ variant, `table`, is a grouped comparison table.
 | --- | --- | --- |
 | `variant` | select | `table` (the grouped comparison table) |
 | `columns` | repeater | One to three columns. Each column has a `key` (`first`, `second` or `third`) and a required `label`. |
-| `rows` | repeater | At least one row. Each row has a required `name`, optional `groupName`, and optional `firstValue`, `secondValue` and `thirdValue` text fields. |
+| `rows` | repeater | At least one row. Each row has a required `name`, optional `group_name`, and optional `first_value`, `second_value` and `third_value` text fields. |
 
 `ComparisonBlockValue`, `ComparisonColumn` and `ComparisonRow` describe the
 values passed to a site's section. Column keys select which row value is shown

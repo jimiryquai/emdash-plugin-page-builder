@@ -49,16 +49,16 @@ const sampleItems = [
     description: 'Keep every customer conversation in one clean, collaborative inbox.',
     image: { url: '/img/screenshots/inbox.webp' },
     icon: 'mail',
-    ctaLabel: 'See how it works',
-    ctaUrl: '/features/inbox',
+    cta_label: 'See how it works',
+    cta_url: '/features/inbox',
   },
   {
     title: 'Automated Routing',
     description: 'Direct tickets to the right team instantly.',
     image: { url: '/img/screenshots/routing.webp' },
     icon: 'zap',
-    ctaLabel: 'Learn more',
-    ctaUrl: '/features/routing',
+    cta_label: 'Learn more',
+    cta_url: '/features/routing',
   },
 ];
 
@@ -162,12 +162,12 @@ test('features block satisfies BlockType and exports expected metadata', () => {
   assert.ok(iconSub, 'item icon subfield must be present');
   assert.equal(iconSub.type, 'string');
 
-  const ctaLabelSub = subFields.find((f) => f.slug === 'ctaLabel');
-  assert.ok(ctaLabelSub, 'item ctaLabel subfield must be present');
+  const ctaLabelSub = subFields.find((f) => f.slug === 'cta_label');
+  assert.ok(ctaLabelSub, 'item cta_label subfield must be present');
   assert.equal(ctaLabelSub.type, 'string');
 
-  const ctaUrlSub = subFields.find((f) => f.slug === 'ctaUrl');
-  assert.ok(ctaUrlSub, 'item ctaUrl subfield must be present');
+  const ctaUrlSub = subFields.find((f) => f.slug === 'cta_url');
+  assert.ok(ctaUrlSub, 'item cta_url subfield must be present');
   assert.equal(ctaUrlSub.type, 'url');
 });
 
@@ -237,16 +237,16 @@ test('repeater items reach the section as typed props', async () => {
         description: 'Instant data synchronization across devices.',
         image: { url: '/img/sync.png' },
         icon: 'sync-icon',
-        ctaLabel: 'Explore Sync',
-        ctaUrl: 'https://example.com/sync',
+        cta_label: 'Explore Sync',
+        cta_url: 'https://example.com/sync',
       },
       {
         title: 'Team Permissions',
         description: 'Granular access control for every member.',
         image: '/img/permissions.png',
         icon: 'lock-icon',
-        ctaLabel: 'View Roles',
-        ctaUrl: 'https://example.com/roles',
+        cta_label: 'View Roles',
+        cta_url: 'https://example.com/roles',
       },
     ],
   };

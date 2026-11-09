@@ -33,11 +33,11 @@ const columns = [
 
 const rows = [
   {
-    groupName: 'Collaboration',
+    group_name: 'Collaboration',
     name: 'Shared workspaces',
-    firstValue: '1',
-    secondValue: '5',
-    thirdValue: 'Unlimited',
+    first_value: '1',
+    second_value: '5',
+    third_value: 'Unlimited',
   },
 ];
 
@@ -88,11 +88,11 @@ test('comparison defines a block with typed row and column repeaters', () => {
   assert.deepEqual(
     rowsField.validation.subFields.map((field) => [field.slug, field.type]),
     [
-      ['groupName', 'string'],
+      ['group_name', 'string'],
       ['name', 'string'],
-      ['firstValue', 'text'],
-      ['secondValue', 'text'],
-      ['thirdValue', 'text'],
+      ['first_value', 'text'],
+      ['second_value', 'text'],
+      ['third_value', 'text'],
     ],
   );
 });

@@ -1,5 +1,6 @@
 import { deepStrictEqual, ok, strictEqual } from "node:assert";
 import { test } from "node:test";
+import { validateSeed } from "emdash";
 
 // Import through the package's exports (CODING_STANDARDS.md rule 8), so a
 // broken build or exports map fails this test.
@@ -17,6 +18,22 @@ function blockTypes() {
 			"migrations" in value,
 	);
 }
+
+test("every exported BlockType and starter collection forms a valid EmDash seed without warnings", () => {
+	const types = blockTypes();
+	ok(types.length > 0, "expected exported block types to validate");
+	const groupCollection = { slug: "groups", label: "Groups", fields: [] };
+	const result = validateSeed({
+		version: "1",
+		blockTypes: types.map((block) => block.definition),
+		collections: [
+			groupCollection,
+			...types.filter((block) => block.starter).map((block) => block.starter(groupCollection.slug)),
+		],
+	});
+	strictEqual(result.valid, true, result.errors.join("\n"));
+	deepStrictEqual(result.warnings, [], "EmDash seed must have no warnings");
+});
 
 test("every exported BlockType has contiguous versions from 1 and a declared currentVersion", async () => {
 	const types = blockTypes();
