@@ -8,9 +8,13 @@ Define a `prose` block holding a `portableText` field, so prose pages (privacy-p
 
 **Blocked by:** none
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The block renders Portable Text through a test sections map for every variant.
-- [ ] A stored `marketing.document` body can be carried into the block without loss (a fixture conversion test).
+- [x] The block renders Portable Text through a test sections map for every variant.
+- [x] A stored `marketing.document` body can be carried into the block without loss (a fixture conversion test).
 
 ## Comments
+
+**2026-11-09 Orchestrator:** Risk: medium (package code: new block type). Helper: agy (default model).
+
+**2026-11-09 Orchestrator:** Done in 22c4954, merged to master (a18bacf) with no fix round. Inline `prose` block: variants `centered` and `start`, a required heading, an optional plain-text body, and required Portable Text `content`. The test shows a stored `marketing.document` converting without loss; ticket 14's migration can reuse that mapping.
