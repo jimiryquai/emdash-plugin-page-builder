@@ -70,3 +70,6 @@ export function migrateBlocks(
     return block;
   });
 }
+
+export * from './types/features.js';
+

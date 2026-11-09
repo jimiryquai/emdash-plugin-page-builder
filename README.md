@@ -84,3 +84,29 @@ installed peer dependencies, and imports and renders the exported `.astro`
 component there. Successful tests remove their temporary consumer; failed tests
 retain it and report its path for inspection and cleanup. The test harness
 disables Astro telemetry; no new dependencies are needed for the block layer.
+
+## Block types
+
+### features
+
+An inline content block representing a list or grid of capabilities, product features, or value propositions with optional images, icons, and CTA links.
+
+**Fields (v1):**
+- `eyebrow` (`string`): Optional small lead text displayed above the heading.
+- `heading` (`string`, required): Main section heading.
+- `subheadline` (`text`): Supporting multiline descriptive text.
+- `variant` (`select`): Layout variant selection.
+- `items` (`repeater`, min 1 item): Feature entries:
+  - `title` (`string`, required): Feature headline.
+  - `description` (`text`): Detailed copy describing the feature.
+  - `image` (`image`): Screenshot, diagram, or illustration asset.
+  - `icon` (`string`): Icon identifier (e.g. `mail`, `zap`).
+  - `ctaLabel` (`string`): Call-to-action link text.
+  - `ctaUrl` (`url`): Destination URL for the CTA.
+
+**Variants:**
+- `two-column`: Two-column card grid with visual demo screenshots or graphics.
+- `three-column`: Compact three-column grid highlighting values or capabilities with icons and text.
+- `three-column-demos`: Three-column grid showcasing features alongside screenshots or demo assets.
+- `alternating`: Full-width stacked rows alternating between feature description and visual demo assets.
+
