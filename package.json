@@ -1,0 +1,11 @@
+{
+  "name": "emdash-plugin-page-builder",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A page builder for EmDash: versioned block types and the Astro components that render them, on EmDash's own fields.",
+  "license": "MIT",
+  "author": "James Ryan (https://jamesryan.dev)",
+  "repository": { "type": "git", "url": "git+https://github.com/jimiryquai/emdash-plugin-page-builder.git" },
+  "engines": { "node": ">=24" },
+  "devDependencies": { "mcporter": "0.17.0" }
+}

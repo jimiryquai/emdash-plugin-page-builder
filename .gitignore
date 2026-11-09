@@ -1,0 +1,3 @@
+node_modules
+.orchestrate/
+.claude/worktrees/
