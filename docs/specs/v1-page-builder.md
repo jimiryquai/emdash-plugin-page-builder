@@ -25,7 +25,7 @@ One public npm package, `emdash-plugin-page-builder`, published like `emdash-plu
  └──────────────────────────────────────┘        └─────────────────────────────────────┘
 ```
 
-Two entry points: the `blocks` library (v1) and an optional native plugin entry for Portable Text blocks (later; it's where marketing-blocks' rich-text blocks return). A site that never imports the plugin entry never installs a native plugin.
+Two entry points: the `blocks` library and a plugin entry. The plugin entry starts with the required-to-publish hook (ADR 0003); Portable Text blocks for rich-text bodies join it later. A site that never imports the plugin entry never installs a native plugin.
 
 ## What the package owns
 
@@ -35,6 +35,7 @@ Two entry points: the `blocks` library (v1) and an optional native plugin entry 
 - **Variant vocabulary**: each block has a fixed `variant` select in its definition (ADR 0002). Adding a variant is a compatible change and a minor release; removing one is breaking.
 - **The block layer**: a `<PageBuilder>` wrapper around EmDash's `<Blocks>` that, for each stored block, upgrades it, resolves its source and scope, picks the section for its variant, and renders it.
 - **Starter collections**: optional collection definitions (testimonials, pricing, FAQs) with default sources that need no mapping, for a site with no collections of its own.
+- **Required to publish**: each block module lists the fields it needs before it can go live (`requiredToPublish`). Schema fields stay optional so a new, empty block can autosave as a draft; a `content:beforePublish` hook in the package's plugin entry rejects publishing with a reason naming each block and missing field ([ADR 0003](../adr/0003-required-to-publish-not-to-save.md)).
 - **The apply CLI**: applies block types (and, on request, the starter collections) to a site through EmDash's REST API with a Bearer token (`EMDASH_TOKEN`).
 
 ## What each site owns
