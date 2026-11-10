@@ -74,14 +74,34 @@ export interface StoredBlock {
   [field: string]: unknown;
 }
 
+/** Current-version publish rules; repeater sub-fields use zero-based item paths. */
+export type PublishRequirement = string | {
+  field: string;
+  minItems?: number;
+  fields: readonly string[];
+};
+
+export interface MissingPublishField {
+  blockKey: string;
+  blockType: string;
+  field: string;
+}
+
 /** A block module owns the seed definition and every upgrade step. */
 export interface BlockType {
   definition: ApplySeedBlockTypeInput & { description: string };
   variants: readonly string[];
+  requiredToPublish: readonly PublishRequirement[];
   /** Keyed by the version being upgraded; each step returns version N + 1. */
   migrations: Readonly<Record<number, (block: Readonly<StoredBlock>) => StoredBlock>>;
   /** Optional starter collection, parameterised by the site's grouping collection. */
   starter?: (groupCollection: string) => SeedCollection;
+}
+
+/** Recognise block module exports without maintaining a separate registry. */
+export function isBlockType(value: unknown): value is BlockType {
+  return typeof value === 'object' && value !== null &&
+    'definition' in value && 'variants' in value && 'migrations' in value;
 }
 
 export type Section = (props: { value: StoredBlock; index: number; blockKey: string; items?: readonly unknown[] }) => unknown;
@@ -239,4 +259,42 @@ export function migrateBlocks(
     }
     return block;
   });
+}
+
+/** Upgrade first, then report every missing current-version publish field. */
+export function findMissingToPublish(
+  value: readonly StoredBlock[],
+  blockTypes: readonly BlockType[],
+): MissingPublishField[] {
+  const types = new Map(blockTypes.map(type => [type.definition.slug, type]));
+  const missing: MissingPublishField[] = [];
+  const empty = (value: unknown): boolean => value == null ||
+    (typeof value === 'string' && value.trim().length === 0) ||
+    (Array.isArray(value) && value.length === 0);
+  for (const block of migrateBlocks(value, blockTypes)) {
+    const type = types.get(block._type);
+    if (!type) continue;
+    const add = (field: string): void => {
+      missing.push({ blockKey: block._key, blockType: block._type, field });
+    };
+    for (const rule of type.requiredToPublish) {
+      if (typeof rule === 'string') {
+        if (empty(block[rule])) add(rule);
+        continue;
+      }
+      const items = block[rule.field];
+      if (!Array.isArray(items)) {
+        if ((rule.minItems ?? 0) > 0 || !empty(items)) add(rule.field);
+        continue;
+      }
+      if (items.length < (rule.minItems ?? 0)) add(rule.field);
+      items.forEach((item: unknown, index: number) => {
+        for (const field of rule.fields) {
+          if (typeof item !== 'object' || item === null ||
+            empty((item as Record<string, unknown>)[field])) add(`${rule.field}[${index}].${field}`);
+        }
+      });
+    }
+  }
+  return missing;
 }

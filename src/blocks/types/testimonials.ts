@@ -108,5 +108,6 @@ export const testimonials = {
   } satisfies ApplySeedBlockTypeInput & { description: string },
   variants,
   migrations: {},
+  requiredToPublish: [],
   starter: starterTestimonialsCollection,
 } satisfies BlockType;

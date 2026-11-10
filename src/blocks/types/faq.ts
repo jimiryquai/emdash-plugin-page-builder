@@ -85,5 +85,6 @@ export const faq = {
   } satisfies ApplySeedBlockTypeInput & { description: string },
   variants,
   migrations: {},
+  requiredToPublish: [],
   starter: starterFaqCollection,
 } satisfies BlockType;

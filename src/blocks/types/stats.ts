@@ -58,4 +58,5 @@ export const stats = {
   },
   variants,
   migrations: {},
+  requiredToPublish: ['heading', { field: 'items', minItems: 1, fields: ['value'] }],
 } satisfies BlockType;

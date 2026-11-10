@@ -20,6 +20,8 @@ test('packed Astro export imports and renders in an installed consumer', async (
   const env = { ...process.env, ASTRO_TELEMETRY_DISABLED: '1' };
   const packed = JSON.parse(execFileSync('npm', ['pack', '--json', '--pack-destination', consumer], { env, encoding: 'utf8' }));
   assert.ok(packed[0].files.some(({ path }) => path === 'src/blocks/PageBuilder.astro'));
+  assert.ok(packed[0].files.some(({ path }) => path === 'dist/plugin.js'));
+  assert.ok(packed[0].files.some(({ path }) => path === 'dist/plugin.d.ts'));
   await writeFile(join(consumer, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
   execFileSync('npm', ['install', '--offline', '--ignore-scripts', '--legacy-peer-deps', '--no-audit', '--no-fund', join(consumer, packed[0].filename)], { cwd: consumer, env });
   // Reuse the exact installed peer versions; the package itself is installed from its tarball.
@@ -29,6 +31,28 @@ test('packed Astro export imports and renders in an installed consumer', async (
     if (dependency.startsWith('.') || dependency === 'emdash' || dependency === 'emdash-plugin-page-builder') continue;
     await symlink(resolve('node_modules', dependency), join(consumer, 'node_modules', dependency), 'dir');
   }
+  // Resolve the installed exports in plain Node, with plugin loading forbidden
+  // during the blocks import (also the namespace the CLI discovers).
+  execFileSync(process.execPath, ['--input-type=module', '-e', `
+    import { registerHooks } from 'node:module';
+    import assert from 'node:assert/strict';
+    const guard = registerHooks({ resolve(specifier, context, nextResolve) {
+      const result = nextResolve(specifier, context);
+      assert.ok(!result.url.endsWith('/dist/plugin.js'), 'blocks loaded the plugin');
+      return result;
+    } });
+    const blocks = await import('emdash-plugin-page-builder/blocks');
+    assert.equal(Object.values(blocks).filter(blocks.isBlockType).length, 10);
+    guard.deregister();
+    const { default: descriptor, createPlugin } = await import('emdash-plugin-page-builder/plugin');
+    assert.equal(descriptor().entrypoint, 'emdash-plugin-page-builder/plugin');
+    const result = await createPlugin().hooks['content:beforePublish'].handler({
+      content: { data: { layout: [{ _type: 'hero', _key: 'packed', _version: 1 }] } },
+      collection: 'pages', origin: 'api',
+    }, {});
+    assert.equal(result.cancel, true);
+    assert.ok(result.reason.includes('hero (packed): heading'));
+  `], { cwd: consumer, env, encoding: 'utf8' });
   await mkdir(join(consumer, 'src'));
   await copyFile('test/blocks/fixtures/Section.astro', join(consumer, 'src/Section.astro'));
   await copyFile('test/blocks/fixtures/example.ts', join(consumer, 'src/example.ts'));
