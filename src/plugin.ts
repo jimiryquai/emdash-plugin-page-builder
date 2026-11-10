@@ -1,15 +1,12 @@
 import metadata from '../package.json' with { type: 'json' };
 import { definePlugin, type PluginDescriptor } from 'emdash';
 import * as blocks from './blocks/index.js';
-import { findMissingToPublish, type BlockType, type MissingPublishField, type StoredBlock } from './blocks/core.js';
+import { findMissingToPublish, isBlockType, type MissingPublishField, type StoredBlock } from './blocks/core.js';
 
 const identity = { id: 'page-builder', version: metadata.version };
 const capabilities = ['hooks.content-policy:register'] as const;
 const exports: unknown[] = Object.values(blocks);
-const blockTypes = exports.filter(
-  (value: unknown): value is BlockType => typeof value === 'object' && value !== null &&
-    'definition' in value && 'variants' in value && 'migrations' in value,
-);
+const blockTypes = exports.filter(isBlockType);
 const slugs = new Set(blockTypes.map(type => type.definition.slug));
 
 /** Register the native runtime from the site's Astro configuration. */

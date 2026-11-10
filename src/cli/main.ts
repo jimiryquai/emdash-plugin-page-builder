@@ -17,7 +17,7 @@ import { realpathSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
 
-import type { BlockType } from "../blocks/core.js";
+import { isBlockType, type BlockType } from "../blocks/core.js";
 import { EmdashClient, EmdashError, fetchTransport, type Transport } from "./client.js";
 import { executePlan, findPendingMigrations, isStale, migrateStoredBlocks, PlanError } from "./apply.js";
 import { addMigrations, buildPlan } from "./plan.js";
@@ -75,16 +75,6 @@ export function errorPayload(error: unknown, plan?: Plan): CliErrorPayload {
 			: { errors: [{ message: error instanceof Error ? error.message : String(error) }] };
 	if (plan !== undefined) base.plan = plan;
 	return base;
-}
-
-function isBlockType(value: unknown): value is BlockType {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"definition" in value &&
-		"variants" in value &&
-		"migrations" in value
-	);
 }
 
 /**

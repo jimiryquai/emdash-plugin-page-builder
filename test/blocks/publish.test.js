@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as blocks from 'emdash-plugin-page-builder/blocks';
 
-const types = Object.values(blocks).filter(value => value?.definition && value?.migrations);
+const types = Object.values(blocks).filter(blocks.isBlockType);
 const stored = (type, data = {}) => ({ _type: type, _key: `${type}-key`, _version: 1, ...data });
 
 test('publish requirements restore required fields and repeater minimums for every block', () => {

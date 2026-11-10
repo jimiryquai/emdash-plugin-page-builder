@@ -42,7 +42,7 @@ test('packed Astro export imports and renders in an installed consumer', async (
       return result;
     } });
     const blocks = await import('emdash-plugin-page-builder/blocks');
-    assert.equal(Object.values(blocks).filter(value => value?.definition && value?.migrations).length, 10);
+    assert.equal(Object.values(blocks).filter(blocks.isBlockType).length, 10);
     guard.deregister();
     const { default: descriptor, createPlugin } = await import('emdash-plugin-page-builder/plugin');
     assert.equal(descriptor().entrypoint, 'emdash-plugin-page-builder/plugin');

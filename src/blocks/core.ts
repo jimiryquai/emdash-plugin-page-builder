@@ -98,6 +98,12 @@ export interface BlockType {
   starter?: (groupCollection: string) => SeedCollection;
 }
 
+/** Recognise block module exports without maintaining a separate registry. */
+export function isBlockType(value: unknown): value is BlockType {
+  return typeof value === 'object' && value !== null &&
+    'definition' in value && 'variants' in value && 'migrations' in value;
+}
+
 export type Section = (props: { value: StoredBlock; index: number; blockKey: string; items?: readonly unknown[] }) => unknown;
 
 export interface Sections {
@@ -254,7 +260,6 @@ export function migrateBlocks(
     return block;
   });
 }
-
 
 /** Upgrade first, then report every missing current-version publish field. */
 export function findMissingToPublish(
