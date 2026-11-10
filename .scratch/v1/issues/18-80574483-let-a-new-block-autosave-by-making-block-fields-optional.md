@@ -10,10 +10,14 @@ Make every block field and repeater sub-field optional and drop repeater `minIte
 
 **Blocked by:** none.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] No exported block definition has a required field or sub-field or a repeater `minItems` above 0, enforced by a test in `npm run check` that explains the autosave reason.
-- [ ] Every block renders through its test sections with all its optional fields missing.
-- [ ] `validateSeed` and the versioning tests still pass with every block at its current version, and a lesson records why block fields stay optional.
+- [x] No exported block definition has a required field or sub-field or a repeater `minItems` above 0, enforced by a test in `npm run check` that explains the autosave reason.
+- [x] Every block renders through its test sections with all its optional fields missing.
+- [x] `validateSeed` and the versioning tests still pass with every block at its current version, and a lesson records why block fields stay optional.
 
 ## Comments
+
+**2026-11-10 Orchestrator:** Risk: medium (block definitions, compatible change). Helper: pi (default, GLM high).
+
+**2026-11-10 Orchestrator:** Done in f3b8d40 and 35901fb, merged to master (a88a70c) with no fix round. Every block field and repeater sub-field is optional and no repeater has `minItems`, at each block's current version (a compatible change). `test/blocks/autosave.test.js` enforces it; every block renders with its fields empty; lesson `docs/lessons/block-fields-optional-for-autosave.md` points to ADR 0003. The publish-time guarantee is ticket 19.
