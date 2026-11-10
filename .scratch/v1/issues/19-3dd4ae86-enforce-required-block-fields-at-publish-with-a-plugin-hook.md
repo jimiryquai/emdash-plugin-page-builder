@@ -13,10 +13,14 @@ Ticket 18 makes every block field optional so a new block can autosave. This tic
 
 **Blocked by:** 18-80574483
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Every block module declares `requiredToPublish`, and `findMissingToPublish` reports each missing field by block key, type and field (repeater items by index), with tests.
-- [ ] The `./plugin` entry's `content:beforePublish` hook rejects a publish with a plain-text reason (1-500 characters) naming the missing fields, and allows a complete layout, tested with a fake event; it declares only `hooks.content-policy:register`.
-- [ ] The package's `exports` add `./plugin` without the `blocks` entry loading it, the packed tarball includes it, and the README shows how a site registers it.
+- [x] Every block module declares `requiredToPublish`, and `findMissingToPublish` reports each missing field by block key, type and field (repeater items by index), with tests.
+- [x] The `./plugin` entry's `content:beforePublish` hook rejects a publish with a plain-text reason (1-500 characters) naming the missing fields, and allows a complete layout, tested with a fake event; it declares only `hooks.content-policy:register`.
+- [x] The package's `exports` add `./plugin` without the `blocks` entry loading it, the packed tarball includes it, and the README shows how a site registers it.
 
 ## Comments
+
+**2026-11-10 Orchestrator:** Risk: medium (new plugin entry and export; no live writes). Helper: codex (default model).
+
+**2026-11-10 Orchestrator:** Done in 6010d7a and e46e228, merged to master (9f5a9c9) with no fix round. `requiredToPublish` on every block module; `findMissingToPublish` in core (upgrades first, reports block key, type and field path); `./plugin` exports a native plugin (`default()` descriptor, `createPlugin()` runtime) whose `content:beforePublish` hook rejects with a plain-text reason of at most 500 characters, declaring only `hooks.content-policy:register`. Checked from the built package in plain Node: an incomplete hero is rejected naming `heading` and `links[0].url`; a complete one passes. `isBlockType` is now shared by the CLI and the plugin.
