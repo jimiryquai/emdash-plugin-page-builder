@@ -9,13 +9,13 @@ export const comparisonColumnKeys = ['first', 'second', 'third'] as const;
 export type ComparisonColumnKey = (typeof comparisonColumnKeys)[number];
 
 export interface ComparisonColumn {
-  key: ComparisonColumnKey;
-  label: string;
+  key?: ComparisonColumnKey;
+  label?: string;
 }
 
 export interface ComparisonRow {
   group_name?: string;
-  name: string;
+  name?: string;
   first_value?: string;
   second_value?: string;
   third_value?: string;
@@ -56,17 +56,15 @@ export const comparison = {
             label: 'Columns',
             type: 'repeater',
             validation: {
-              minItems: 1,
               maxItems: comparisonColumnKeys.length,
               subFields: [
                 {
                   slug: 'key',
                   label: 'Position',
                   type: 'select',
-                  required: true,
                   options: [...comparisonColumnKeys],
                 },
-                { slug: 'label', label: 'Label', type: 'string', required: true },
+                { slug: 'label', label: 'Label', type: 'string' },
               ],
             },
           },
@@ -75,10 +73,9 @@ export const comparison = {
             label: 'Rows',
             type: 'repeater',
             validation: {
-              minItems: 1,
               subFields: [
                 { slug: 'group_name', label: 'Group name', type: 'string' },
-                { slug: 'name', label: 'Feature name', type: 'string', required: true },
+                { slug: 'name', label: 'Feature name', type: 'string' },
                 { slug: 'first_value', label: 'First column value', type: 'text' },
                 { slug: 'second_value', label: 'Second column value', type: 'text' },
                 { slug: 'third_value', label: 'Third column value', type: 'text' },

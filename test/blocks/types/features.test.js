@@ -119,7 +119,6 @@ test('features block satisfies BlockType and exports expected metadata', () => {
   const heading = fields.find((f) => f.slug === 'heading');
   assert.ok(heading, 'heading field must be present');
   assert.equal(heading.type, 'string');
-  assert.equal(heading.required, true);
 
   // Eyebrow field
   const eyebrow = fields.find((f) => f.slug === 'eyebrow');
@@ -141,14 +140,12 @@ test('features block satisfies BlockType and exports expected metadata', () => {
   const items = fields.find((f) => f.slug === 'items');
   assert.ok(items, 'items repeater field must be present');
   assert.equal(items.type, 'repeater');
-  assert.equal(items.validation?.minItems, 1);
   assert.ok(Array.isArray(items.validation?.subFields), 'repeater must have subFields');
 
   const subFields = items.validation?.subFields ?? [];
   const titleSub = subFields.find((f) => f.slug === 'title');
   assert.ok(titleSub, 'item title subfield must be present');
   assert.equal(titleSub.type, 'string');
-  assert.equal(titleSub.required, true);
 
   const descSub = subFields.find((f) => f.slug === 'description');
   assert.ok(descSub, 'item description subfield must be present');
@@ -223,6 +220,14 @@ test('unmapped or omitted variant falls back to the default section', async () =
   const htmlUnmapped = await render([unmappedVariant]);
   assert.match(htmlUnmapped, /data-variant="default"/);
   assert.match(htmlUnmapped, /Features With Unmapped Variant/);
+});
+
+test('an empty block renders through its section rather than throwing', async () => {
+  // Every field is optional so the admin's first autosave of a new block
+  // succeeds (ADR 0003); an empty block must still render.
+  const html = await render([{ _type: 'features', _version: 1, _key: 'features-empty' }]);
+  assert.match(html, /data-variant="default"/);
+  assert.match(html, /data-key="features-empty"/);
 });
 
 test('repeater items reach the section as typed props', async () => {

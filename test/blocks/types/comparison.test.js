@@ -71,7 +71,6 @@ test('comparison defines a block with typed row and column repeaters', () => {
 
   const columnsField = fields.find((field) => field.slug === 'columns');
   assert.equal(columnsField.type, 'repeater');
-  assert.equal(columnsField.validation.minItems, 1);
   assert.equal(columnsField.validation.maxItems, 3);
   assert.deepEqual(comparisonColumnKeys, ['first', 'second', 'third']);
   assert.deepEqual(
@@ -84,7 +83,6 @@ test('comparison defines a block with typed row and column repeaters', () => {
 
   const rowsField = fields.find((field) => field.slug === 'rows');
   assert.equal(rowsField.type, 'repeater');
-  assert.equal(rowsField.validation.minItems, 1);
   assert.deepEqual(
     rowsField.validation.subFields.map((field) => [field.slug, field.type]),
     [
@@ -116,6 +114,14 @@ test('the comparison block renders through a test sections map for every variant
     assert.match(html, /data-group="Collaboration"/);
     assert.match(html, /data-values="1\|5\|Unlimited"/);
   }
+});
+
+test('an empty block renders through its section rather than throwing', async () => {
+  // Every field and repeater is optional so the admin's first autosave of a
+  // new block succeeds (ADR 0003); an empty block must still render.
+  const html = await render([{ _type: 'comparison', _version: 1, _key: 'comparison-empty' }]);
+  assert.match(html, /data-variant="default"/);
+  assert.match(html, /data-key="comparison-empty"/);
 });
 
 test('rows and columns reach the section as typed props', async () => {

@@ -5,7 +5,7 @@ const variants = ['graph'] as const;
 export type StatVariant = (typeof variants)[number];
 
 export interface StatItem {
-  value: string;
+  value?: string;
   label?: string;
 }
 
@@ -14,7 +14,7 @@ export interface StatsBlockValue extends StoredBlock {
   _version: 1;
   variant?: StatVariant;
   eyebrow?: string;
-  heading: string;
+  heading?: string;
   body?: string;
   items?: readonly StatItem[];
 }
@@ -39,16 +39,15 @@ export const stats = {
         fields: [
           { ...variantField(variants), defaultValue: 'graph' },
           { slug: 'eyebrow', label: 'Eyebrow', type: 'string' },
-          { slug: 'heading', label: 'Heading', type: 'string', required: true },
+          { slug: 'heading', label: 'Heading', type: 'string' },
           { slug: 'body', label: 'Body', type: 'text' },
           {
             slug: 'items',
             label: 'Items',
             type: 'repeater',
             validation: {
-              minItems: 1,
               subFields: [
-                { slug: 'value', label: 'Value', type: 'string', required: true },
+                { slug: 'value', label: 'Value', type: 'string' },
                 { slug: 'label', label: 'Label', type: 'string' },
               ],
             },

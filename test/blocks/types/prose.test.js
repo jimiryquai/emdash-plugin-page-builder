@@ -137,9 +137,9 @@ test('prose is a version 1 seed definition', () => {
   assert.deepEqual(prose.variants, ['centered', 'start']);
   assert.deepEqual(prose.definition.versions[0].fields, [
     { ...variantField(['centered', 'start']), defaultValue: 'centered' },
-    { slug: 'heading', label: 'Heading', type: 'string', required: true },
+    { slug: 'heading', label: 'Heading', type: 'string' },
     { slug: 'body', label: 'Body', type: 'text' },
-    { slug: 'content', label: 'Content', type: 'portableText', required: true },
+    { slug: 'content', label: 'Content', type: 'portableText' },
   ]);
 });
 
@@ -229,6 +229,19 @@ describe('prose sections', () => {
     assert.match(fallbackHtml, /data-section="default"/);
     assert.match(fallbackHtml, /Fallback Heading/);
     assert.match(fallbackHtml, /<p\b[^>]*>First paragraph of rich text\.<\/p>/);
+  });
+
+  test('an empty block renders through its section rather than throwing', async () => {
+    // Every field is optional so the admin's first autosave of a new block
+    // succeeds (ADR 0003); an empty block must still render.
+    const html = await container.renderToString(PageBuilder, {
+      props: {
+        value: [{ _type: 'prose', _version: 1, _key: 'prose-empty' }],
+        blocks: [{ ...prose, sections }],
+      },
+    });
+    assert.match(html, /data-section="default"/);
+    assert.match(html, /data-key="prose-empty"/);
   });
 
   test('A stored `marketing.document` body can be carried into the block without loss (a fixture conversion test).', async () => {

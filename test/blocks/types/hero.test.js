@@ -17,7 +17,7 @@ test('hero is a version 1 seed definition', () => {
     { slug: 'eyebrow', label: 'Eyebrow', type: 'string' },
     { slug: 'eyebrow_url', label: 'Eyebrow URL', type: 'url' },
     { slug: 'eyebrow_action', label: 'Eyebrow action', type: 'string' },
-    { slug: 'heading', label: 'Heading', type: 'string', required: true },
+    { slug: 'heading', label: 'Heading', type: 'string' },
     { slug: 'body', label: 'Body', type: 'text' },
     { slug: 'image', label: 'Image', type: 'image', options: { darkVariant: true } },
     linksField(),
@@ -54,6 +54,17 @@ describe('hero sections', () => {
       assert.match(html, /Open/);
       assert.doesNotMatch(html, /data-section="default"/);
     }
+  });
+
+  test('an empty block renders through its section rather than throwing', async () => {
+    // Every field is optional so the admin's first autosave of a new block
+    // succeeds (ADR 0003); an empty block must still render.
+    const html = await container.renderToString(PageBuilder, { props: {
+      value: [{ _type: 'hero', _version: 1, _key: 'hero-empty' }],
+      blocks: [{ ...hero, sections }],
+    } });
+    assert.match(html, /data-section="default"/);
+    assert.match(html, /data-key="hero-empty"/);
   });
 });
 

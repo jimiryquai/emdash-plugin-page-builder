@@ -1,5 +1,15 @@
 import type { FeatureItem, FeaturesSectionProps } from 'emdash-plugin-page-builder/blocks';
 
+// An empty block value must typecheck: every field is optional so a new,
+// empty block autosaves as a draft (ADR 0003).
+export const emptyItem: FeatureItem = {};
+
+export const emptyProps: FeaturesSectionProps = {
+  value: { _type: 'features', _version: 1, _key: 'feat-empty' },
+  index: 0,
+  blockKey: 'feat-empty',
+};
+
 export const validItem: FeatureItem = {
   title: 'Valid Feature',
   description: 'Valid description',

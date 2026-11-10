@@ -245,6 +245,13 @@ test('the single variant uses its section and an unmapped variant falls back to 
   assert.match(await render([{ ...stored, variant: 'grid' }], { sources }), /data-section="grid"/);
 });
 
+test('an empty block renders through its section rather than throwing', async () => {
+  // Every field is optional so the admin's first autosave of a new block
+  // succeeds (ADR 0003); an empty block must still render, with no source.
+  const html = await render([{ _type: 'testimonials', _version: 1, _key: 'testimonials-empty' }]);
+  assert.match(html, /data-section="grid"/);
+});
+
 test('a source may return { items, cacheHints } and both forms render the items', async () => {
   const items = [{ quote: 'Hinted', author: 'Ann' }];
   const sources = {

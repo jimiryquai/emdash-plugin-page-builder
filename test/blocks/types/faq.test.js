@@ -159,6 +159,13 @@ test('the block renders FAQs from a source through a test sections map for every
   assert.match(centeredHtml, /Yes, 14 days\./);
 });
 
+test('an empty block renders through its section rather than throwing', async () => {
+  // Every field is optional so the admin's first autosave of a new block
+  // succeeds (ADR 0003); an empty block must still render, with no source.
+  const html = await render([{ _type: 'faq', _version: 1, _key: 'faq-empty' }]);
+  assert.match(html, /data-section="two-column"/);
+});
+
 test('count reaches the source and caps the rendered FAQs', async () => {
   const calls = [];
   const sources = {

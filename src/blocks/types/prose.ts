@@ -15,9 +15,9 @@ export const prose = {
         version: 1,
         fields: [
           { ...variantField(variants), defaultValue: 'centered' },
-          { slug: 'heading', label: 'Heading', type: 'string', required: true },
+          { slug: 'heading', label: 'Heading', type: 'string' },
           { slug: 'body', label: 'Body', type: 'text' },
-          { slug: 'content', label: 'Content', type: 'portableText', required: true },
+          { slug: 'content', label: 'Content', type: 'portableText' },
         ],
       },
     ],
