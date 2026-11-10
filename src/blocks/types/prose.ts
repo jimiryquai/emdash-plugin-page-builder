@@ -24,4 +24,5 @@ export const prose = {
   },
   variants,
   migrations: {},
+  requiredToPublish: ['heading', 'content'],
 } satisfies BlockType;

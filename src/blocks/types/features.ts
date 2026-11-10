@@ -81,4 +81,5 @@ export const features = {
   },
   variants: featureVariants,
   migrations: {},
+  requiredToPublish: ['heading', { field: 'items', minItems: 1, fields: ['title'] }],
 } satisfies BlockType;

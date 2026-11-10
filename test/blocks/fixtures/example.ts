@@ -13,6 +13,7 @@ export const example = {
     ],
   },
   variants,
+  requiredToPublish: [],
   migrations: {
     1: (block) => {
       const { heading, ...rest } = block;

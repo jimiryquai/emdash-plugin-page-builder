@@ -24,4 +24,5 @@ export const cta = {
   },
   variants,
   migrations: {},
+  requiredToPublish: ['heading', { field: 'links', fields: ['label', 'url'] }],
 } satisfies BlockType;

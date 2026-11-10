@@ -28,7 +28,11 @@
       "types": "./dist/blocks/index.d.ts",
       "default": "./dist/blocks/index.js"
     },
-    "./blocks/PageBuilder.astro": "./src/blocks/PageBuilder.astro"
+    "./blocks/PageBuilder.astro": "./src/blocks/PageBuilder.astro",
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "default": "./dist/plugin.js"
+    }
   },
   "scripts": {
     "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",

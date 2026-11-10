@@ -88,4 +88,5 @@ export const comparison = {
   } satisfies ApplySeedBlockTypeInput & { description: string },
   variants: comparisonVariants,
   migrations: {},
+  requiredToPublish: [{ field: 'columns', minItems: 1, fields: ['key', 'label'] }, { field: 'rows', minItems: 1, fields: ['name'] }],
 } satisfies BlockType;

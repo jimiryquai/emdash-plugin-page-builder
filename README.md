@@ -4,7 +4,7 @@ A page builder for [EmDash](https://emdashcms.com): a library of versioned block
 
 EmDash already has the custom fields. This project is the page-building layer on top of them: something as close to ACF Pro's Flexible Content as EmDash allows, and better where EmDash makes that possible (versioned block schemas, two-way relations, and agents building pages through MCP with the same fields people use).
 
-It's an npm package, not an EmDash runtime plugin: EmDash plugins can't define block types (see [ADR 0001](docs/adr/0001-package-owns-data-sites-own-collections-and-visuals.md) and the spec). An optional native plugin entry for Portable Text blocks comes later.
+The npm package defines block types through EmDash's schema API (see [ADR 0001](docs/adr/0001-package-owns-data-sites-own-collections-and-visuals.md) and the spec). Its separate native plugin entry enforces required block fields before publishing; Portable Text plugin blocks are planned for later.
 
 Status: release 0.1.0 prepared; site adoption in progress. See [the v1 spec](docs/specs/v1-page-builder.md), [the glossary](docs/GLOSSARY.md), and `docs/research/` for what EmDash 1.4 provides.
 
@@ -27,6 +27,46 @@ Requires Node.js 24 or newer and peer dependencies `astro ^6.4.8` and
   `npx emdash-page-builder apply <site-url>` with `EMDASH_TOKEN` set to plan
   block-type changes; add `--apply` to write them. See the
   [CLI contract](docs/specs/v1-page-builder.md#the-apply-cli).
+
+## Publish validation
+
+Register the native plugin in the site's `astro.config.mjs` to enforce publish
+requirements for this package's blocks:
+
+```js
+import { defineConfig } from 'astro/config';
+import emdash from 'emdash/astro';
+import pageBuilderPlugin from 'emdash-plugin-page-builder/plugin';
+
+export default defineConfig({
+  integrations: [emdash({
+    // Keep the site's existing EmDash configuration here.
+    plugins: [pageBuilderPlugin()],
+  })],
+});
+```
+
+Add `pageBuilderPlugin()` to an existing `plugins` array when one is configured.
+The `blocks` entry remains independently usable; publish validation requires
+registering the plugin. It requests only `hooks.content-policy:register` and
+reads the content supplied by the publish event.
+
+Draft fields stay optional so newly added blocks can autosave. On publishing,
+the plugin checks every layout in `content.data`, including nested layouts,
+using each block module's current-version `requiredToPublish` rules after
+migration. Unknown block types are left to their owners.
+
+Editors and agents receive the same plain-text rejection reason, for example
+`Missing required block fields: hero (intro): heading` or
+`cta (action): links[0].url`. Repeater indexes start at zero. EmDash returns
+`PUBLISH_REJECTED`; fill in the named fields and retry. Long lists are summarised
+within EmDash's 500-character limit. Admin, API, MCP and visual-editor publishing
+use this hook, and scheduled publishing checks again when due. A rejected
+scheduled publish is unscheduled and its reason appears on the dashboard.
+
+`findMissingToPublish(value, blockTypes)`, exported from `blocks`, provides the
+same missing-field facts as `{ blockKey, blockType, field }` for callers that
+need a pure check.
 
 ## Release 0.1.0
 
@@ -92,6 +132,7 @@ Block modules import the shared pieces (`BlockType`, `variantField`, `linksField
 | `definition` | EmDash's seed `blockTypes` entry: `{ slug, label, description, icon?, category?, currentVersion, versions: [{ version, fields }] }`. Fields use EmDash's `BlockFieldDefinition`; there is no separate package schema. The CLI takes an array of these definitions. |
 | `variants` | The fixed variant vocabulary. Use the exported `variantField(variants)` to build its select field in each version's `fields`; the helper and renderer share the exported `VARIANT_FIELD_SLUG` constant. |
 | `links` | Use the exported `linksField()` for a repeater of label and URL pairs. The first item is the primary action and the second is an optional alternative. |
+| `requiredToPublish` | Current-version publish rules: field slugs, or `{ field, minItems?, fields }` for repeaters. Empty lists are explicit for blocks with no required fields. Keep schema fields optional for draft autosave. |
 | `migrations` | A map keyed by the version being upgraded. Function `N` returns version `N + 1`, preserving `_key` and `_type`, without mutating the input. Keep one function and test per step. Use an empty map for a block with only version 1. |
 | `sections` | Added by the site when rendering, producing a `SiteBlockType`; the package definition has no visual components. `default` is required, other keys map variants. |
 

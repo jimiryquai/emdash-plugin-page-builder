@@ -90,5 +90,6 @@ export const team = {
   } satisfies ApplySeedBlockTypeInput & { description: string },
   variants,
   migrations: {},
+  requiredToPublish: [],
   starter: starterTeamCollection,
 } satisfies BlockType;
