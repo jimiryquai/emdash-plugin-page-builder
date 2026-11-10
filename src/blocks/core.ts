@@ -21,8 +21,8 @@ export function linksField(): BlockFieldDefinition {
     type: 'repeater',
     validation: {
       subFields: [
-        { slug: 'label', label: 'Label', type: 'string', required: true },
-        { slug: 'url', label: 'URL', type: 'url', required: true },
+        { slug: 'label', label: 'Label', type: 'string' },
+        { slug: 'url', label: 'URL', type: 'url' },
       ],
     },
   };

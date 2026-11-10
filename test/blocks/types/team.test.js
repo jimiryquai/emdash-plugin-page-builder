@@ -142,6 +142,13 @@ function render(value, extra = {}) {
   return container.renderToString(PageBuilder, { props: { value: [value], blocks, ...extra } });
 }
 
+test('an empty block renders through its section rather than throwing', async () => {
+  // Every field is optional so the admin's first autosave of a new block
+  // succeeds (ADR 0003); an empty block must still render, with no source.
+  const html = await render({ _type: 'team', _version: 1, _key: 'team-empty' });
+  assert.match(html, /data-section="four-column"/);
+});
+
 test('the block renders team members from a source through a test sections map for every variant, honouring scope', async () => {
   const sources = { team: createTeamSource({ query: fakeQuery(entries) }) };
 

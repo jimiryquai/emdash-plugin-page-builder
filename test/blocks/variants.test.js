@@ -18,8 +18,8 @@ test('links fields are label and URL pairs with the primary action first', () =>
     type: 'repeater',
     validation: {
       subFields: [
-        { slug: 'label', label: 'Label', type: 'string', required: true },
-        { slug: 'url', label: 'URL', type: 'url', required: true },
+        { slug: 'label', label: 'Label', type: 'string' },
+        { slug: 'url', label: 'URL', type: 'url' },
       ],
     },
   });

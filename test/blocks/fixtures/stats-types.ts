@@ -1,5 +1,15 @@
 import type { StatItem, StatsSectionProps } from 'emdash-plugin-page-builder/blocks';
 
+// An empty block value must typecheck: every field is optional so a new,
+// empty block autosaves as a draft (ADR 0003).
+export const emptyItem: StatItem = {};
+
+export const emptyProps: StatsSectionProps = {
+  value: { _type: 'stats', _version: 1, _key: 'stats-empty' },
+  index: 0,
+  blockKey: 'stats-empty',
+};
+
 export const validItem: StatItem = {
   value: '99%',
   label: 'Uptime',

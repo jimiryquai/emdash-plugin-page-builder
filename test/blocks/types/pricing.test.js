@@ -159,6 +159,13 @@ function render(value, extra = {}) {
   return container.renderToString(PageBuilder, { props: { value, blocks, ...extra } });
 }
 
+test('an empty block renders through its section rather than throwing', async () => {
+  // Every field is optional so the admin's first autosave of a new block
+  // succeeds (ADR 0003); an empty block must still render, with no source.
+  const html = await render([{ _type: 'pricing', _version: 1, _key: 'pricing-empty' }]);
+  assert.match(html, /data-section="tiers"/);
+});
+
 test('the block renders tiers from a source through a test sections map, honouring scope', async () => {
   const sources = { pricing: createPricingSource({ query: fakeQuery(entries) }) };
 

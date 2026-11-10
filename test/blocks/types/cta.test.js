@@ -14,7 +14,7 @@ test('cta is a version 1 seed definition', () => {
   assert.deepEqual(cta.variants, ['start', 'centered']);
   assert.deepEqual(cta.definition.versions[0].fields, [
     { ...variantField(['start', 'centered']), defaultValue: 'start' },
-    { slug: 'heading', label: 'Heading', type: 'string', required: true },
+    { slug: 'heading', label: 'Heading', type: 'string' },
     { slug: 'body', label: 'Body', type: 'text' },
     linksField(),
   ]);
@@ -38,6 +38,17 @@ describe('cta sections', () => {
     for (const variant of cta.variants) sections[variant] = await marker(server, variant);
   });
   after(async () => { await server?.close(); });
+
+  test('an empty block renders through its section rather than throwing', async () => {
+    // Every field is optional so the admin's first autosave of a new block
+    // succeeds (ADR 0003); an empty block must still render.
+    const html = await container.renderToString(PageBuilder, { props: {
+      value: [{ _type: 'cta', _version: 1, _key: 'cta-empty' }],
+      blocks: [{ ...cta, sections }],
+    } });
+    assert.match(html, /data-section="default"/);
+    assert.match(html, /data-key="cta-empty"/);
+  });
 
   test('each cta variant renders through its mapped section', async () => {
     for (const variant of cta.variants) {

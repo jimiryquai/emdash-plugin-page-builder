@@ -18,7 +18,7 @@ export const hero = {
           { slug: 'eyebrow', label: 'Eyebrow', type: 'string' },
           { slug: 'eyebrow_url', label: 'Eyebrow URL', type: 'url' },
           { slug: 'eyebrow_action', label: 'Eyebrow action', type: 'string' },
-          { slug: 'heading', label: 'Heading', type: 'string', required: true },
+          { slug: 'heading', label: 'Heading', type: 'string' },
           { slug: 'body', label: 'Body', type: 'text' },
           { slug: 'image', label: 'Image', type: 'image', options: { darkVariant: true } },
           linksField(),

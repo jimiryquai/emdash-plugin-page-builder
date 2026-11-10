@@ -17,16 +17,15 @@ test('stats is a version 1 seed definition', () => {
   assert.deepEqual(stats.definition.versions[0].fields, [
     { ...variantField(variants), defaultValue: 'graph' },
     { slug: 'eyebrow', label: 'Eyebrow', type: 'string' },
-    { slug: 'heading', label: 'Heading', type: 'string', required: true },
+    { slug: 'heading', label: 'Heading', type: 'string' },
     { slug: 'body', label: 'Body', type: 'text' },
     {
       slug: 'items',
       label: 'Items',
       type: 'repeater',
       validation: {
-        minItems: 1,
         subFields: [
-          { slug: 'value', label: 'Value', type: 'string', required: true },
+          { slug: 'value', label: 'Value', type: 'string' },
           { slug: 'label', label: 'Label', type: 'string' },
         ],
       },
@@ -77,6 +76,17 @@ describe('stats sections', () => {
       assert.match(html, /Across every team\./);
       assert.doesNotMatch(html, /data-section="default"/);
     }
+  });
+
+  test('an empty block renders through its section rather than throwing', async () => {
+    // Every field is optional so the admin's first autosave of a new block
+    // succeeds (ADR 0003); an empty block must still render.
+    const html = await container.renderToString(PageBuilder, { props: {
+      value: [{ _type: 'stats', _version: 1, _key: 'stats-empty' }],
+      blocks: [{ ...stats, sections }],
+    } });
+    assert.match(html, /data-section="default"/);
+    assert.match(html, /data-key="stats-empty"/);
   });
 
   test('repeater items reach the section as typed props', async () => {

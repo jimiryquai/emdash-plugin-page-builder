@@ -15,7 +15,7 @@ export const cta = {
         version: 1,
         fields: [
           { ...variantField(variants), defaultValue: 'start' },
-          { slug: 'heading', label: 'Heading', type: 'string', required: true },
+          { slug: 'heading', label: 'Heading', type: 'string' },
           { slug: 'body', label: 'Body', type: 'text' },
           linksField(),
         ],

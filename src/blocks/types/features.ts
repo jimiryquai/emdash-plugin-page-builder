@@ -21,7 +21,7 @@ export const featureVariantDescriptions: Readonly<Record<FeatureVariant, string>
 };
 
 export interface FeatureItem {
-  title: string;
+  title?: string;
   description?: string;
   image?: unknown;
   icon?: string;
@@ -33,7 +33,7 @@ export interface FeaturesBlockValue extends StoredBlock {
   _type: 'features';
   _version: 1;
   eyebrow?: string;
-  heading: string;
+  heading?: string;
   subheadline?: string;
   variant?: FeatureVariant;
   items?: readonly FeatureItem[];
@@ -57,7 +57,7 @@ export const features = {
         version: 1,
         fields: [
           { slug: 'eyebrow', label: 'Eyebrow', type: 'string' },
-          { slug: 'heading', label: 'Heading', type: 'string', required: true },
+          { slug: 'heading', label: 'Heading', type: 'string' },
           { slug: 'subheadline', label: 'Subheadline', type: 'text' },
           variantField(featureVariants),
           {
@@ -65,9 +65,8 @@ export const features = {
             label: 'Items',
             type: 'repeater',
             validation: {
-              minItems: 1,
               subFields: [
-                { slug: 'title', label: 'Title', type: 'string', required: true },
+                { slug: 'title', label: 'Title', type: 'string' },
                 { slug: 'description', label: 'Description', type: 'text' },
                 { slug: 'image', label: 'Image', type: 'image' },
                 { slug: 'icon', label: 'Icon', type: 'string' },
