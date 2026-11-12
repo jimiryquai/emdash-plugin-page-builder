@@ -488,8 +488,9 @@ is the default source: it queries `collection` (default `'posts'`) in a single
 list read ordered by `published_at: 'desc'`, filters with
 `where: { [categoryTaxonomy]: category }` when `category` is present, caps
 `limit` to `count` (or the block's default `4`), maps hydrated `terms` and
-`bylines`, and returns `{ items, cacheHints }`. A site with custom fields can
-pass `mapEntry` or write its own `Source<Post>` against its generated collection
-types.
+`bylines` with the starter `/${collection}/${entry.id}` URL pattern, and
+returns `{ items, cacheHints }`. Sites with custom or localized post URLs (or
+custom fields) override the default starter mapping via `mapEntry` or write
+their own `Source<Post>` against their generated collection types.
 
 

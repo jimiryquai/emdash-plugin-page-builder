@@ -297,7 +297,6 @@ export interface SourceContext {
   scope: 'page' | 'all';
   group?: string;
   count?: number;
-  category?: string;
 }
 
 /** A site's typed mapping from its collection's entries to a shape. */
@@ -313,6 +312,13 @@ export function blockFieldDefault(blockType: BlockType, slug: string): unknown {
   return current?.fields.find((field) => field.slug === slug)?.defaultValue;
 }
 
+/** Resolve a positive count, falling back to `fallback` when positive. */
+export function resolvePositiveCount(value: unknown, fallback?: unknown): number | undefined {
+  if (typeof value === 'number' && value > 0) return value;
+  if (typeof fallback === 'number' && fallback > 0) return fallback;
+  return undefined;
+}
+
 /** Build the `SourceContext` for one upgraded block from its definition and stored values. */
 export function resolveSourceContext(
   block: Readonly<StoredBlock>,
@@ -321,13 +327,8 @@ export function resolveSourceContext(
 ): SourceContext {
   const storedScope = block[SCOPE_FIELD_SLUG];
   const scope = storedScope === 'page' && group !== undefined ? 'page' : 'all';
-  const storedCount = block[COUNT_FIELD_SLUG];
   const defaultCount = blockType !== undefined ? blockFieldDefault(blockType, COUNT_FIELD_SLUG) : undefined;
-  const count = typeof storedCount === 'number' && storedCount > 0
-    ? storedCount
-    : typeof defaultCount === 'number' && defaultCount > 0
-      ? defaultCount
-      : undefined;
+  const count = resolvePositiveCount(block[COUNT_FIELD_SLUG], defaultCount);
   return {
     scope,
     group,
@@ -348,12 +349,10 @@ export interface CollectionEntry {
 
 /** Filter options supported by `QueryApi.list`. */
 export interface QueryListFilter {
-  status?: 'draft' | 'published' | 'archived';
   limit?: number;
   cursor?: string;
-  where?: Record<string, string | string[]>;
+  where?: Record<string, string>;
   orderBy?: Record<string, 'asc' | 'desc'>;
-  locale?: string;
 }
 
 /** One page of a collection query, as the query API returns it. */

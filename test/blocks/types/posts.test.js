@@ -2,13 +2,17 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { experimental_AstroContainer } from 'astro/container';
+import { validateSeed } from 'emdash/seed';
 import {
   posts,
   createPostsSource,
   starterPostsCollection,
+  blockFieldDefault,
   countField,
   COUNT_FIELD_SLUG,
   mergeCacheHints,
+  POST_CATEGORY_FIELD_SLUG,
+  STARTER_POSTS_COLLECTION,
   variantField,
   VARIANT_FIELD_SLUG,
 } from 'emdash-plugin-page-builder/blocks';
@@ -84,37 +88,42 @@ const sampleEntries = [
   },
 ];
 
-test('posts defines version 1 with variant, optional heading, count default 4, optional category, starter and variant descriptions', () => {
+test('posts defines version 1 with mandated count default 4, shared builders, starter seed validity and per-variant descriptions', () => {
   assert.equal(posts.definition.slug, 'posts');
-  assert.equal(posts.definition.label, 'Posts');
   assert.equal(posts.definition.currentVersion, 1);
-  assert.deepEqual(posts.variants, ['featured-grid', 'grid', 'list']);
+  assert.equal(posts.variants.length, 3);
+  assert.equal(new Set(posts.variants).size, posts.variants.length);
   assert.deepEqual(posts.migrations, {});
   assert.deepEqual(posts.requiredToPublish, []);
   assert.equal(posts.starter, starterPostsCollection);
 
   const fields = posts.definition.versions[0].fields;
-  assert.deepEqual(fields, [
-    variantField(posts.variants),
-    { slug: 'heading', label: 'Heading', type: 'string' },
-    countField({ defaultValue: 4 }),
-    { slug: 'category', label: 'Category', type: 'string' },
-  ]);
-  assert.equal(fields[0].slug, VARIANT_FIELD_SLUG);
-  assert.equal(fields[2].slug, COUNT_FIELD_SLUG);
-  assert.equal(fields[2].defaultValue, 4);
+  const fieldBySlug = new Map(fields.map((field) => [field.slug, field]));
+  assert.deepEqual(fieldBySlug.get(VARIANT_FIELD_SLUG), variantField(posts.variants));
+  // Explicit contract check for the ticket-mandated default count of 4.
+  assert.equal(blockFieldDefault(posts, COUNT_FIELD_SLUG), 4);
+  assert.deepEqual(
+    fieldBySlug.get(COUNT_FIELD_SLUG),
+    countField({ defaultValue: blockFieldDefault(posts, COUNT_FIELD_SLUG) }),
+  );
+  assert.equal(fieldBySlug.get('heading')?.type, 'string');
+  assert.equal(fieldBySlug.get(POST_CATEGORY_FIELD_SLUG)?.type, 'string');
 
   const description = posts.definition.description;
   for (const variant of posts.variants) {
     assert.match(description, new RegExp(String.raw`\b${variant} when\b`, 'i'));
   }
 
-  const collection = starterPostsCollection('services');
-  assert.equal(collection.slug, 'posts');
-  assert.deepEqual(
-    collection.fields.map((field) => field.slug),
-    ['title', 'featured_image', 'content', 'excerpt'],
-  );
+  const collection = starterPostsCollection('pages');
+  assert.equal(collection.slug, STARTER_POSTS_COLLECTION);
+  const seedReport = validateSeed({
+    version: '1',
+    collections: [collection],
+    blockTypes: [posts.definition],
+  });
+  assert.equal(seedReport.valid, true);
+  assert.deepEqual(seedReport.errors, []);
+  assert.deepEqual(seedReport.warnings, []);
 });
 
 test('createPostsSource honours explicit count, defaults absent count to 4, filters by category, maps Post fields and forwards cache hints in one read', async () => {
@@ -240,7 +249,8 @@ function renderPosts(value, extra = {}) {
   });
 }
 
-test('PageBuilder passes default count 4 when stored count is absent on a posts block', async () => {
+test('PageBuilder passes the schema-derived default count when stored count is absent on a posts block', async () => {
+  const expectedCount = blockFieldDefault(posts, COUNT_FIELD_SLUG);
   const calls = [];
   const sources = {
     posts: async (context) => {
@@ -255,9 +265,9 @@ test('PageBuilder passes default count 4 when stored count is absent on a posts 
     [{ _type: 'posts', _version: 1, _key: 'posts-default', heading: 'Latest' }],
     { sources },
   );
-  assert.deepEqual(calls, [{ scope: 'all', group: undefined, count: 4 }]);
+  assert.deepEqual(calls, [{ scope: 'all', group: undefined, count: expectedCount }]);
   assert.match(html, /<h2>Latest<\/h2>/);
-  assert.equal(html.match(/<li /g)?.length, 4);
+  assert.equal(html.match(/<li /g)?.length, expectedCount);
 });
 
 test('PageBuilder forwards explicit count and optional category to createPostsSource in one read and unpacks SourceResult cache hints', async () => {
@@ -317,24 +327,18 @@ test('PageBuilder forwards explicit count and optional category to createPostsSo
   assert.doesNotMatch(html, /Second Post/);
 });
 
-test('PageBuilder dispatches featured-grid, grid and list variants, falls back to default, and renders an empty posts block', async () => {
+test('PageBuilder dispatches every posts variant, falls back to default, and renders an empty posts block', async () => {
   const sources = {
     posts: async () => [{ title: 'One', url: '/posts/one' }],
   };
+  for (const variant of posts.variants) {
+    assert.match(
+      await renderPosts([{ _type: 'posts', _version: 1, _key: `p-${variant}`, variant }], { sources }),
+      new RegExp(`data-section="${variant}"`),
+    );
+  }
   assert.match(
-    await renderPosts([{ _type: 'posts', _version: 1, _key: 'p1', variant: 'featured-grid' }], { sources }),
-    /data-section="featured-grid"/,
-  );
-  assert.match(
-    await renderPosts([{ _type: 'posts', _version: 1, _key: 'p2', variant: 'grid' }], { sources }),
-    /data-section="grid"/,
-  );
-  assert.match(
-    await renderPosts([{ _type: 'posts', _version: 1, _key: 'p3', variant: 'list' }], { sources }),
-    /data-section="list"/,
-  );
-  assert.match(
-    await renderPosts([{ _type: 'posts', _version: 1, _key: 'p4', variant: 'unknown' }], { sources }),
+    await renderPosts([{ _type: 'posts', _version: 1, _key: 'p-fallback', variant: 'unknown' }], { sources }),
     /data-section="grid"/,
   );
   const emptyHtml = await renderPosts([{ _type: 'posts', _version: 1, _key: 'posts-empty' }]);

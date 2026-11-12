@@ -5,6 +5,7 @@ import {
   COUNT_FIELD_SLUG,
   countField,
   markdownText,
+  resolvePositiveCount,
   variantField,
 } from '../core.js';
 import type {
@@ -16,6 +17,12 @@ import type {
   SourceContext,
   StoredBlock,
 } from '../core.js';
+
+declare module '../core.js' {
+  interface SourceContext {
+    category?: string;
+  }
+}
 
 export interface PostTag {
   slug: string;
@@ -151,6 +158,12 @@ function createDefaultPostMapper(collection: string, tagTaxonomy: string): (entr
   };
 }
 
+function trimCategory(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
 /**
  * The default posts source. It reads the starter `posts` collection (or another
  * collection via `collection`), orders recent posts first (`published_at: 'desc'`),
@@ -169,15 +182,11 @@ export function createPostsSource(options: PostsSourceOptions = {}): Source<Post
   const mapEntry = options.mapEntry ?? createDefaultPostMapper(collection, tagTaxonomy);
   const defaultCount = blockFieldDefault(posts, COUNT_FIELD_SLUG);
   return async ({ count, category }) => {
-    const limit = typeof count === 'number' && count > 0
-      ? count
-      : typeof defaultCount === 'number' && defaultCount > 0
-        ? defaultCount
-        : undefined;
-    const trimmedCategory = typeof category === 'string' ? category.trim() : '';
+    const limit = resolvePositiveCount(count, defaultCount);
+    const categorySlug = trimCategory(category);
     const page = await query.list(collection, {
       ...(limit !== undefined ? { limit } : {}),
-      ...(trimmedCategory.length > 0 ? { where: { [categoryTaxonomy]: trimmedCategory } } : {}),
+      ...(categorySlug !== undefined ? { where: { [categoryTaxonomy]: categorySlug } } : {}),
       orderBy,
     });
     const cacheHints = page.cacheHint ? [page.cacheHint] : [];
@@ -186,9 +195,8 @@ export function createPostsSource(options: PostsSourceOptions = {}): Source<Post
 }
 
 function sourceContext(block: Readonly<StoredBlock>): Partial<SourceContext> {
-  const raw = block[POST_CATEGORY_FIELD_SLUG];
-  const category = typeof raw === 'string' ? raw.trim() : '';
-  return category.length > 0 ? { category } : {};
+  const category = trimCategory(block[POST_CATEGORY_FIELD_SLUG]);
+  return category !== undefined ? { category } : {};
 }
 
 /** The block's optional heading, then a Markdown link list of passed posts. */
