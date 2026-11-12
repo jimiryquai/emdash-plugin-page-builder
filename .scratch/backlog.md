@@ -12,3 +12,5 @@
 - **Triage the dev-dependency audit**: `npm audit` reports 9 issues, all in the exact dev pins mirroring jamesryan-sites (Astro 6.4.8 has a critical XSS advisory; EmDash 1.4.0's zod chain; sharp; esbuild). The published package has none. Bump the pins when jamesryan-sites moves.
 
 - **Heading fields on the faq and team blocks** (2026-11-12, from v1/20): both lack `heading` (and `subheadline`), so the site shows the components' default headings and the content-to-layout script refuses to move marketing FAQ/team blocks that set one. Adding them is a compatible change (amends v1 in place).
+
+- **In-place editing of block content** (2026-11-12, James): EmDash's visual editor edits only top-level fields (1.4 and 1.5), so a block's heading can't be edited on the page. Option kept in reserve: a small page-builder script that edits a block's text and image fields by `_key` and saves the whole `layout` as a draft with `_rev`. Prefer EmDash supporting nested `blocks`/`repeater` paths upstream (raised with EmDash, see v1/23's comments); build ours only if upstream won't.
