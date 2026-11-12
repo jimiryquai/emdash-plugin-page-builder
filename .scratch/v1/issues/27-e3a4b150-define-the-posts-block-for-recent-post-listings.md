@@ -17,3 +17,5 @@ A `posts` block type for listings of a site's posts, built like `testimonials`: 
 ## Comments
 
 **2026-11-12 Orchestrator:** From James noticing Home's recent posts aren't a block. Blocked by 26 so the new block includes its Markdown rendering. Risk: medium (package code), plus the release under the standing npm approval.
+
+**2026-11-12 Codex orchestrator:** Risk: medium (compatible package addition); helper agy Carbon trial, independently verified. Release remains orchestrator-owned under standing npm approval. Worktree feat/27-posts-block.

@@ -8,13 +8,13 @@ Add the page builder to jamesryan-sites' marketing site **alongside** marketing-
 
 **Blocked by:** 15-9ab9b40a, 16-fa7db037
 
-**Status:** needs James (publish the package, then approve the merge and the production steps)
+**Status:** done
 
 - [x] Home renders from `layout` locally with the same look as before (screenshots before and after).
 - [x] The apply CLI planned and applied the five block types to the local dev site, with its JSON output saved.
 - [x] marketing-blocks is unchanged, and pages without a `layout` (privacy-policy) still render from `content`.
 - [x] The marketing site's checks (typecheck, build) pass.
-- [ ] Production was checked for marketing blocks and the live apply and home migration ran with James's approval (needs James).
+- [x] Production was checked for marketing blocks and the live apply and home migration ran with James's approval (needs James).
 
 ## Comments
 
@@ -43,3 +43,5 @@ Add the page builder to jamesryan-sites' marketing site **alongside** marketing-
 - publish policy live: a throwaway page's empty features block was refused with `PUBLISH_REJECTED` (heading, items) and then deleted.
 
 Evidence: `.orchestrate/runs/2026-11-12-staging-adoption/`. Only the production box remains, and that's James's.
+
+**2026-11-12 Codex orchestrator:** Production adoption complete under recovered prior approval and James’s “+” approval of the exact move plan in this session. Ten block types applied, then plan reports 10 unchanged. Home marketing.hero -> hero, republished through policy; Privacy Policy marketing.document -> prose, stays draft. About and Pricing unchanged. Rerun plans zero moves. Home and About screenshots pixel-identical after waiting for image decoding; all9 sitemap URLs200; draft Pricing/Privacy404. Production token revoked by exact ID, read-back0rows, HTTP401; local env entry removed. Evidence `.orchestrate/runs/2026-11-12-production-promotion-a/`. Content field NOT retired; that is final rollout work.

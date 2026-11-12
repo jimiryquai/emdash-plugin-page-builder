@@ -15,12 +15,12 @@ Prove it all locally on a fresh database. Staging runs come from the orchestrato
 
 **Blocked by:** 09-5c2ec46b, 10-b8f04e43, 11-c13d8c40, 12-de8f654a, 13-4f5bb821, 20-f32e818c, 21-3f72e4a7
 
-**Status:** in progress (stacked on 20 and 21; their PRs #27 and #28 await James's merge)
+**Status:** in progress (production adoption complete; PR #31 and staging retirement next)
 
 - [ ] Every page's `content` has moved into `layout` by script, in the seed and on staging, and every page renders from `layout` locally the same as before.
 - [ ] The page templates read only `layout`; the marketing-blocks plugin and `MarketingBlocks.astro` are removed, and the site's checks pass.
 - [ ] The `pages` collection has no `content` field in the seed and types, the admin shows only Layout, and `retire-pages-content.mjs` plans, refuses while anything is unmoved, and applies against a local database.
-- [ ] Production content was migrated with James's approval (needs James).
+- [x] Production content was migrated with James's approval (needs James).
 
 ## Comments
 
@@ -44,3 +44,9 @@ Prove it all locally on a fresh database. Staging runs come from the orchestrato
 - Evidence: `.orchestrate/runs/2026-11-12-staging-adoption/{ten-blocks,content-move}/`.
 
 Box 1's staging part is done for the move; `retire-pages-content` on staging waits for #31.
+
+**2026-11-12 Codex orchestrator:** Recovered standing authorization from prior orchestrator transcript 75146f9f-e9ad-4b31-9c2e-ff0eed3052de: James replied “adda rule and then go aheda and orchestrate?” to the explicit request approving production steps 1–4 and 6–7, while step 5 pauses to show the move plan before apply. Token and fields were completed by Claude at 15:37–15:39. Continuing approved block-type apply and read-only move plan. This does NOT authorize content move or content-field retirement.
+
+**2026-11-12 Codex orchestrator:** Promotion A complete; exact two-page content move approved by James “+” and verified, existing token revoked. Home and About pixel-identical,9sitemap URLs200, Pricing/Privacy remain drafts, re-plan0moves. PR31 can proceed to staging; production Content-field retirement still requires its own reviewed plan/approval. Ticket24 being built stacked on14 to repair Markdown before final production rollout.
+
+**2026-11-12 Codex orchestrator:** Fresh independent Standards/Spec reviews of07a8a75 reproduced two P1 retirement hazards: adopting a concurrently changed revision before clearing; and deleting schema on retry after failed publish. Six existing tests miss both. HoldingPR31; Grok4.7 fix helper h14-fix-grok w7:p14 dispatched with regression tests and final readiness recheck. Original sync CI all passed but does not settle these defects.
