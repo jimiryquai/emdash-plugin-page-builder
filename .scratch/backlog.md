@@ -10,3 +10,5 @@
 - **Sections map vs adapters**: ticket 08's site maps every variant of a block to one adapter that re-dispatches on `variant`, because each UI section needs different props. Consider letting a site give one component per block (receiving the resolved variant) as an alternative to the per-variant map.
 - **A value type for every block**: features, stats and comparison export a `<Block>Value` interface; hero, cta, testimonials, pricing, prose, faq and team don't, so site adapters hand-write casts. Export one per block, ideally derived from the definition.
 - **Triage the dev-dependency audit**: `npm audit` reports 9 issues, all in the exact dev pins mirroring jamesryan-sites (Astro 6.4.8 has a critical XSS advisory; EmDash 1.4.0's zod chain; sharp; esbuild). The published package has none. Bump the pins when jamesryan-sites moves.
+
+- **Heading fields on the faq and team blocks** (2026-11-12, from v1/20): both lack `heading` (and `subheadline`), so the site shows the components' default headings and the content-to-layout script refuses to move marketing FAQ/team blocks that set one. Adding them is a compatible change (amends v1 in place).

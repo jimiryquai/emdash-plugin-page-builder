@@ -8,14 +8,17 @@ On jamesryan-sites' marketing site (branch from `master`), offer the package's o
 
 **Blocked by:** none.
 
-**Status:** in progress
+**Status:** needs Ryan (merge jamesryan-sites PR #27)
 
-- [ ] `offered-blocks.json` lists all ten block types, and a fresh local seed registers exactly those ten on `pages.layout`.
-- [ ] Every variant of prose, faq, stats, team and comparison renders through a site section (each block also has a `default`), shown by a test or a rendered check per variant.
-- [ ] faq and team sources read the site's `faqs` and `team` collections, scoped by the page's `service` group, with cache hints passed on.
-- [ ] A page holding each new block in `layout` renders the same as the matching marketing block in `content` (screenshots side by side, locally).
-- [ ] The marketing site's CI sequence passes: `pnpm install --frozen-lockfile`, `pnpm typecheck`, `pnpm build`, `pnpm test`, `bash scripts/check-rendered-seo.sh`.
+- [x] `offered-blocks.json` lists all ten block types, and a fresh local seed registers exactly those ten on `pages.layout`.
+- [x] Every variant of prose, faq, stats, team and comparison renders through a site section (each block also has a `default`), shown by a test or a rendered check per variant.
+- [x] faq and team sources read the site's `faqs` and `team` collections, scoped by the page's `service` group, with cache hints passed on.
+- [x] A page holding each new block in `layout` renders the same as the matching marketing block in `content` (screenshots side by side, locally).
+- [x] The marketing site's CI sequence passes: `pnpm install --frozen-lockfile`, `pnpm typecheck`, `pnpm build`, `pnpm test`, `bash scripts/check-rendered-seo.sh`.
 
 ## Comments
 
 **2026-11-12 Orchestrator:** Risk: high (another repo, jamesryan-sites; local only, no staging or production writes). Helper: pi (GLM 5.3, high).
+
+**2026-11-12 Orchestrator:** Built by pi (GLM 5.3). I reviewed it myself (cross-family) and re-ran the site's CI sequence; all green. PR jimiryquai/jamesryan-sites#27 is open with CI green and merges cleanly onto master (dc101c4), alongside the other half of the split. Merging is James's: the auto-mode permission rules refuse a PR merge from this session. Evidence in the worktree's `.orchestrate/evidence/` (orchestrator runs under `orchestrator/`).
+Package gap: the `faq` and `team` blocks have no heading field, so their sections show the components' default headings. 21's script refuses to move a marketing FAQ or team block with a heading, so nothing is lost. Backlog: add `heading` to both blocks (a compatible change).
