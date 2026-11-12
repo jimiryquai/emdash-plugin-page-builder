@@ -17,3 +17,5 @@
 
 - **Agent guardrails, after EmVB** (2026-11-12): EmVB (https://github.com/PerkyZZ999/EmVB) gives agents drafts only unless an admin allows publishing, per-token rate limits (reads, changes, publishes), and an "Agent" badge in the version timeline. Consider the same for agents building pages with the page builder. James and I looked at EmVB and kept our direction: it's an Elementor-style builder with design stored in the CMS; ours keeps design in the site's code (ADR 0001).
 - **A way out for content** (2026-11-12, after EmVB's "Leaving EmVB"): an export of a page's `layout` to plain Portable Text or HTML, so content isn't locked to the page builder.
+- **About page redesign on layout blocks** (2026-11-12, from v1/29, parked by James): `about.astro` currently keeps its hand-written fallback when `layout` is empty; redesign About onto `layout` blocks later (low priority).
+- **Pricing page content** (2026-11-12, from v1/30, parked by James): `pricing.astro` already renders `layout` via `PublishedPage`, and Pricing stays an unpublished draft until real plans/copy exist.

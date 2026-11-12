@@ -8,7 +8,7 @@ The Pricing page's body is template code (`apps/marketing-site/src/pages/pricing
 
 **Blocked by:** 14-d910a4dc
 
-**Status:** needs triage
+**Status:** done (triage complete; parked in `.scratch/backlog.md` per James — Pricing is not live)
 
 - [x] A triage comment maps each section of the Pricing page to a block type or names the gap.
 
@@ -17,3 +17,5 @@ The Pricing page's body is template code (`apps/marketing-site/src/pages/pricing
 **2026-11-12 Orchestrator:** Raised with James's go-ahead alongside the posts block.
 
 **2026-11-12 Codex orchestrator:** Triage at site feat/14-layout-only 1e1f057: pricing.astro delegates to PublishedPage; it has no hand-written pricing body, and the seed page has only title Pricing. The ticket premise is stale. Existing pricing already represents tiers/toggle/single, comparison represents feature rows, faq supports questions, and cta supports actions. No additional block gap can be established from current page code. Next implementation must inspect authoritative stored content and preserve existing offerings; do not invent plans or copy. Mapping complete; retain as triage while 14 and actual content are unresolved.
+
+**2026-11-12 Antigravity orchestrator:** James parked Pricing for now since the page is not live; recorded in `.scratch/backlog.md`.
