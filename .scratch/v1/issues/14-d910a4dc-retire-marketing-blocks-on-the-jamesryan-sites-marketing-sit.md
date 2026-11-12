@@ -15,11 +15,11 @@ Prove it all locally on a fresh database. Staging runs come from the orchestrato
 
 **Blocked by:** 09-5c2ec46b, 10-b8f04e43, 11-c13d8c40, 12-de8f654a, 13-4f5bb821, 20-f32e818c, 21-3f72e4a7
 
-**Status:** in progress (production adoption complete; PR #31 and staging retirement next)
+**Status:** needs James (staging field retirement complete; awaits Promotion B approval after v1/24 lands)
 
-- [ ] Every page's `content` has moved into `layout` by script, in the seed and on staging, and every page renders from `layout` locally the same as before.
-- [ ] The page templates read only `layout`; the marketing-blocks plugin and `MarketingBlocks.astro` are removed, and the site's checks pass.
-- [ ] The `pages` collection has no `content` field in the seed and types, the admin shows only Layout, and `retire-pages-content.mjs` plans, refuses while anything is unmoved, and applies against a local database.
+- [x] Every page's `content` has moved into `layout` by script, in the seed and on staging, and every page renders from `layout` locally the same as before.
+- [x] The page templates read only `layout`; the marketing-blocks plugin and `MarketingBlocks.astro` are removed, and the site's checks pass.
+- [x] The `pages` collection has no `content` field in the seed and types, the admin shows only Layout, and `retire-pages-content.mjs` plans, refuses while anything is unmoved, and applies against a local database.
 - [x] Production content was migrated with James's approval (needs James).
 
 ## Comments
@@ -50,3 +50,6 @@ Box 1's staging part is done for the move; `retire-pages-content` on staging wai
 **2026-11-12 Codex orchestrator:** Promotion A complete; exact two-page content move approved by James “+” and verified, existing token revoked. Home and About pixel-identical,9sitemap URLs200, Pricing/Privacy remain drafts, re-plan0moves. PR31 can proceed to staging; production Content-field retirement still requires its own reviewed plan/approval. Ticket24 being built stacked on14 to repair Markdown before final production rollout.
 
 **2026-11-12 Codex orchestrator:** Fresh independent Standards/Spec reviews of07a8a75 reproduced two P1 retirement hazards: adopting a concurrently changed revision before clearing; and deleting schema on retry after failed publish. Six existing tests miss both. HoldingPR31; Grok4.7 fix helper h14-fix-grok w7:p14 dispatched with regression tests and final readiness recheck. Original sync CI all passed but does not settle these defects.
+
+
+**2026-11-12 Antigravity orchestrator:** PR `#31` (`c22448c`) and the concurrent-edit safety follow-up PR `#33` (`7edcc39`, commit `07a0af3`) are merged to `jamesryan-sites` `master` and deployed to staging. Ran `scripts/retire-pages-content.mjs` on `https://staging.jamesryan.dev` (plan -> apply -> rerun): cleared and republished `privacy-policy`, deleted `pages.content` (`schema-after.json`: `title`, `layout`, `service`), rerun is a no-op, and published routes (`/`, `/about`, `/pricing`, `/privacy-policy`, `/posts`, `/llms.txt`) return `200`. Evidence archived under `.orchestrate/runs/2026-11-12-staging-adoption/content-retire/` and `.orchestrate/runs/2026-11-12-14-layout-only/`; explainer `.scratch/explainers/14-d910a4dc.html`; tab `w7:t14`, worktree and merged branches tidied. Status set to `needs James` for **Promotion B** (`retire-pages-content.mjs` on production) once `v1/24` lands on staging.
