@@ -1,13 +1,28 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtemp, writeFile, mkdir, symlink, copyFile, readdir, cp, rm } from 'node:fs/promises';
+import { mkdtemp, writeFile, mkdir, copyFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
-import { experimental_AstroContainer } from 'astro/container';
-import { createAstroServer } from './astro-harness.js';
+import { join } from 'node:path';
 
-test('packed Astro export imports and renders in an installed consumer', async (t) => {
+const { devDependencies, peerDependencies } = JSON.parse(
+  await readFile(new URL('../../package.json', import.meta.url), 'utf8'),
+);
+const astro6Range = peerDependencies.astro.split(' || ').find((range) => range.startsWith('^6.'));
+assert.ok(astro6Range, 'peerDependencies.astro includes an Astro 6 range');
+const astro6Version = astro6Range.slice(1);
+const astro7Version = devDependencies.astro;
+const emdashVersion = devDependencies.emdash;
+
+test(`packed Astro export imports and renders with Astro ${astro6Version}`, async (t) => {
+  await testPackedConsumer(t, astro6Version, emdashVersion);
+});
+
+test(`packed Astro export imports and renders with Astro ${astro7Version}`, async (t) => {
+  await testPackedConsumer(t, astro7Version, emdashVersion);
+});
+
+async function testPackedConsumer(t, astroVersion, emdashVersion) {
   const consumer = await mkdtemp(join(tmpdir(), 'page-builder-consumer-'));
   let passed = false;
   t.after(async () => {
@@ -23,37 +38,18 @@ test('packed Astro export imports and renders in an installed consumer', async (
   assert.ok(packed[0].files.some(({ path }) => path === 'dist/plugin.js'));
   assert.ok(packed[0].files.some(({ path }) => path === 'dist/plugin.d.ts'));
   await writeFile(join(consumer, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
-  execFileSync('npm', ['install', '--offline', '--ignore-scripts', '--legacy-peer-deps', '--no-audit', '--no-fund', join(consumer, packed[0].filename)], { cwd: consumer, env });
-  // Reuse the exact installed peer versions; the package itself is installed from its tarball.
-  // Copy EmDash so Vite's Astro CSS module IDs stay inside the consumer root.
-  await cp(resolve('node_modules/emdash'), join(consumer, 'node_modules/emdash'), { recursive: true });
-  for (const dependency of await readdir('node_modules')) {
-    if (dependency.startsWith('.') || dependency === 'emdash' || dependency === 'emdash-plugin-page-builder') continue;
-    await symlink(resolve('node_modules', dependency), join(consumer, 'node_modules', dependency), 'dir');
-  }
-  // Resolve the installed exports in plain Node, with plugin loading forbidden
-  // during the blocks import (also the namespace the CLI discovers).
-  execFileSync(process.execPath, ['--input-type=module', '-e', `
-    import { registerHooks } from 'node:module';
-    import assert from 'node:assert/strict';
-    const guard = registerHooks({ resolve(specifier, context, nextResolve) {
-      const result = nextResolve(specifier, context);
-      assert.ok(!result.url.endsWith('/dist/plugin.js'), 'blocks loaded the plugin');
-      return result;
-    } });
-    const blocks = await import('emdash-plugin-page-builder/blocks');
-    assert.equal(Object.values(blocks).filter(blocks.isBlockType).length, 10);
-    guard.deregister();
-    const { default: descriptor, createPlugin } = await import('emdash-plugin-page-builder/plugin');
-    assert.equal(descriptor().entrypoint, 'emdash-plugin-page-builder/plugin');
-    const result = await createPlugin().hooks['content:beforePublish'].handler({
-      content: { data: { layout: [{ _type: 'hero', _key: 'packed', _version: 1 }] } },
-      collection: 'pages', origin: 'api',
-    }, {});
-    assert.equal(result.cancel, true);
-    assert.ok(result.reason.includes('hero (packed): heading'));
-  `], { cwd: consumer, env, encoding: 'utf8' });
+  execFileSync('npm', [
+    'install',
+    '--ignore-scripts',
+    '--no-audit',
+    '--no-fund',
+    '--no-save',
+    `astro@${astroVersion}`,
+    `emdash@${emdashVersion}`,
+    join(consumer, packed[0].filename),
+  ], { cwd: consumer, env, encoding: 'utf8' });
   await mkdir(join(consumer, 'src'));
+  await copyFile('test/blocks/astro-harness.js', join(consumer, 'astro-harness.js'));
   await copyFile('test/blocks/fixtures/Section.astro', join(consumer, 'src/Section.astro'));
   await copyFile('test/blocks/fixtures/example.ts', join(consumer, 'src/example.ts'));
   await writeFile(join(consumer, 'src/Consumer.astro'), `---
@@ -63,15 +59,40 @@ import { example } from './example';
 ---
 <PageBuilder value={[{ _type: 'example', _key: 'packed', _version: 1, heading: 'Packed hello' }]}
   blocks={[{ ...example, sections: { default: Section } }]} />`);
-  const server = await createAstroServer(consumer);
-  try {
-    const { default: Consumer } = await server.ssrLoadModule(join(consumer, 'src/Consumer.astro'));
-    const container = await experimental_AstroContainer.create();
-    const html = await container.renderToString(Consumer);
-    assert.match(html, /data-key="packed" data-version="2"/);
-    assert.match(html, /<h2>Packed hello<\/h2>/);
-  } finally {
-    await server.close();
-  }
+  await writeFile(join(consumer, 'verify.mjs'), `import { registerHooks } from 'node:module';
+import assert from 'node:assert/strict';
+import { join } from 'node:path';
+import { experimental_AstroContainer } from 'astro/container';
+import { createAstroServer } from './astro-harness.js';
+
+const guard = registerHooks({ resolve(specifier, context, nextResolve) {
+  const result = nextResolve(specifier, context);
+  assert.ok(!result.url.endsWith('/dist/plugin.js'), 'blocks loaded the plugin');
+  return result;
+} });
+const blocks = await import('emdash-plugin-page-builder/blocks');
+assert.equal(Object.values(blocks).filter(blocks.isBlockType).length, 10);
+guard.deregister();
+const { default: descriptor, createPlugin } = await import('emdash-plugin-page-builder/plugin');
+assert.equal(descriptor().entrypoint, 'emdash-plugin-page-builder/plugin');
+const result = await createPlugin().hooks['content:beforePublish'].handler({
+  content: { data: { layout: [{ _type: 'hero', _key: 'packed', _version: 1 }] } },
+  collection: 'pages', origin: 'api',
+}, {});
+assert.equal(result.cancel, true);
+assert.ok(result.reason.includes('hero (packed): heading'));
+
+const server = await createAstroServer(process.cwd());
+try {
+  const { default: Consumer } = await server.ssrLoadModule(join(process.cwd(), 'src/Consumer.astro'));
+  const container = await experimental_AstroContainer.create();
+  const html = await container.renderToString(Consumer);
+  assert.match(html, /data-key="packed" data-version="2"/);
+  assert.match(html, /<h2>Packed hello<\\/h2>/);
+} finally {
+  await server.close();
+}
+`);
+  execFileSync(process.execPath, ['verify.mjs'], { cwd: consumer, env, encoding: 'utf8' });
   passed = true;
-});
+}
