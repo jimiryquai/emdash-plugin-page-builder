@@ -68,6 +68,21 @@ scheduled publish is unscheduled and its reason appears on the dashboard.
 same missing-field facts as `{ blockKey, blockType, field }` for callers that
 need a pure check.
 
+## Release 0.6.0
+
+- Adds the `posts` block (`featured-grid`, `grid` and `list` variants) with an
+  optional `heading`, `count` defaulting to `4`, and an optional `category`
+  taxonomy slug filter.
+- Exports the `Post` shape (`Post`, `PostTag`, `PostByline`),
+  `starterPostsCollection` and `createPostsSource(options?)` from `blocks`.
+  `createPostsSource` orders recent posts first (`published_at: 'desc'`),
+  applies `count` (falling back to the block definition's default `4`), filters
+  by category taxonomy slug when set, and forwards `cacheHints` in one read.
+- `PageBuilder.astro` derives fallback `count` from a block's definition when
+  stored `count` is absent and forwards module-supplied `sourceContext` (such as
+  `category`) to the block's `Source`, keeping existing `Source` callers
+  compatible. `layoutToMarkdown` renders `posts` blocks from passed items.
+
 ## Release 0.5.0
 
 - `layoutToMarkdown(value, blockTypes, options?)`, exported from `blocks`, renders
@@ -190,6 +205,7 @@ Block modules import the shared pieces (`BlockType`, `variantField`, `linksField
 | `migrations` | A map keyed by the version being upgraded. Function `N` returns version `N + 1`, preserving `_key` and `_type`, without mutating the input. Keep one function and test per step. Use an empty map for a block with only version 1. |
 | `sections` | Added by the site when rendering, producing a `SiteBlockType`; the package definition has no visual components. `default` is required, other keys map variants. |
 | `toMarkdown` | Optional: plain Markdown for one current-version block, dispatched by `layoutToMarkdown`. Build it from the shared `markdownText`, `markdownImage`, `markdownLinks` and `portableTextToMarkdown` helpers in `src/blocks/core.ts`; a module without one is skipped, never thrown on. |
+| `sourceContext` | Optional: block-specific `SourceContext` fields extracted from a stored block (such as `posts` forwarding a trimmed `category` slug) so `PageBuilder` dispatches generically. |
 
 `migrateBlocks(value, blockTypes)` returns the upgraded layout in the same order
 and leaves unknown types alone. Render-time upgrades call this same function.
@@ -200,20 +216,21 @@ Migrations must remain pure, including any nested content they transform.
 ### Shared-content seam
 
 `PageBuilder` optionally accepts `sources`, keyed by block slug, and `group`, a
-site-supplied group identifier. A `Source<T>` receives `{ scope, group, count }`
-and returns either an array of shape `T` or `{ items, cacheHints }`; the items
-are passed to the section as `items`, and the cache hints (EmDash query results
-carry them) are merged and applied to the page's `Astro.cache` when it is
-enabled. A stored `scope: 'page'` remains `page` when a group is configured;
-without a group it becomes `all`. A stored `all` stays `all`. A stored `count`
-passes through when it is a positive number. Inline blocks need no source.
-Shared-content blocks build their scope select with `scopeField()` and their
-count field with `countField()`, sharing the `SCOPE_FIELD_SLUG` and
-`COUNT_FIELD_SLUG` constants beside `variantField` and `VARIANT_FIELD_SLUG`;
-`PageBuilder` reads all three through the constants. Default sources share
-`createCollectionSource({ collection, groupField?, query?, mapEntry })` in
-`src/blocks/core.ts`, which handles cursor paging, group reference matching,
-optional `count` capping, cache hint collection, and the injectable query API.
+site-supplied group identifier. A `Source<T>` receives `SourceContext`
+(`{ scope, group, count, category? }`) and returns either an array of shape `T`
+or `{ items, cacheHints }`; the items are passed to the section as `items`, and
+the cache hints (EmDash query results carry them) are merged and applied to the
+page's `Astro.cache` when it is enabled. A stored `scope: 'page'` remains `page`
+when a group is configured; without a group it becomes `all`. A stored `all`
+stays `all`. A stored `count` passes through when it is a positive number,
+otherwise falling back to the `defaultValue` declared on the block's `count`
+field (if any). Block-specific context extracted via `BlockType.sourceContext`
+(such as `posts`'s optional `category`) is merged automatically. Inline blocks
+need no source. Shared-content blocks build their scope select with
+`scopeField()` and their count field with `countField()`, sharing the
+`SCOPE_FIELD_SLUG` and `COUNT_FIELD_SLUG` constants beside `variantField` and
+`VARIANT_FIELD_SLUG`; `PageBuilder` reads them through `resolveSourceContext`.
+Default group-scoped sources share `createCollectionSource({ collection, groupField?, query?, mapEntry })` in `src/blocks/core.ts`, which handles cursor paging, group reference matching, optional `count` capping, cache hint collection, and the injectable query API.
 
 ### Markdown
 
@@ -226,7 +243,7 @@ with `migrateBlocks` first, then dispatches to each block module's own
 types, modules without `toMarkdown` and empty renderings are skipped rather
 than thrown on; the output is deterministic.
 
-Shared-content blocks (testimonials, pricing, faq, team) render their own
+Shared-content blocks (testimonials, pricing, faq, team, posts) render their own
 heading text plus the items the caller passes in `options.items`, keyed by
 block `_key`, so a site supplies what its sources read — the same items its
 sections receive, in the shape its `Source` produces:
@@ -448,4 +465,31 @@ Long-form rich text pages (such as privacy policies or terms of service) carried
 | --- | --- |
 | `centered` | The heading and optional supporting copy are centered above the document body. |
 | `start` | The heading and optional supporting copy line up with the start of the document body. |
+
+### posts
+
+Recent posts pulled from a shared posts collection (`src/blocks/types/posts.ts`).
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `variant` | select | `featured-grid` (first post with an image featured, rest in a grid), `grid` (equal cards side by side) or `list` (vertical list of entries); unmapped variants use the site's default section |
+| `heading` | string | Optional section heading above the post listing |
+| `count` | integer | How many posts to show (1–24, default `4`); built with `countField({ defaultValue: 4 })` |
+| `category` | string | Optional category taxonomy slug used to filter posts |
+
+**Shape.** `Post`: `{ title, url, excerpt?, date?, image?, tags?, bylines? }`
+(`tags` as `{ slug, label }[]` and `bylines` matching EmDash's hydrated
+`ContentBylineCredit`), the contract between a posts source and a posts section.
+
+**Sources.** `starterPostsCollection()` defines the starter `posts` collection
+in EmDash's seed `collections` shape (`title`, `featured_image`, `content`,
+`excerpt`, `/posts/{slug}`). `createPostsSource({ collection?, categoryTaxonomy?, tagTaxonomy?, orderBy?, mapEntry?, query? })`
+is the default source: it queries `collection` (default `'posts'`) in a single
+list read ordered by `published_at: 'desc'`, filters with
+`where: { [categoryTaxonomy]: category }` when `category` is present, caps
+`limit` to `count` (or the block's default `4`), maps hydrated `terms` and
+`bylines`, and returns `{ items, cacheHints }`. A site with custom fields can
+pass `mapEntry` or write its own `Source<Post>` against its generated collection
+types.
+
 

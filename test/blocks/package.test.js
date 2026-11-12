@@ -73,7 +73,7 @@ const guard = registerHooks({ resolve(specifier, context, nextResolve) {
   return result;
 } });
 const blocks = await import('emdash-plugin-page-builder/blocks');
-assert.equal(Object.values(blocks).filter(blocks.isBlockType).length, 10);
+assert.equal(Object.values(blocks).filter(blocks.isBlockType).length, 11);
 guard.deregister();
 const { default: descriptor, createPlugin } = await import('emdash-plugin-page-builder/plugin');
 assert.equal(descriptor().entrypoint, 'emdash-plugin-page-builder/plugin');

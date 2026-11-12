@@ -9,3 +9,4 @@ export * from './types/team.js';
 export * from './types/faq.js';
 export * from './types/stats.js';
 export * from './types/prose.js';
+export * from './types/posts.js';
