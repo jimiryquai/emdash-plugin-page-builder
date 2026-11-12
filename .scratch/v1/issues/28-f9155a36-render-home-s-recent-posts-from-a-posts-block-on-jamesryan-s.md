@@ -8,12 +8,12 @@ On jamesryan-sites, after the `posts` block (27-e3a4b150) is released: offer `po
 
 **Blocked by:** 27-e3a4b150, 24-7c283c32
 
-**Status:** in progress
+**Status:** done
 
-- [ ] Home renders its recent posts from a `posts` block, pixel-identical to before locally, and the featured image preload is still emitted.
-- [ ] Every `posts` variant renders through a site section (each with `default`), shown by a test or a rendered check.
-- [ ] A script plans and applies adding the posts block to Home on a live site, and a second run changes nothing (local proof).
-- [ ] The marketing site's CI sequence passes: `pnpm install --frozen-lockfile`, `pnpm typecheck`, `pnpm build`, `pnpm test`, `bash scripts/check-rendered-seo.sh`.
+- [x] Home renders its recent posts from a `posts` block, pixel-identical to before locally, and the featured image preload is still emitted.
+- [x] Every `posts` variant renders through a site section (each with `default`), shown by a test or a rendered check.
+- [x] A script plans and applies adding the posts block to Home on a live site, and a second run changes nothing (local proof).
+- [x] The marketing site's CI sequence passes: `pnpm install --frozen-lockfile`, `pnpm typecheck`, `pnpm build`, `pnpm test`, `bash scripts/check-rendered-seo.sh`.
 
 ## Comments
 
@@ -21,3 +21,5 @@ On jamesryan-sites, after the `posts` block (27-e3a4b150) is released: offer `po
 
 
 **2026-11-12 Antigravity orchestrator:** Claimed in `emdash-plugin-page-builder` (`69bb528`/`7e8b55a` resolved blockers `27-e3a4b150` at `0.6.0` and `24-7c283c32` at `1a68c2e`). Risk: medium (reversible site code destined for staging; Zhipu `pi` builder, Google orchestrator cross-family review required; no tenant credentials or live calls). Worktree `feat/28-home-posts-block`, port `4338`.
+
+**2026-11-12 Antigravity orchestrator:** Verified and merged (`jimiryquai/jamesryan-sites#36`, `8b60d84`). Local pixel diff `0 (0)` with single-read LCP preload (`perRequestSource`), Fix Round 1 added pending-draft / `liveData` and full read-back safety to `scripts/add-home-posts-block.mjs`, cross-family review + independent CI green. Applied `posts` block type (`staging-cli-apply.json`) and Home `posts` block (`staging-home-posts-apply.json`, rerun `unchanged`) on `https://staging.jamesryan.dev`; staging `Deploy` `43283559800` succeeded and live `/` preload + `/home.md` verified. Evidence archived under `.orchestrate/runs/2026-11-12-28-home-posts-block/`.
