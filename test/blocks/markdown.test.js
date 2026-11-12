@@ -13,9 +13,10 @@ import {
   faq,
   stats,
   prose,
+  posts,
 } from 'emdash-plugin-page-builder/blocks';
 
-const blocks = [hero, cta, features, testimonials, pricing, comparison, team, faq, stats, prose];
+const blocks = [hero, cta, features, testimonials, pricing, comparison, team, faq, stats, prose, posts];
 
 describe('portableTextToMarkdown', () => {
   const span = (text, marks) => ({ _type: 'span', _key: text, text, ...(marks ? { marks } : {}) });
@@ -453,6 +454,49 @@ describe('layoutToMarkdown', () => {
         },
       ),
       '## Team\n\n- **James Ryan** — Everything\n- **No Role**',
+    );
+  });
+
+  test('posts renders its optional heading and post links from the items passed for its _key', () => {
+    assert.equal(
+      layoutToMarkdown(
+        [
+          {
+            _type: 'posts',
+            _version: 1,
+            _key: 'posts-1',
+            variant: 'featured-grid',
+            heading: 'Recent Writing',
+            count: 2,
+          },
+          {
+            _type: 'posts',
+            _version: 1,
+            _key: 'posts-2',
+            variant: 'list',
+          },
+          {
+            _type: 'posts',
+            _version: 1,
+            _key: 'posts-empty',
+          },
+        ],
+        blocks,
+        {
+          items: {
+            'posts-1': [
+              { title: 'First Post', url: '/posts/first-post', excerpt: 'Summary.' },
+              { title: 'Second Post', url: '/posts/second-post' },
+              { title: 'Missing URL' },
+            ],
+            'posts-2': [{ title: 'Unheaded Post', url: '/posts/unheaded' }],
+          },
+        },
+      ),
+      '## Recent Writing\n\n' +
+        '- [First Post](/posts/first-post)\n' +
+        '- [Second Post](/posts/second-post)\n\n' +
+        '- [Unheaded Post](/posts/unheaded)',
     );
   });
 

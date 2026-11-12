@@ -1,0 +1,7 @@
+---
+const { value, items = [] } = Astro.props;
+---
+<section data-section="featured-grid">
+  {value.heading && <h2>{value.heading}</h2>}
+  <ul>{items.map((item) => <li data-url={item.url} data-tags={(item.tags ?? []).map((t) => t.slug).join(',')} data-bylines={(item.bylines ?? []).map((b) => b.byline.displayName).join(',')}>{item.title}</li>)}</ul>
+</section>

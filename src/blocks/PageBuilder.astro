@@ -3,7 +3,7 @@ import { Blocks } from 'emdash/ui';
 import type { BlockComponent } from 'emdash/ui';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { createComponent, renderTemplate, spreadAttributes } from 'astro/runtime/server/index.js';
-import { COUNT_FIELD_SLUG, isSourceResult, mergeCacheHints, migrateBlocks, SCOPE_FIELD_SLUG, VARIANT_FIELD_SLUG } from 'emdash-plugin-page-builder/blocks';
+import { isSourceResult, mergeCacheHints, migrateBlocks, resolveSourceContext, VARIANT_FIELD_SLUG } from 'emdash-plugin-page-builder/blocks';
 import type { SiteBlockType, Source, StoredBlock } from 'emdash-plugin-page-builder/blocks';
 
 export interface Props {
@@ -18,16 +18,13 @@ export interface Props {
 const { value, blocks, sources = {}, group, edit, fallback } = Astro.props;
 const editAttrs = edit ? { ...edit } : {};
 const hasEditAttrs = Object.keys(editAttrs).some((key) => editAttrs[key] !== undefined);
+const blockTypes = new Map(blocks.map((blockType) => [blockType.definition.slug, blockType]));
 const upgraded = migrateBlocks(value ?? [], blocks);
 const cacheHints: import('emdash').CacheHint[] = [];
 const items = new Map(await Promise.all(upgraded.map(async (block) => {
   const source = sources[block._type];
-  const storedScope = block[SCOPE_FIELD_SLUG];
-  const scope = storedScope === 'page' && group !== undefined ? 'page' : 'all';
-  const storedCount = block[COUNT_FIELD_SLUG];
-  const count = typeof storedCount === 'number' && storedCount > 0 ? storedCount : undefined;
   if (!source) return [block, []] as const;
-  const result = await source({ scope, group, count });
+  const result = await source(resolveSourceContext(block, blockTypes.get(block._type), group));
   const read = isSourceResult(result) ? result : { items: result };
   if (read.cacheHints) cacheHints.push(...read.cacheHints);
   return [block, read.items] as const;

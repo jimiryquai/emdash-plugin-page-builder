@@ -51,16 +51,28 @@ async function testPackedConsumer(t, astroVersion, emdashVersion) {
   await mkdir(join(consumer, 'src'));
   await copyFile('test/blocks/astro-harness.js', join(consumer, 'astro-harness.js'));
   await copyFile('test/blocks/fixtures/Section.astro', join(consumer, 'src/Section.astro'));
+  await copyFile('test/blocks/fixtures/PostsGrid.astro', join(consumer, 'src/PostsGrid.astro'));
   await copyFile('test/blocks/fixtures/example.ts', join(consumer, 'src/example.ts'));
   await writeFile(join(consumer, 'src/Consumer.astro'), `---
 import PageBuilder from 'emdash-plugin-page-builder/blocks/PageBuilder.astro';
+import { posts } from 'emdash-plugin-page-builder/blocks';
 import { createEditable } from 'emdash';
 import Section from './Section.astro';
+import PostsGrid from './PostsGrid.astro';
 import { example } from './example';
+
+const { sources } = Astro.props;
 ---
-<PageBuilder value={[{ _type: 'example', _key: 'packed', _version: 1, heading: 'Packed hello' }]}
+<PageBuilder value={[
+    { _type: 'example', _key: 'packed', _version: 1, heading: 'Packed hello' },
+    { _type: 'posts', _key: 'packed-posts', _version: 1, heading: 'Packed posts', category: ' news ' },
+  ]}
   edit={createEditable('pages', 'packed-page').layout}
-  blocks={[{ ...example, sections: { default: Section } }]} />`);
+  sources={sources}
+  blocks={[
+    { ...example, sections: { default: Section } },
+    { ...posts, sections: { default: PostsGrid } },
+  ]} />`);
   await writeFile(join(consumer, 'verify.mjs'), `import { registerHooks } from 'node:module';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
@@ -73,7 +85,7 @@ const guard = registerHooks({ resolve(specifier, context, nextResolve) {
   return result;
 } });
 const blocks = await import('emdash-plugin-page-builder/blocks');
-assert.equal(Object.values(blocks).filter(blocks.isBlockType).length, 10);
+assert.equal(Object.values(blocks).filter(blocks.isBlockType).length, 11);
 guard.deregister();
 const { default: descriptor, createPlugin } = await import('emdash-plugin-page-builder/plugin');
 assert.equal(descriptor().entrypoint, 'emdash-plugin-page-builder/plugin');
@@ -88,10 +100,26 @@ const server = await createAstroServer(process.cwd());
 try {
   const { default: Consumer } = await server.ssrLoadModule(join(process.cwd(), 'src/Consumer.astro'));
   const container = await experimental_AstroContainer.create();
-  const html = await container.renderToString(Consumer);
+  const sourceCalls = [];
+  const html = await container.renderToString(Consumer, {
+    props: {
+      sources: {
+        posts: async (context) => {
+          sourceCalls.push(context);
+          return Array.from({ length: context.count ?? 0 }, (_, i) => ({
+            title: \`Packed post \${i + 1}\`,
+            url: \`/posts/packed-\${i + 1}\`,
+          }));
+        },
+      },
+    },
+  });
+  assert.deepEqual(sourceCalls, [{ scope: 'all', group: undefined, count: 4, category: 'news' }]);
   assert.match(html, /<div style="display:contents" data-emdash-ref=/);
   assert.match(html, /data-key="packed" data-version="2"/);
   assert.match(html, /<h2>Packed hello<\\/h2><\\/section><\\/div>/);
+  assert.match(html, /<h2>Packed posts<\\/h2>/);
+  assert.equal(html.match(/<li data-url="\\/posts\\/packed-/g)?.length, 4);
 } finally {
   await server.close();
 }

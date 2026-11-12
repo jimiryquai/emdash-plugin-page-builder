@@ -195,11 +195,14 @@ export function scopeField(): BlockFieldDefinition {
 export const COUNT_FIELD_SLUG = 'count';
 
 /** Build the shared count field for shared-content blocks. */
-export function countField(options: { min?: number; max?: number } = {}): BlockFieldDefinition {
+export function countField(
+  options: { min?: number; max?: number; defaultValue?: number } = {},
+): BlockFieldDefinition {
   return {
     slug: COUNT_FIELD_SLUG,
     label: 'Count',
     type: 'integer',
+    ...(options.defaultValue !== undefined ? { defaultValue: options.defaultValue } : {}),
     validation: { min: options.min ?? 1, max: options.max ?? 24 },
   };
 }
@@ -252,6 +255,12 @@ export interface BlockType {
    * Optional so a module without one is skipped, never thrown on.
    */
   toMarkdown?: (block: Readonly<StoredBlock>, items?: readonly unknown[]) => string;
+  /**
+   * Optional block-specific source context extracted from a stored block
+   * (such as `posts` forwarding a trimmed `category` slug) so `PageBuilder`
+   * dispatches generically without switching on `_type`.
+   */
+  sourceContext?: (block: Readonly<StoredBlock>) => Partial<SourceContext>;
 }
 
 /** Recognise block module exports without maintaining a separate registry. */
@@ -283,14 +292,50 @@ export function isSourceResult<T>(value: SourceResult<T> | readonly T[]): value 
   return !Array.isArray(value);
 }
 
+/** Context passed to a shared-content source for one block on a page. */
+export interface SourceContext {
+  scope: 'page' | 'all';
+  group?: string;
+  count?: number;
+}
+
 /** A site's typed mapping from its collection's entries to a shape. */
 export type Source<T = unknown> = (
-  context: {
-    scope: 'page' | 'all';
-    group?: string;
-    count?: number;
-  },
+  context: SourceContext,
 ) => SourceResult<T> | readonly T[] | Promise<SourceResult<T> | readonly T[]>;
+
+/** Read a current-version field's declared `defaultValue` from a block definition. */
+export function blockFieldDefault(blockType: BlockType, slug: string): unknown {
+  const current = blockType.definition.versions.find(
+    (entry) => entry.version === blockType.definition.currentVersion,
+  );
+  return current?.fields.find((field) => field.slug === slug)?.defaultValue;
+}
+
+/** Resolve a positive count, falling back to `fallback` when positive. */
+export function resolvePositiveCount(value: unknown, fallback?: unknown): number | undefined {
+  if (typeof value === 'number' && value > 0) return value;
+  if (typeof fallback === 'number' && fallback > 0) return fallback;
+  return undefined;
+}
+
+/** Build the `SourceContext` for one upgraded block from its definition and stored values. */
+export function resolveSourceContext(
+  block: Readonly<StoredBlock>,
+  blockType?: BlockType,
+  group?: string,
+): SourceContext {
+  const storedScope = block[SCOPE_FIELD_SLUG];
+  const scope = storedScope === 'page' && group !== undefined ? 'page' : 'all';
+  const defaultCount = blockType !== undefined ? blockFieldDefault(blockType, COUNT_FIELD_SLUG) : undefined;
+  const count = resolvePositiveCount(block[COUNT_FIELD_SLUG], defaultCount);
+  return {
+    scope,
+    group,
+    count,
+    ...blockType?.sourceContext?.(block),
+  };
+}
 
 export const GROUP_FIELD_SLUG = 'group';
 
@@ -300,6 +345,14 @@ export interface CollectionEntry {
   data: Record<string, unknown>;
   /** One page per reference field the query asked for, by field slug. */
   references?: Readonly<Record<string, { entries: readonly CollectionEntry[] }>>;
+}
+
+/** Filter options supported by `QueryApi.list`. */
+export interface QueryListFilter {
+  limit?: number;
+  cursor?: string;
+  where?: Record<string, string>;
+  orderBy?: Record<string, 'asc' | 'desc'>;
 }
 
 /** One page of a collection query, as the query API returns it. */
@@ -317,7 +370,7 @@ export interface QueryListResult {
 export interface QueryApi {
   list(
     collection: string,
-    filter?: { limit?: number; cursor?: string },
+    filter?: QueryListFilter,
   ): Promise<QueryListResult>;
   get(
     collection: string,

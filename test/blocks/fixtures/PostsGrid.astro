@@ -1,0 +1,7 @@
+---
+const { value, items = [] } = Astro.props;
+---
+<section data-section="grid">
+  {value.heading && <h2>{value.heading}</h2>}
+  <ul>{items.map((item) => <li data-url={item.url}>{item.title}</li>)}</ul>
+</section>

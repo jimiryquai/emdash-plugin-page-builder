@@ -6,7 +6,7 @@ const types = Object.values(blocks).filter(blocks.isBlockType);
 const stored = (type, data = {}) => ({ _type: type, _key: `${type}-key`, _version: 1, ...data });
 
 test('publish requirements restore required fields and repeater minimums for every block', () => {
-  assert.equal(types.length, 10);
+  assert.equal(types.length, 11);
   for (const type of types) assert.ok(Array.isArray(type.requiredToPublish));
   assert.deepEqual(blocks.findMissingToPublish(types.map(type => stored(type.definition.slug)), types).sort((a, b) => a.blockType.localeCompare(b.blockType)), [
     { blockKey: 'features-key', blockType: 'features', field: 'heading' },
@@ -60,6 +60,6 @@ test('complete layouts and optional empty links pass the publish check', () => {
     stored('stats', { heading: 'Stats', items: [{ value: '10' }] }),
     stored('comparison', { columns: [{ key: 'first', label: 'Us' }], rows: [{ name: 'Feature' }] }),
     stored('prose', { heading: 'Terms', content: [{ _type: 'block', children: [{ text: 'Terms' }] }] }),
-    stored('pricing'), stored('team'), stored('testimonials'), stored('faq'),
+    stored('pricing'), stored('team'), stored('testimonials'), stored('faq'), stored('posts'),
   ], types), []);
 });
