@@ -16,7 +16,7 @@ Licence: MIT.
 npm install emdash-plugin-page-builder
 ```
 
-Requires Node.js 24 or newer and peer dependencies `astro ^6.4.8` and
+Requires Node.js 24 or newer and peer dependencies `astro ^6.4.8 || ^7.2.8` and
 `emdash ^1.4.0` in the consuming site.
 
 - `emdash-plugin-page-builder/blocks`: block types, shapes, sources, starter
@@ -67,6 +67,11 @@ scheduled publish is unscheduled and its reason appears on the dashboard.
 `findMissingToPublish(value, blockTypes)`, exported from `blocks`, provides the
 same missing-field facts as `{ blockKey, blockType, field }` for callers that
 need a pure check.
+
+## Release 0.3.0
+
+- Supports Astro 6.4.8+ and Astro 7.2.8+, including Astro 7's fix for the AVIF
+  image optimization remote code execution advisory.
 
 ## Release 0.2.0
 
