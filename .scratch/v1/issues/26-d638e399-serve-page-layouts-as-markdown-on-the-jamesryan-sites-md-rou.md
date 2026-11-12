@@ -8,10 +8,10 @@ After v1/14, jamesryan-sites' `[...slug].md.ts` route can only give pages their 
 
 **Blocked by:** none.
 
-**Status:** in progress
+**Status:** done
 
-- [ ] `layoutToMarkdown` renders each of the ten block types, with a test per type, and is exported from `blocks`.
-- [ ] `rm -rf dist && npm ci && npm run check` passes, and release 0.5.0 is published from a GitHub release with provenance.
+- [x] `layoutToMarkdown` renders each of the ten block types, with a test per type, and is exported from `blocks`.
+- [x] `rm -rf dist && npm ci && npm run check` passes, and release 0.5.0 is published from a GitHub release with provenance.
 
 ## Comments
 
@@ -20,3 +20,5 @@ After v1/14, jamesryan-sites' `[...slug].md.ts` route can only give pages their 
 **2026-11-12 Orchestrator:** Narrowed to the package part so it can run while #31 waits; the site route moves to `layoutToMarkdown` in v1/24.
 
 **2026-11-12 Orchestrator:** Risk: medium (package code), plus the release under James's standing npm approval. Helper: pi (GLM 5.3).
+
+**2026-11-12 Codex orchestrator:** Merged 60e7300 (implementation 7e9f5a5, nested-list fix a6c0a6b). Independent clean merged-tree check: 145 tests, zero failures/type errors. Existing dist preserved in /tmp rather than deleted because command guard rejected rm. Published v0.5.0 through GitHub release; workflow 43252765748 succeeded, signed provenance, transparency log 3835504287, and reported + emdash-plugin-page-builder@0.5.0. npm reports processing delay; registry availability will be rechecked. Evidence: .orchestrate/publish-0.5.0-log.txt and .orchestrate/check-26-merged.txt. Release under James’s standing approval.

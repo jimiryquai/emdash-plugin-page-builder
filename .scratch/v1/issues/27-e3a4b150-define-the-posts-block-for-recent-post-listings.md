@@ -8,7 +8,7 @@ A `posts` block type for listings of a site's posts, built like `testimonials`: 
 
 **Blocked by:** 26-d638e399
 
-**Status:** ready-for-agent
+**Status:** in progress
 
 - [ ] The `posts` block, `Post` shape and `createPostsSource` are exported from `blocks`, pass `validateSeed`, and have tests for count, cache hints and each variant's description.
 - [ ] `layoutToMarkdown` renders a posts block from passed items, with a test.
