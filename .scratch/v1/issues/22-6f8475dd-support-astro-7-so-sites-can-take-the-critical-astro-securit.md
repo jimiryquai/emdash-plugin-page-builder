@@ -8,7 +8,7 @@ Astro 6.4.8 (this package's dev pin, and jamesryan-sites') has a critical adviso
 
 **Blocked by:** none.
 
-**Status:** ready-for-agent
+**Status:** in progress
 
 - [ ] The peer range accepts Astro 6.4.8+ and 7.2.8+, and a consumer test installs the packed tarball against Astro 7.
 - [ ] Dev pins are on Astro 7 and `rm -rf dist && npm ci && npm run check` passes.
