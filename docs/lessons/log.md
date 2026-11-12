@@ -1,5 +1,11 @@
 # Lessons log
 
+## 2026-11-12
+
+* **Creation**: Authenticated content GET hydrates a pending draft into item.data (caught independently in tickets v1/14 and v1/28 live-site migration reviews).
+
+* **Update**: Block fields are optional so a new block autosaves (added EmDash 1.5 `url: ""` draft rejection from ticket v1/25's browser spike; updated ticket 19 reference to shipped `./plugin` hook).
+
 ## 2026-11-10
 
 * **Creation**: Block fields are optional so a new block autosaves (from ticket v1/18's local-site failure; required to publish comes in ticket 19, ADR 0003).
