@@ -1,19 +1,28 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtemp, writeFile, mkdir, copyFile, rm } from 'node:fs/promises';
+import { mkdtemp, writeFile, mkdir, copyFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-test('packed Astro export imports and renders with Astro 6.4.8', async (t) => {
-  await testPackedConsumer(t, '6.4.8');
+const { devDependencies, peerDependencies } = JSON.parse(
+  await readFile(new URL('../../package.json', import.meta.url), 'utf8'),
+);
+const astro6Range = peerDependencies.astro.split(' || ').find((range) => range.startsWith('^6.'));
+assert.ok(astro6Range, 'peerDependencies.astro includes an Astro 6 range');
+const astro6Version = astro6Range.slice(1);
+const astro7Version = devDependencies.astro;
+const emdashVersion = devDependencies.emdash;
+
+test(`packed Astro export imports and renders with Astro ${astro6Version}`, async (t) => {
+  await testPackedConsumer(t, astro6Version, emdashVersion);
 });
 
-test('packed Astro export imports and renders with Astro 7.4.4', async (t) => {
-  await testPackedConsumer(t, '7.4.4');
+test(`packed Astro export imports and renders with Astro ${astro7Version}`, async (t) => {
+  await testPackedConsumer(t, astro7Version, emdashVersion);
 });
 
-async function testPackedConsumer(t, astroVersion) {
+async function testPackedConsumer(t, astroVersion, emdashVersion) {
   const consumer = await mkdtemp(join(tmpdir(), 'page-builder-consumer-'));
   let passed = false;
   t.after(async () => {
@@ -36,7 +45,7 @@ async function testPackedConsumer(t, astroVersion) {
     '--no-fund',
     '--no-save',
     `astro@${astroVersion}`,
-    'emdash@1.5.0',
+    `emdash@${emdashVersion}`,
     join(consumer, packed[0].filename),
   ], { cwd: consumer, env, encoding: 'utf8' });
   await mkdir(join(consumer, 'src'));
