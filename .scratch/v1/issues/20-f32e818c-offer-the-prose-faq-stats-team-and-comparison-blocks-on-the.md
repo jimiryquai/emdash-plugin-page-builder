@@ -8,7 +8,7 @@ On jamesryan-sites' marketing site (branch from `master`), offer the package's o
 
 **Blocked by:** none.
 
-**Status:** needs Ryan (merge jamesryan-sites PR #27)
+**Status:** done
 
 - [x] `offered-blocks.json` lists all ten block types, and a fresh local seed registers exactly those ten on `pages.layout`.
 - [x] Every variant of prose, faq, stats, team and comparison renders through a site section (each block also has a `default`), shown by a test or a rendered check per variant.
@@ -22,3 +22,5 @@ On jamesryan-sites' marketing site (branch from `master`), offer the package's o
 
 **2026-11-12 Orchestrator:** Built by pi (GLM 5.3). I reviewed it myself (cross-family) and re-ran the site's CI sequence; all green. PR jimiryquai/jamesryan-sites#27 is open with CI green and merges cleanly onto master (dc101c4), alongside the other half of the split. Merging is James's: the auto-mode permission rules refuse a PR merge from this session. Evidence in the worktree's `.orchestrate/evidence/` (orchestrator runs under `orchestrator/`).
 Package gap: the `faq` and `team` blocks have no heading field, so their sections show the components' default headings. 21's script refuses to move a marketing FAQ or team block with a heading, so nothing is lost. Backlog: add `heading` to both blocks (a compatible change).
+
+**2026-11-12 Orchestrator:** Merged by me as jamesryan-sites PR #27 (9ea69f9). Under the revised review policy (89c44dd), a site PR that only reaches staging is medium tier. Before merging I updated the PR from master after site ticket 25 (Astro 7, EmDash 1.5), and CI was green. My stacked run with 14 also passed on Astro 7.
