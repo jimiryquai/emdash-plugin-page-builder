@@ -6,7 +6,7 @@ EmDash already has the custom fields. This project is the page-building layer on
 
 The npm package defines block types through EmDash's schema API (see [ADR 0001](docs/adr/0001-package-owns-data-sites-own-collections-and-visuals.md) and the spec). Its separate native plugin entry enforces required block fields before publishing; Portable Text plugin blocks are planned for later.
 
-Status: release 0.1.0 prepared; site adoption in progress. See [the v1 spec](docs/specs/v1-page-builder.md), [the glossary](docs/GLOSSARY.md), and `docs/research/` for what EmDash 1.4 provides.
+Status: 0.2.0 released on npm; site adoption in progress. See [the v1 spec](docs/specs/v1-page-builder.md), [the glossary](docs/GLOSSARY.md), and `docs/research/` for what EmDash 1.4 provides.
 
 Licence: MIT.
 
@@ -68,6 +68,16 @@ scheduled publish is unscheduled and its reason appears on the dashboard.
 same missing-field facts as `{ blockKey, blockType, field }` for callers that
 need a pure check.
 
+## Release 0.2.0
+
+- Block fields are optional in the schema, so a new block autosaves while it's
+  still empty ([ADR 0003](docs/adr/0003-required-to-publish-not-to-save.md)).
+- Each block type lists `requiredToPublish`, and the new
+  `emdash-plugin-page-builder/plugin` entry refuses a publish that's missing any
+  of it, naming each block and field.
+- `findMissingToPublish(value, blockTypes)` gives the same check as a pure
+  function from `blocks`.
+
 ## Release 0.1.0
 
 The first release includes ten block types: hero, cta, features, testimonials,
@@ -82,8 +92,7 @@ GitHub release with a matching version tag. This triggers
 `npm run check` before publishing publicly with provenance through npm trusted
 publishing (OIDC). The npm package's trusted publisher must authorize owner
 `jimiryquai`, repository `emdash-plugin-page-builder` and workflow `publish.yml`;
-no npm token secret is required. The first publish and account setup are handled
-by the maintainer; preparing this release does not publish anything.
+no npm token secret is required.
 
 ## Block layer
 
