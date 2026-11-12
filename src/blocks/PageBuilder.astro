@@ -2,7 +2,7 @@
 import { Blocks } from 'emdash/ui';
 import type { BlockComponent } from 'emdash/ui';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import { createComponent } from 'astro/runtime/server/index.js';
+import { createComponent, renderTemplate, spreadAttributes } from 'astro/runtime/server/index.js';
 import { COUNT_FIELD_SLUG, isSourceResult, mergeCacheHints, migrateBlocks, SCOPE_FIELD_SLUG, VARIANT_FIELD_SLUG } from 'emdash-plugin-page-builder/blocks';
 import type { SiteBlockType, Source, StoredBlock } from 'emdash-plugin-page-builder/blocks';
 
@@ -11,10 +11,13 @@ export interface Props {
   blocks: readonly SiteBlockType[];
   sources?: Readonly<Record<string, Source>>;
   group?: string;
+  edit?: Readonly<Record<string, string | undefined>>;
   fallback?: BlockComponent<StoredBlock>;
 }
 
-const { value, blocks, sources = {}, group, fallback } = Astro.props;
+const { value, blocks, sources = {}, group, edit, fallback } = Astro.props;
+const editAttrs = edit ? { ...edit } : {};
+const hasEditAttrs = Object.keys(editAttrs).some((key) => editAttrs[key] !== undefined);
 const upgraded = migrateBlocks(value ?? [], blocks);
 const cacheHints: import('emdash').CacheHint[] = [];
 const items = new Map(await Promise.all(upgraded.map(async (block) => {
@@ -43,7 +46,11 @@ const components = Object.fromEntries(blocks.map(({ definition, sections }) => [
     const variant = typeof storedVariant === 'string' ? storedVariant : 'default';
     const Section = Object.hasOwn(sections, variant) ? sections[variant] : sections.default;
     // Astro files have a props-only public type and a factory signature at runtime.
-    return (Section as unknown as AstroComponentFactory)(result, { ...props, items: items.get(block) }, slots);
+    const rendered = (Section as unknown as AstroComponentFactory)(result, { ...props, items: items.get(block) }, slots);
+    if (hasEditAttrs) {
+      return renderTemplate`<div style="display:contents"${spreadAttributes(editAttrs)}>${rendered}</div>`;
+    }
+    return rendered;
   }),
 ])) as unknown as Record<string, BlockComponent<StoredBlock>>;
 ---

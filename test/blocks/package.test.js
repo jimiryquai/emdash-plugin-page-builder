@@ -54,10 +54,12 @@ async function testPackedConsumer(t, astroVersion, emdashVersion) {
   await copyFile('test/blocks/fixtures/example.ts', join(consumer, 'src/example.ts'));
   await writeFile(join(consumer, 'src/Consumer.astro'), `---
 import PageBuilder from 'emdash-plugin-page-builder/blocks/PageBuilder.astro';
+import { createEditable } from 'emdash';
 import Section from './Section.astro';
 import { example } from './example';
 ---
 <PageBuilder value={[{ _type: 'example', _key: 'packed', _version: 1, heading: 'Packed hello' }]}
+  edit={createEditable('pages', 'packed-page').layout}
   blocks={[{ ...example, sections: { default: Section } }]} />`);
   await writeFile(join(consumer, 'verify.mjs'), `import { registerHooks } from 'node:module';
 import assert from 'node:assert/strict';
@@ -87,8 +89,9 @@ try {
   const { default: Consumer } = await server.ssrLoadModule(join(process.cwd(), 'src/Consumer.astro'));
   const container = await experimental_AstroContainer.create();
   const html = await container.renderToString(Consumer);
+  assert.match(html, /<div style="display:contents" data-emdash-ref=/);
   assert.match(html, /data-key="packed" data-version="2"/);
-  assert.match(html, /<h2>Packed hello<\\/h2>/);
+  assert.match(html, /<h2>Packed hello<\\/h2><\\/section><\\/div>/);
 } finally {
   await server.close();
 }
