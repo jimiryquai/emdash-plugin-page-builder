@@ -1,6 +1,23 @@
-import { variantField, type BlockType } from '../core.js';
+import {
+  markdownText,
+  portableTextToMarkdown,
+  variantField,
+  type BlockType,
+  type StoredBlock,
+} from '../core.js';
 
 const variants = ['centered', 'start'] as const;
+
+function toMarkdown(block: Readonly<StoredBlock>): string {
+  const parts: string[] = [];
+  const heading = markdownText(block.heading);
+  if (heading !== undefined) parts.push(`## ${heading}`);
+  const body = markdownText(block.body);
+  if (body !== undefined) parts.push(body);
+  const content = portableTextToMarkdown(block.content);
+  if (content.length > 0) parts.push(content);
+  return parts.join('\n\n');
+}
 
 export const prose = {
   definition: {
@@ -25,4 +42,5 @@ export const prose = {
   variants,
   migrations: {},
   requiredToPublish: ['heading', 'content'],
+  toMarkdown,
 } satisfies BlockType;

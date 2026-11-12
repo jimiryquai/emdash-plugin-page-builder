@@ -68,6 +68,20 @@ scheduled publish is unscheduled and its reason appears on the dashboard.
 same missing-field facts as `{ blockKey, blockType, field }` for callers that
 need a pure check.
 
+## Release 0.5.0
+
+- `layoutToMarkdown(value, blockTypes, options?)`, exported from `blocks`, renders
+  a page layout as plain Markdown for agents and LLMs. It upgrades the layout
+  with `migrateBlocks` first, then dispatches to each block module's own
+  `toMarkdown`, joining blocks with one blank line. Each of the ten block types
+  renders itself; shared-content blocks (testimonials, pricing, faq, team)
+  render their own heading text plus the items passed in `options.items`, keyed
+  by block `_key`, so a site's Markdown route can supply what its sources read.
+- `portableTextToMarkdown(value)`, also exported from `blocks`, renders EmDash
+  Portable Text (paragraphs, `h1`–`h6`, blockquotes, bullet and number lists
+  with levels, `strong`/`em`/`code` marks and `link` mark definitions) as plain
+  Markdown, skipping unknown block and span types instead of throwing.
+
 ## Release 0.4.0
 
 - `PageBuilder.astro` accepts an optional `edit` prop (such as `page.edit.layout`).
@@ -175,6 +189,7 @@ Block modules import the shared pieces (`BlockType`, `variantField`, `linksField
 | `requiredToPublish` | Current-version publish rules: field slugs, or `{ field, minItems?, fields }` for repeaters. Empty lists are explicit for blocks with no required fields. Keep schema fields optional for draft autosave. |
 | `migrations` | A map keyed by the version being upgraded. Function `N` returns version `N + 1`, preserving `_key` and `_type`, without mutating the input. Keep one function and test per step. Use an empty map for a block with only version 1. |
 | `sections` | Added by the site when rendering, producing a `SiteBlockType`; the package definition has no visual components. `default` is required, other keys map variants. |
+| `toMarkdown` | Optional: plain Markdown for one current-version block, dispatched by `layoutToMarkdown`. Build it from the shared `markdownText`, `markdownImage`, `markdownLinks` and `portableTextToMarkdown` helpers in `src/blocks/core.ts`; a module without one is skipped, never thrown on. |
 
 `migrateBlocks(value, blockTypes)` returns the upgraded layout in the same order
 and leaves unknown types alone. Render-time upgrades call this same function.
@@ -199,6 +214,37 @@ count field with `countField()`, sharing the `SCOPE_FIELD_SLUG` and
 `createCollectionSource({ collection, groupField?, query?, mapEntry })` in
 `src/blocks/core.ts`, which handles cursor paging, group reference matching,
 optional `count` capping, cache hint collection, and the injectable query API.
+
+### Markdown
+
+`layoutToMarkdown(value, blockTypes, options?)`, exported from `blocks`, renders
+a page layout as plain Markdown for agents and LLMs (an `.md` route, MCP
+tools, or exporting content out of the page builder). It upgrades the layout
+with `migrateBlocks` first, then dispatches to each block module's own
+`toMarkdown` — the same one-module-per-block-type ownership as
+`requiredToPublish` — and joins the results with one blank line. Unknown block
+types, modules without `toMarkdown` and empty renderings are skipped rather
+than thrown on; the output is deterministic.
+
+Shared-content blocks (testimonials, pricing, faq, team) render their own
+heading text plus the items the caller passes in `options.items`, keyed by
+block `_key`, so a site supplies what its sources read — the same items its
+sections receive, in the shape its `Source` produces:
+
+```js
+import { layoutToMarkdown } from 'emdash-plugin-page-builder/blocks';
+import { blocks } from './blocks.js'; // the site's modules, with sections
+
+const markdown = layoutToMarkdown(page.data.layout, blocks, {
+  items: { 'quotes-1': [{ quote: 'Fast to build with.', author: 'Ada' }] },
+});
+```
+
+Inline blocks render their heading (the hero's is the page's one `#` heading;
+every other block uses `##`, items `###`), body text, links as a bullet list,
+repeater items, and prose's Portable Text through `portableTextToMarkdown`.
+That function is also exported on its own for other Portable Text content,
+such as a posts collection rendered outside a layout.
 
 ### Checks
 

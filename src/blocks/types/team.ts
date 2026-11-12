@@ -3,6 +3,7 @@ import {
   countField,
   createCollectionSource,
   GROUP_FIELD_SLUG,
+  markdownText,
   scopeField,
   variantField,
 } from '../core.js';
@@ -11,6 +12,7 @@ import type {
   CollectionEntry,
   CollectionSourceOptions,
   Source,
+  StoredBlock,
 } from '../core.js';
 
 /** The shape a team source produces and a team section renders. */
@@ -74,6 +76,26 @@ export function createTeamSource(options: CollectionSourceOptions = {}): Source<
 
 const variants = ['four-column', 'three-column'] as const;
 
+/** The block's own heading text, then each member the site's source read. */
+function toMarkdown(_block: Readonly<StoredBlock>, items?: readonly unknown[]): string {
+  const parts = [`## ${team.definition.label}`];
+  const lines: string[] = [];
+  for (const stored of items ?? []) {
+    if (typeof stored !== 'object' || stored === null) continue;
+    const { name, role } = stored as Record<string, unknown>;
+    const nameText = markdownText(name);
+    const line = [
+      nameText !== undefined ? `**${nameText}**` : undefined,
+      markdownText(role),
+    ]
+      .filter((part): part is string => part !== undefined)
+      .join(' — ');
+    if (line.length > 0) lines.push(`- ${line}`);
+  }
+  if (lines.length > 0) parts.push(lines.join('\n'));
+  return parts.join('\n\n');
+}
+
 export const team = {
   definition: {
     slug: 'team',
@@ -92,4 +114,5 @@ export const team = {
   migrations: {},
   requiredToPublish: [],
   starter: starterTeamCollection,
+  toMarkdown,
 } satisfies BlockType;

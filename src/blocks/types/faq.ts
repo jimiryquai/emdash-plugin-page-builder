@@ -3,6 +3,7 @@ import {
   countField,
   createCollectionSource,
   GROUP_FIELD_SLUG,
+  markdownText,
   scopeField,
   variantField,
 } from '../core.js';
@@ -11,6 +12,7 @@ import type {
   CollectionEntry,
   CollectionSourceOptions,
   Source,
+  StoredBlock,
 } from '../core.js';
 
 /** The shape an FAQ source produces and an FAQ section renders. */
@@ -71,6 +73,20 @@ export function createFaqSource(options: CollectionSourceOptions = {}): Source<F
 
 const variants = ['two-column', 'centered'] as const;
 
+/** The block's own heading text, then each question the site's source read. */
+function toMarkdown(_block: Readonly<StoredBlock>, items?: readonly unknown[]): string {
+  const parts = [`## ${faq.definition.label}`];
+  for (const stored of items ?? []) {
+    if (typeof stored !== 'object' || stored === null) continue;
+    const { question, answer } = stored as Record<string, unknown>;
+    const questionText = markdownText(question);
+    if (questionText !== undefined) parts.push(`### ${questionText}`);
+    const answerText = markdownText(answer);
+    if (answerText !== undefined) parts.push(answerText);
+  }
+  return parts.join('\n\n');
+}
+
 export const faq = {
   definition: {
     slug: 'faq',
@@ -87,4 +103,5 @@ export const faq = {
   migrations: {},
   requiredToPublish: [],
   starter: starterFaqCollection,
+  toMarkdown,
 } satisfies BlockType;

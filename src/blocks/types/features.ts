@@ -1,4 +1,10 @@
-import { variantField, type BlockType, type StoredBlock } from '../core.js';
+import {
+  markdownImage,
+  markdownText,
+  variantField,
+  type BlockType,
+  type StoredBlock,
+} from '../core.js';
 
 export const featureVariants = [
   'two-column',
@@ -45,6 +51,33 @@ export interface FeaturesSectionProps {
   blockKey: string;
 }
 
+function toMarkdown(block: Readonly<StoredBlock>): string {
+  const parts: string[] = [];
+  const eyebrow = markdownText(block.eyebrow);
+  if (eyebrow !== undefined) parts.push(eyebrow);
+  const heading = markdownText(block.heading);
+  if (heading !== undefined) parts.push(`## ${heading}`);
+  const subheadline = markdownText(block.subheadline);
+  if (subheadline !== undefined) parts.push(subheadline);
+  const items = Array.isArray(block.items) ? block.items : [];
+  for (const item of items) {
+    if (typeof item !== 'object' || item === null) continue;
+    const feature = item as Record<string, unknown>;
+    const itemParts: string[] = [];
+    const title = markdownText(feature.title);
+    if (title !== undefined) itemParts.push(`### ${title}`);
+    const description = markdownText(feature.description);
+    if (description !== undefined) itemParts.push(description);
+    const image = markdownImage(feature.image);
+    if (image !== undefined) itemParts.push(image);
+    const ctaLabel = markdownText(feature.cta_label);
+    const ctaUrl = markdownText(feature.cta_url);
+    if (ctaLabel !== undefined && ctaUrl !== undefined) itemParts.push(`[${ctaLabel}](${ctaUrl})`);
+    if (itemParts.length > 0) parts.push(itemParts.join('\n\n'));
+  }
+  return parts.join('\n\n');
+}
+
 export const features = {
   definition: {
     slug: 'features',
@@ -82,4 +115,5 @@ export const features = {
   variants: featureVariants,
   migrations: {},
   requiredToPublish: ['heading', { field: 'items', minItems: 1, fields: ['title'] }],
+  toMarkdown,
 } satisfies BlockType;

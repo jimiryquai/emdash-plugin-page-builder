@@ -1,6 +1,25 @@
-import { linksField, variantField, type BlockType } from '../core.js';
+import {
+  LINKS_FIELD_SLUG,
+  linksField,
+  markdownLinks,
+  markdownText,
+  variantField,
+  type BlockType,
+  type StoredBlock,
+} from '../core.js';
 
 const variants = ['start', 'centered'] as const;
+
+function toMarkdown(block: Readonly<StoredBlock>): string {
+  const parts: string[] = [];
+  const heading = markdownText(block.heading);
+  if (heading !== undefined) parts.push(`## ${heading}`);
+  const body = markdownText(block.body);
+  if (body !== undefined) parts.push(body);
+  const links = markdownLinks(block[LINKS_FIELD_SLUG]);
+  if (links !== undefined) parts.push(links);
+  return parts.join('\n\n');
+}
 
 export const cta = {
   definition: {
@@ -25,4 +44,5 @@ export const cta = {
   variants,
   migrations: {},
   requiredToPublish: ['heading', { field: 'links', fields: ['label', 'url'] }],
+  toMarkdown,
 } satisfies BlockType;
