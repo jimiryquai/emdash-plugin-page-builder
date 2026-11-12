@@ -35,3 +35,12 @@ Prove it all locally on a fresh database. Staging runs come from the orchestrato
 **2026-11-12 Orchestrator:** PR #31 is held as a draft until production has been promoted with the current staging stack (agreed with the jamesryan-sites session). Production order, each write with James's approval and each step plan, apply, plan:
 - **Promotion A:** restore point; promote; plugin active; create the `layout` and `service` fields; CLI apply with `--types`; `move-content-to-layout.mjs` plan then apply (needs #28); check every page.
 - **Promotion B:** #31 plus v1/26. Take a restore point and a raw export of `ec_pages`; promote; `retire-pages-content.mjs` plan then apply; check pages and `/<page>.md`.
+
+**2026-11-12 Orchestrator:** Staging steps 4–6 of Promotion A done, after #27 and #28 deployed (9102b49):
+- CLI plan, apply, plan with all ten offered types: 10 unchanged, 0 pending; `layout` allows exactly the ten.
+- `move-content-to-layout.mjs` planned one move (privacy-policy `marketing.document` to `prose`) and applied it, published through the policy. A re-run plans nothing.
+- Home, About and Pricing are pixel-identical before and after.
+- Privacy-policy has all its text, headings, bold, list and link. It is 176px taller, because each paragraph is now its own Portable Text block with paragraph spacing, which the old HTML string ran together.
+- Evidence: `.orchestrate/runs/2026-11-12-staging-adoption/{ten-blocks,content-move}/`.
+
+Box 1's staging part is done for the move; `retire-pages-content` on staging waits for #31.
