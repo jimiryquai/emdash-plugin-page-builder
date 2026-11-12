@@ -9,13 +9,15 @@ Blast radius decides; the highest matching tier wins and uncertainty raises it. 
 | Tier | Criteria in this repo | Review required |
 |---|---|---|
 | Low | Reference docs (`docs/research/`, glossary wording), tracker edits, explainers, tests that only add coverage | Repo checks and orchestrator review; orchestrator merges |
-| Medium | Package code (`src/`), block definitions with compatible changes, shapes, the block layer, build and packaging config, `AGENTS.md`, `CODING_STANDARDS.md`, `docs/agents/`, specs and ADRs | Repo checks, the `code-review` skill (Standards and Spec) and orchestrator review; orchestrator merges |
-| High | Anything that writes to a live EmDash site (the apply CLI's `--apply`, `--activate` and `--migrate` paths), a breaking block version or its migration, changes in another repo (jamesryan-sites) or to production content, publishing to npm, CI definitions | Everything for medium, plus a saved review by a model family different from the builder's, plus James's approval before merge |
+| Medium | Package code (`src/`), block definitions with compatible changes, shapes, the block layer, build and packaging config, `AGENTS.md`, `CODING_STANDARDS.md`, `docs/agents/`, specs and ADRs; jamesryan-sites pull requests whose merge reaches only staging (its `master` deploys to staging; production is a separate promotion) and that the repo can revert | Repo checks, the `code-review` skill (Standards and Spec) and orchestrator review; orchestrator merges. For a jamesryan-sites pull request, also its own CI green and a cross-family review |
+| High | Writes to production (content, schema, the apply CLI's `--apply`, `--activate` and `--migrate` against it, a production promotion), a breaking block version or its migration, a jamesryan-sites pull request that can't be reverted by reverting it, CI definitions | Everything for medium, plus a saved review by a model family different from the builder's, plus James's approval before merge or run |
 
 ## Approvers
 
 - Medium: the orchestrator, once its own checks and the `code-review` findings are settled.
 - High: James Ryan (james@jamesryan.dev), after the cross-family review evidence is saved.
+
+Standing approvals from James (2026-11-12): publishing this package to npm through a GitHub release (the publish workflow runs the checks and signs provenance), and writes to staging (staging.jamesryan.dev), which exists to be written to. Both stay on the record in the ticket and run report.
 
 ## Where to look hardest
 
