@@ -1,5 +1,5 @@
 import type { ApplySeedBlockTypeInput } from 'emdash';
-import { variantField } from '../core.js';
+import { markdownText, variantField } from '../core.js';
 import type { BlockType, StoredBlock } from '../core.js';
 
 export const comparisonVariants = ['table'] as const;
@@ -33,6 +33,48 @@ export interface ComparisonSectionProps {
   value: ComparisonBlockValue;
   index: number;
   blockKey: string;
+}
+
+/** One table cell: pipes escaped and newlines flattened, empty when blank. */
+function cell(value: unknown): string {
+  const text = markdownText(value);
+  return text !== undefined ? text.replaceAll('|', '\\|').replaceAll('\n', ' ') : '';
+}
+
+/** The block's content is the comparison table itself. */
+function toMarkdown(block: Readonly<StoredBlock>): string {
+  const storedColumns = Array.isArray(block.columns) ? block.columns : [];
+  const columns = comparisonColumnKeys
+    .map((key) => storedColumns.find(
+      (column): boolean =>
+        typeof column === 'object' && column !== null &&
+        (column as Record<string, unknown>).key === key,
+    ))
+    .filter((column): column is NonNullable<typeof column> => column !== undefined)
+    .map((column) => {
+      const { key, label } = column as Record<string, unknown>;
+      return { key: key as ComparisonColumnKey, label: markdownText(label) ?? '' };
+    });
+  if (columns.length === 0) return '';
+  const lines = [
+    `| Feature | ${columns.map((column) => column.label).join(' | ')} |`,
+    `| ${['---', ...columns.map(() => '---')].join(' | ')} |`,
+  ];
+  const storedRows = Array.isArray(block.rows) ? block.rows : [];
+  for (const storedRow of storedRows) {
+    if (typeof storedRow !== 'object' || storedRow === null) continue;
+    const row = storedRow as Record<string, unknown>;
+    const name = markdownText(row.name);
+    const group = markdownText(row.group_name);
+    const cells = columns.map(({ key }) => cell(row[`${key}_value`]));
+    if (name === undefined && group === undefined && cells.every((value) => value === '')) continue;
+    if (name === undefined) {
+      lines.push(`| **${group}** | ${columns.map(() => '').join(' | ')} |`);
+      continue;
+    }
+    lines.push(`| ${cell(name)} | ${cells.join(' | ')} |`);
+  }
+  return lines.join('\n');
 }
 
 export const comparison = {
@@ -89,4 +131,5 @@ export const comparison = {
   variants: comparisonVariants,
   migrations: {},
   requiredToPublish: [{ field: 'columns', minItems: 1, fields: ['key', 'label'] }, { field: 'rows', minItems: 1, fields: ['name'] }],
+  toMarkdown,
 } satisfies BlockType;

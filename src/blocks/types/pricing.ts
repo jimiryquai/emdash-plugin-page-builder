@@ -2,6 +2,7 @@ import type { ApplySeedBlockTypeInput, SeedCollection } from 'emdash';
 import {
   createCollectionSource,
   GROUP_FIELD_SLUG,
+  markdownText,
   scopeField,
   variantField,
 } from '../core.js';
@@ -10,6 +11,7 @@ import type {
   CollectionEntry,
   CollectionSourceOptions,
   Source,
+  StoredBlock,
 } from '../core.js';
 
 /** The shape a pricing source produces and a pricing section renders. */
@@ -109,6 +111,41 @@ export function createPricingSource(options: CollectionSourceOptions = {}): Sour
 
 const variants = ['tiers', 'toggle', 'single'] as const;
 
+/** The block's own heading text, then each tier the site's source read. */
+function toMarkdown(_block: Readonly<StoredBlock>, items?: readonly unknown[]): string {
+  const parts = [`## ${pricing.definition.label}`];
+  for (const stored of items ?? []) {
+    if (typeof stored !== 'object' || stored === null) continue;
+    const tier = stored as Record<string, unknown>;
+    const tierParts: string[] = [];
+    const name = markdownText(tier.name);
+    const badge = markdownText(tier.badge);
+    const heading = [name, badge].filter((part): part is string => part !== undefined).join(' — ');
+    if (heading.length > 0) tierParts.push(`### ${heading}`);
+    const monthly = markdownText(tier.price_monthly);
+    const yearly = markdownText(tier.price_yearly);
+    if (monthly !== undefined && yearly !== undefined) {
+      tierParts.push(`- **Monthly**: ${monthly}\n- **Yearly**: ${yearly}`);
+    } else {
+      const price = markdownText(tier.price);
+      const period = markdownText(tier.period);
+      if (price !== undefined) tierParts.push(`**${price}**${period ?? ''}`);
+    }
+    const description = markdownText(tier.description);
+    if (description !== undefined) tierParts.push(description);
+    const features = markdownText(tier.features);
+    if (features !== undefined) {
+      const lines = features.split('\n').map((line) => line.trim()).filter((line) => line.length > 0);
+      if (lines.length > 0) tierParts.push(lines.map((line) => `- ${line}`).join('\n'));
+    }
+    const ctaLabel = markdownText(tier.cta_label);
+    const ctaUrl = markdownText(tier.cta_url);
+    if (ctaLabel !== undefined && ctaUrl !== undefined) tierParts.push(`[${ctaLabel}](${ctaUrl})`);
+    if (tierParts.length > 0) parts.push(tierParts.join('\n\n'));
+  }
+  return parts.join('\n\n');
+}
+
 export const pricing = {
   definition: {
     slug: 'pricing',
@@ -125,4 +162,5 @@ export const pricing = {
   migrations: {},
   requiredToPublish: [],
   starter: starterPricingCollection,
+  toMarkdown,
 } satisfies BlockType;

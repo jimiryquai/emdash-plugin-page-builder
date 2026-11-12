@@ -3,6 +3,7 @@ import {
   countField,
   createCollectionSource,
   GROUP_FIELD_SLUG,
+  markdownText,
   scopeField,
   variantField,
 } from '../core.js';
@@ -13,6 +14,7 @@ import type {
   QueryApi,
   QueryListResult,
   Source,
+  StoredBlock,
 } from '../core.js';
 
 /** The shape a testimonials source produces and a testimonials section renders. */
@@ -94,6 +96,33 @@ export function createTestimonialsSource(options: CollectionSourceOptions = {}):
 
 const variants = ['single', 'grid', 'split'] as const;
 
+/** The block's own heading text, then each testimonial the site's source read. */
+function toMarkdown(_block: Readonly<StoredBlock>, items?: readonly unknown[]): string {
+  const parts = [`## ${testimonials.definition.label}`];
+  for (const stored of items ?? []) {
+    if (typeof stored !== 'object' || stored === null) continue;
+    const { quote, author, role, company } = stored as Record<string, unknown>;
+    const quoteText = markdownText(quote);
+    const authorText = markdownText(author);
+    const attribution = [
+      authorText !== undefined ? `**${authorText}**` : undefined,
+      markdownText(role),
+    ]
+      .filter((part): part is string => part !== undefined)
+      .join(', ');
+    const companyText = markdownText(company);
+    const withCompany = companyText !== undefined
+      ? `${attribution} (${companyText})`
+      : attribution;
+    const lines = [
+      quoteText !== undefined ? `> "${quoteText}"` : undefined,
+      withCompany.length > 0 ? `> — ${withCompany}` : undefined,
+    ].filter((part): part is string => part !== undefined);
+    if (lines.length > 0) parts.push(lines.join('\n'));
+  }
+  return parts.join('\n\n');
+}
+
 export const testimonials = {
   definition: {
     slug: 'testimonials',
@@ -110,4 +139,5 @@ export const testimonials = {
   migrations: {},
   requiredToPublish: [],
   starter: starterTestimonialsCollection,
+  toMarkdown,
 } satisfies BlockType;

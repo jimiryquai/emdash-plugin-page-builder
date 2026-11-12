@@ -14,9 +14,11 @@ export function variantField(variants: readonly string[]): BlockFieldDefinition 
 }
 
 /** Label and URL pairs. The first item is the primary action. */
+export const LINKS_FIELD_SLUG = 'links';
+
 export function linksField(): BlockFieldDefinition {
   return {
-    slug: 'links',
+    slug: LINKS_FIELD_SLUG,
     label: 'Links',
     type: 'repeater',
     validation: {
@@ -26,6 +28,154 @@ export function linksField(): BlockFieldDefinition {
       ],
     },
   };
+}
+
+/** Read a stored field as non-empty text, or undefined (Markdown skips empties). */
+export function markdownText(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim().length > 0 ? value : undefined;
+}
+
+/**
+ * `![alt](url)` for a stored media value, or undefined. The URL is the stored
+ * `src`, the provider preview, or EmDash's file URL for local media — the
+ * same address EmDash's `getEmbed` resolves.
+ */
+export function markdownImage(value: unknown): string | undefined {
+  if (typeof value !== 'object' || value === null) return undefined;
+  const media = value as {
+    src?: unknown;
+    previewUrl?: unknown;
+    id?: unknown;
+    alt?: unknown;
+    caption?: unknown;
+    meta?: unknown;
+  };
+  const storageKey = typeof media.meta === 'object' && media.meta !== null
+    ? markdownText((media.meta as Record<string, unknown>).storageKey)
+    : undefined;
+  const key = storageKey ?? markdownText(media.id);
+  const url = markdownText(media.src) ?? markdownText(media.previewUrl)
+    ?? (key !== undefined ? `/_emdash/api/media/file/${key}` : undefined);
+  if (url === undefined) return undefined;
+  const alt = markdownText(media.alt) ?? markdownText(media.caption) ?? '';
+  return `![${alt}](${url})`;
+}
+
+/** One `- [label](url)` line per complete link, or undefined when there are none. */
+export function markdownLinks(value: unknown): string | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const lines = value.flatMap((link): string[] => {
+    if (typeof link !== 'object' || link === null) return [];
+    const label = markdownText((link as Record<string, unknown>).label);
+    const url = markdownText((link as Record<string, unknown>).url);
+    return label !== undefined && url !== undefined ? [`- [${label}](${url})`] : [];
+  });
+  return lines.length > 0 ? lines.join('\n') : undefined;
+}
+
+/** The link `href`s of one Portable Text block, keyed by mark definition `_key`. */
+function linkMarkDefs(value: unknown): Map<string, string> {
+  const links = new Map<string, string>();
+  if (!Array.isArray(value)) return links;
+  for (const stored of value) {
+    if (typeof stored !== 'object' || stored === null) continue;
+    const def = stored as Record<string, unknown>;
+    if (def._type === 'link' && typeof def._key === 'string' && typeof def.href === 'string') {
+      links.set(def._key, def.href);
+    }
+  }
+  return links;
+}
+
+/** One span's text with its marks applied: code innermost, then em, strong, link. */
+function markedText(text: string, marks: unknown, links: Map<string, string>): string {
+  if (!Array.isArray(marks)) return text;
+  const applied = new Set(marks.filter((mark): mark is string => typeof mark === 'string'));
+  let marked = text;
+  if (applied.has('code')) marked = `\`${marked}\``;
+  if (applied.has('em')) marked = `*${marked}*`;
+  if (applied.has('strong')) marked = `**${marked}**`;
+  const link = marks.find((mark): mark is string => typeof mark === 'string' && links.has(mark));
+  return link !== undefined ? `[${marked}](${links.get(link)})` : marked;
+}
+
+/** The inline Markdown of one Portable Text block's children (spans only). */
+function spansToMarkdown(children: unknown, markDefs: unknown): string {
+  if (!Array.isArray(children)) return '';
+  const links = linkMarkDefs(markDefs);
+  let text = '';
+  for (const stored of children) {
+    if (typeof stored !== 'object' || stored === null) continue;
+    const child = stored as Record<string, unknown>;
+    if (child._type !== undefined && child._type !== 'span') continue;
+    if (typeof child.text !== 'string' || child.text.length === 0) continue;
+    text += markedText(child.text, child.marks, links);
+  }
+  return text;
+}
+
+/**
+ * Render EmDash Portable Text as plain Markdown: normal paragraphs, `h1`–`h6`
+ * headings, `blockquote`s, bullet and number lists with levels, and
+ * `strong`/`em`/`code` marks with `link` mark definitions. Unknown block and
+ * span types are skipped, never thrown on; numbering counts per level and
+ * restarts after any other block, and child items indent under their parent's
+ * marker. Blocks are separated by one blank line, list items by one
+ * newline.
+ */
+export function portableTextToMarkdown(value: unknown): string {
+  if (!Array.isArray(value)) return '';
+  const segments: string[] = [];
+  const listLines: string[] = [];
+  let runKind: 'bullet' | 'number' | undefined;
+  const levels = new Map<number, {
+    kind: 'bullet' | 'number'; count: number; indent: number; markerWidth: number;
+  }>();
+  const flushList = (): void => {
+    if (listLines.length > 0) {
+      segments.push(listLines.join('\n'));
+      listLines.length = 0;
+    }
+  };
+  for (const stored of value) {
+    if (typeof stored !== 'object' || stored === null) continue;
+    const block = stored as Record<string, unknown>;
+    if (block._type !== 'block') continue;
+    const text = spansToMarkdown(block.children, block.markDefs);
+    if (text.length === 0) continue;
+    const { listItem } = block;
+    if (listItem === 'bullet' || listItem === 'number') {
+      const level = Number.isInteger(block.level) && (block.level as number) >= 1
+        ? block.level as number
+        : 1;
+      if (level === 1) {
+        if (runKind !== undefined && runKind !== listItem) flushList();
+        runKind = listItem;
+      }
+      for (const storedLevel of levels.keys()) {
+        if (storedLevel > level) levels.delete(storedLevel);
+      }
+      const previous = levels.get(level);
+      const count = listItem === 'number' && previous?.kind === listItem ? previous.count + 1 : 1;
+      const marker = listItem === 'bullet' ? '-' : `${count}.`;
+      const parent = levels.get(level - 1);
+      const indent = parent ? parent.indent + parent.markerWidth : 2 * (level - 1);
+      levels.set(level, { kind: listItem, count, indent, markerWidth: marker.length + 1 });
+      listLines.push(`${' '.repeat(indent)}${marker} ${text}`);
+      continue;
+    }
+    levels.clear();
+    runKind = undefined;
+    flushList();
+    if (block.style === 'blockquote') {
+      segments.push(text.split('\n').map((line) => `> ${line}`).join('\n'));
+      continue;
+    }
+    const heading = typeof block.style === 'string' ? /^h([1-6])$/.exec(block.style) : null;
+    segments.push(heading ? `${'#'.repeat(Number(heading[1]))} ${text}` : text);
+  }
+  flushList();
+  return segments.join('\n\n');
 }
 
 export const SCOPE_FIELD_SLUG = 'scope';
@@ -96,6 +246,12 @@ export interface BlockType {
   migrations: Readonly<Record<number, (block: Readonly<StoredBlock>) => StoredBlock>>;
   /** Optional starter collection, parameterised by the site's grouping collection. */
   starter?: (groupCollection: string) => SeedCollection;
+  /**
+   * Readable plain Markdown for one current-version block, as `layoutToMarkdown`
+   * dispatches it. `items` carries what a source read for shared-content blocks.
+   * Optional so a module without one is skipped, never thrown on.
+   */
+  toMarkdown?: (block: Readonly<StoredBlock>, items?: readonly unknown[]) => string;
 }
 
 /** Recognise block module exports without maintaining a separate registry. */
@@ -259,6 +415,31 @@ export function migrateBlocks(
     }
     return block;
   });
+}
+
+/** Options for `layoutToMarkdown`. */
+export interface LayoutToMarkdownOptions {
+  /** What a site's source read for each block, keyed by that block's `_key`. */
+  items?: Readonly<Record<string, readonly unknown[]>>;
+}
+
+/**
+ * Render a page layout as plain Markdown for agents and LLMs: upgrade every
+ * block first (`migrateBlocks`), then dispatch to each block module's own
+ * `toMarkdown` and join the results with one blank line. Unknown block types,
+ * modules without `toMarkdown` and empty renderings are skipped, never thrown
+ * on; only an unsupported stored version throws, as in rendering.
+ */
+export function layoutToMarkdown(
+  value: readonly StoredBlock[],
+  blockTypes: readonly BlockType[],
+  options: LayoutToMarkdownOptions = {},
+): string {
+  const types = new Map(blockTypes.map((blockType) => [blockType.definition.slug, blockType]));
+  return migrateBlocks(value, blockTypes)
+    .map((block) => types.get(block._type)?.toMarkdown?.(block, options.items?.[block._key]))
+    .filter((markdown): markdown is string => typeof markdown === 'string' && markdown.trim().length > 0)
+    .join('\n\n');
 }
 
 /** Upgrade first, then report every missing current-version publish field. */

@@ -1,6 +1,38 @@
-import { linksField, variantField, type BlockType } from '../core.js';
+import {
+  LINKS_FIELD_SLUG,
+  linksField,
+  markdownImage,
+  markdownLinks,
+  markdownText,
+  variantField,
+  type BlockType,
+  type StoredBlock,
+} from '../core.js';
 
 const variants = ['centered', 'photo', 'demo'] as const;
+
+/** The opening section, so its heading is the page's one `#` heading. */
+function toMarkdown(block: Readonly<StoredBlock>): string {
+  const parts: string[] = [];
+  const eyebrow = [
+    markdownText(block.eyebrow),
+    markdownText(block.eyebrow_action),
+  ].filter((part): part is string => part !== undefined);
+  const eyebrowUrl = markdownText(block.eyebrow_url);
+  if (eyebrow.length > 0) {
+    const line = eyebrow.join(' — ');
+    parts.push(eyebrowUrl !== undefined ? `[${line}](${eyebrowUrl})` : line);
+  }
+  const heading = markdownText(block.heading);
+  if (heading !== undefined) parts.push(`# ${heading}`);
+  const body = markdownText(block.body);
+  if (body !== undefined) parts.push(body);
+  const image = markdownImage(block.image);
+  if (image !== undefined) parts.push(image);
+  const links = markdownLinks(block[LINKS_FIELD_SLUG]);
+  if (links !== undefined) parts.push(links);
+  return parts.join('\n\n');
+}
 
 export const hero = {
   definition: {
@@ -29,4 +61,5 @@ export const hero = {
   variants,
   migrations: {},
   requiredToPublish: ['heading', { field: 'links', fields: ['label', 'url'] }],
+  toMarkdown,
 } satisfies BlockType;
