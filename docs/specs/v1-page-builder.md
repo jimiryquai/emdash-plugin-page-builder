@@ -76,6 +76,7 @@ Decided 2026-11-09, after finding that marketing-blocks registers ten block type
 3. Map each block's variants to `@jamesryan/ui` sections; write sources for testimonials and pricing from the existing collections.
 4. Prove it on home: home's hero moves into `home.layout` and renders the same. Locally with a script; on production only after checking production's marketing blocks and with James's approval.
 5. marketing-blocks keeps all ten types. Later tickets add the five blocks the package lacks (document as a prose block, FAQ, comparison, stats, team) and then retire the plugin once every page renders from `layout`.
+6. Adoption ends with Layout as the only page body (James, 2026-11-12): every page's `content` moves into `layout` by script (seed, staging, production with James's approval), templates read only `layout`, and the `content` field is removed from `pages`. Ticket 14.
 
 ## Out of v1
 
