@@ -118,8 +118,9 @@ function spansToMarkdown(children: unknown, markDefs: unknown): string {
  * Render EmDash Portable Text as plain Markdown: normal paragraphs, `h1`–`h6`
  * headings, `blockquote`s, bullet and number lists with levels, and
  * `strong`/`em`/`code` marks with `link` mark definitions. Unknown block and
- * span types are skipped, never thrown on; list numbering restarts after any
- * other block. Blocks are separated by one blank line, list items by one
+ * span types are skipped, never thrown on; numbering counts per level and
+ * restarts after any other block, and child items indent under their parent's
+ * marker. Blocks are separated by one blank line, list items by one
  * newline.
  */
 export function portableTextToMarkdown(value: unknown): string {
@@ -127,7 +128,9 @@ export function portableTextToMarkdown(value: unknown): string {
   const segments: string[] = [];
   const listLines: string[] = [];
   let runKind: 'bullet' | 'number' | undefined;
-  let numbering: { key: string; count: number } | undefined;
+  const levels = new Map<number, {
+    kind: 'bullet' | 'number'; count: number; indent: number; markerWidth: number;
+  }>();
   const flushList = (): void => {
     if (listLines.length > 0) {
       segments.push(listLines.join('\n'));
@@ -142,19 +145,26 @@ export function portableTextToMarkdown(value: unknown): string {
     if (text.length === 0) continue;
     const { listItem } = block;
     if (listItem === 'bullet' || listItem === 'number') {
-      if (runKind !== undefined && runKind !== listItem) flushList();
-      runKind = listItem;
       const level = Number.isInteger(block.level) && (block.level as number) >= 1
         ? block.level as number
         : 1;
-      const key = `${listItem}:${level}`;
-      const count = listItem === 'number' && numbering?.key === key ? numbering.count + 1 : 1;
-      numbering = { key, count };
+      if (level === 1) {
+        if (runKind !== undefined && runKind !== listItem) flushList();
+        runKind = listItem;
+      }
+      for (const storedLevel of levels.keys()) {
+        if (storedLevel > level) levels.delete(storedLevel);
+      }
+      const previous = levels.get(level);
+      const count = listItem === 'number' && previous?.kind === listItem ? previous.count + 1 : 1;
       const marker = listItem === 'bullet' ? '-' : `${count}.`;
-      listLines.push(`${'  '.repeat(level - 1)}${marker} ${text}`);
+      const parent = levels.get(level - 1);
+      const indent = parent ? parent.indent + parent.markerWidth : 2 * (level - 1);
+      levels.set(level, { kind: listItem, count, indent, markerWidth: marker.length + 1 });
+      listLines.push(`${' '.repeat(indent)}${marker} ${text}`);
       continue;
     }
-    numbering = undefined;
+    levels.clear();
     runKind = undefined;
     flushList();
     if (block.style === 'blockquote') {

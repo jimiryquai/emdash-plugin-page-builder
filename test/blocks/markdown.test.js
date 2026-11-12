@@ -43,6 +43,18 @@ describe('portableTextToMarkdown', () => {
     );
   });
 
+  test('keeps ordered parent numbering and child indentation across nested items', () => {
+    assert.equal(
+      portableTextToMarkdown([
+        { _type: 'block', listItem: 'number', level: 1, children: [span('Parent A')] },
+        { _type: 'block', listItem: 'number', level: 2, children: [span('Child A')] },
+        { _type: 'block', listItem: 'number', level: 2, children: [span('Child B')] },
+        { _type: 'block', listItem: 'number', level: 1, children: [span('Parent B')] },
+      ]),
+      '1. Parent A\n   1. Child A\n   2. Child B\n2. Parent B',
+    );
+  });
+
   test('renders strong, em, code and link marks from mark definitions', () => {
     assert.equal(
       portableTextToMarkdown([
@@ -67,6 +79,21 @@ describe('portableTextToMarkdown', () => {
       ]),
       'Plain **bold** and *italic* and `code` and [linked](https://example.com)' +
         ' and [***`all of it`***](https://example.com)',
+    );
+  });
+
+  test('keeps mixed child lists inside their parent and restarts lists after prose', () => {
+    assert.equal(
+      portableTextToMarkdown([
+        { _type: 'block', listItem: 'number', level: 1, children: [span('First')] },
+        { _type: 'block', listItem: 'bullet', level: 2, children: [span('A bullet')] },
+        { _type: 'block', listItem: 'number', level: 3, children: [span('A step')] },
+        { _type: 'block', listItem: 'bullet', level: 2, children: [span('Another bullet')] },
+        { _type: 'block', listItem: 'number', level: 1, children: [span('Second')] },
+        { _type: 'block', style: 'normal', children: [span('A paragraph.')] },
+        { _type: 'block', listItem: 'number', level: 1, children: [span('Restarted')] },
+      ]),
+      '1. First\n   - A bullet\n     1. A step\n   - Another bullet\n2. Second\n\nA paragraph.\n\n1. Restarted',
     );
   });
 
