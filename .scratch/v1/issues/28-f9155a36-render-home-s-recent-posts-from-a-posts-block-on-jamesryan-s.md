@@ -8,7 +8,7 @@ On jamesryan-sites, after the `posts` block (27-e3a4b150) is released: offer `po
 
 **Blocked by:** 27-e3a4b150, 24-7c283c32
 
-**Status:** ready-for-agent
+**Status:** in progress
 
 - [ ] Home renders its recent posts from a `posts` block, pixel-identical to before locally, and the featured image preload is still emitted.
 - [ ] Every `posts` variant renders through a site section (each with `default`), shown by a test or a rendered check.
@@ -18,3 +18,6 @@ On jamesryan-sites, after the `posts` block (27-e3a4b150) is released: offer `po
 ## Comments
 
 **2026-11-12 Orchestrator:** Blocked by 24 too, since both edit index.astro after 14. Staging runs are the orchestrator's after merge; production needs James.
+
+
+**2026-11-12 Antigravity orchestrator:** Claimed in `emdash-plugin-page-builder` (`69bb528`/`7e8b55a` resolved blockers `27-e3a4b150` at `0.6.0` and `24-7c283c32` at `1a68c2e`). Risk: medium (reversible site code destined for staging; Zhipu `pi` builder, Google orchestrator cross-family review required; no tenant credentials or live calls). Worktree `feat/28-home-posts-block`, port `4338`.
