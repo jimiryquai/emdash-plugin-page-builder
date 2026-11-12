@@ -68,6 +68,14 @@ scheduled publish is unscheduled and its reason appears on the dashboard.
 same missing-field facts as `{ blockKey, blockType, field }` for callers that
 need a pure check.
 
+## Release 0.4.0
+
+- `PageBuilder.astro` accepts an optional `edit` prop (such as `page.edit.layout`).
+  When it has attributes, each block is wrapped in a `display:contents` element
+  carrying them so clicking a block in EmDash edit mode opens the page's Layout
+  field in the admin. When omitted or empty (as in production), rendered HTML is
+  unchanged.
+
 ## Release 0.3.0
 
 - Supports Astro 6.4.8+ and Astro 7.2.8+, including Astro 7's fix for the AVIF
@@ -132,6 +140,24 @@ Unknown block types pass through to EmDash's `<Blocks>` unchanged. The optional
 `fallback` prop is forwarded to EmDash: it renders the fallback in production,
 a diagnostic in development, and nothing in production without a fallback.
 A null or omitted `value` renders nothing.
+
+Pass the page's field-level edit attributes in `edit` (for example,
+`edit={page.edit.layout}`) to connect blocks to EmDash's edit mode:
+
+```astro
+<PageBuilder value={page.data.layout} edit={page.edit.layout} blocks={blocks} />
+```
+
+When `edit` carries attributes, `PageBuilder` wraps each rendered block in a
+`<div style="display:contents">` element with those attributes. Clicking a block
+in edit mode opens the page's Layout field in the EmDash admin rather than
+editing in place: EmDash's in-page visual editor resolves `data-emdash-ref`
+by top-level field slug (`manifest.collections[c].fields[field]`) and saves
+`{ data: { [field]: value } }`, so nested fields inside a `blocks` field cannot
+be edited in place and unrecognised field types open the entry in the admin
+(`openAdmin`). When `edit` is omitted or has no attributes (such as EmDash's
+no-op edit proxy in production), no wrapper element is rendered and the HTML is
+byte-for-byte unchanged.
 
 ### One module per block type
 

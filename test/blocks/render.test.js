@@ -1,6 +1,7 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { experimental_AstroContainer } from 'astro/container';
+import { createEditable, createNoop } from 'emdash';
 import { createAstroServer } from './astro-harness.js';
 import { example } from './fixtures/example.ts';
 
@@ -47,6 +48,26 @@ test('shared sources receive scope and group after migration and their items rea
   assert.match(await render([{ ...stored, scope: 'page' }], { sources, group: 'group-1' }), /<p>page:group-1<\/p>/);
   assert.match(await render([{ ...stored, scope: 'all' }], { sources, group: 'group-1' }), /<p>all:group-1<\/p>/);
   assert.match(await render([{ ...stored, scope: 'page' }], { sources }), /<p>all:none<\/p>/);
+});
+
+const twoBlockLayout = [stored, { ...stored, _key: 'second', heading: 'World', variant: 'featured' }];
+
+test('with edit attributes, each block is wrapped in one display:contents element carrying them', async () => {
+  const edit = createEditable('pages', 'page-1', { status: 'published' }).layout;
+  const html = await render(twoBlockLayout, { edit });
+  const expectedRef = '{"collection":"pages","id":"page-1","status":"published","field":"layout"}'.replaceAll('"', '&quot;');
+  assert.equal(
+    html,
+    `<div style="display:contents" data-emdash-ref="${expectedRef}"><section data-key="stable" data-version="2" data-index="0"><h2>Hello</h2></section></div>` +
+    `<div style="display:contents" data-emdash-ref="${expectedRef}"><aside>World</aside></div>`,
+  );
+});
+
+test('without edit or with an empty attribute set, rendered HTML is identical to 0.3.0', async () => {
+  const expected = '<section data-key="stable" data-version="2" data-index="0"><h2>Hello</h2></section><aside>World</aside>';
+  assert.equal(await render(twoBlockLayout), expected);
+  assert.equal(await render(twoBlockLayout, { edit: {} }), expected);
+  assert.equal(await render(twoBlockLayout, { edit: createNoop().layout }), expected);
 });
 
 test('empty and null layouts render nothing', async () => {
