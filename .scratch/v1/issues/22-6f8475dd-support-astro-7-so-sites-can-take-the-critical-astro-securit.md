@@ -8,13 +8,21 @@ Astro 6.4.8 (this package's dev pin, and jamesryan-sites') has a critical adviso
 
 **Blocked by:** none.
 
-**Status:** in progress
+**Status:** done
 
-- [ ] The peer range accepts Astro 6.4.8+ and 7.2.8+, and a consumer test installs the packed tarball against Astro 7.
-- [ ] Dev pins are on Astro 7 and `rm -rf dist && npm ci && npm run check` passes.
-- [ ] `npm audit` shows no critical advisory from Astro.
-- [ ] Release 0.3.0 is published from a GitHub release with provenance.
+- [x] The peer range accepts Astro 6.4.8+ and 7.2.8+, and a consumer test installs the packed tarball against Astro 7.
+- [x] Dev pins are on Astro 7 and `rm -rf dist && npm ci && npm run check` passes.
+- [x] `npm audit` shows no critical advisory from Astro.
+- [x] Release 0.3.0 is published from a GitHub release with provenance.
 
 ## Comments
 
 **2026-11-12 Orchestrator:** Raised by James ("the version of astro we are using seems to have a really bad security score ... needs doing", not urgent). Risk: high (npm publish).
+
+**2026-11-12 Orchestrator:** Done. Built by Copilot (GPT-6 Luna) in 9acffb7, plus fix round b79c2ca (my finding: EmDash goes back to 1.4.0, the site's version, not the day-old 1.5.0). Merged as c36d8f3.
+- Peer range `astro ^6.4.8 || ^7.2.8`. Dev pins: Astro 7.4.4 (newest release at least two weeks old), EmDash 1.4.0.
+- The packed consumer test installs from the registry against Astro 6.4.8 and Astro 7.4.4, both with EmDash 1.4.0. Each version is read from package.json.
+- My clean check: 126/126 pass, 0 type errors. CI is green.
+- Released v0.3.0 through a GitHub release. npm `latest` is 0.3.0, with SLSA provenance.
+- `npm audit` shows 0 critical. 6 high come from EmDash 1.4.0's `zod`, a dev-only path; the package ships no dependencies. They clear when the site moves to EmDash 1.5 (site ticket 25).
+- Astro 7 upgrade-guide items that touch this package: Vite 8, stricter compiler validation, whitespace compression, and the reserved `src/fetch.ts` name. None needed a change here.
