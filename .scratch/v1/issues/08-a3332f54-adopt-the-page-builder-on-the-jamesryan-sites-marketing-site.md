@@ -33,3 +33,13 @@ Add the page builder to jamesryan-sites' marketing site **alongside** marketing-
 **2026-11-12 Orchestrator:** Route changed with the jamesryan-sites session: `feat/page-builder-adoption` is rebased onto jamesryan-sites `master` (dropping the `baseline` tracker commits) once ticket 23 (`23-published-pages`, PR #23) merges, and goes in as a PR against `master`, not a merge into `baseline`. That session messages when 23 lands. 0.2.0: release v0.2.0 created; its npm publish failed (no matching trusted publisher), waiting on James's npm settings.
 
 **2026-11-12 Orchestrator:** Resume 3 (pi, GLM 5.3) rebased the branch onto jamesryan-sites `master` after ticket 23 (seven commits, no tracker commits). The layout/content switch lives in `PublishedPage.astro`, home and about. Fix round 1 (mine): `getPublishedRoute` takes a `references` selection so each route fetches its entry once, and the site uses `emdash-plugin-page-builder@0.2.0` from npm. My own run of the CI sequence: frozen install, typecheck 0 errors, build, 45/45 tests, rendered SEO check passing. PR #25 (jimiryquai/jamesryan-sites) is open against `master` with CI green. Waits on James approving the merge (high), then the staging and production steps.
+
+**2026-11-12 Orchestrator:** Staging done, with James's go-ahead ("I'll allow it in staging"). I created a staging API token on the admin user (schema and content read/write, expires 2026-12-12, in jamesryan-sites `.env` as `EMDASH_STAGING_SCHEMA_TOKEN`) and ran 08's procedure against https://staging.jamesryan.dev:
+- audit: home has one hero, privacy-policy one document, about and pricing are empty;
+- `layout` and `service` fields created;
+- CLI plan, apply, then plan again: 5 unchanged, 0 pending, `layout` allows exactly the five offered types;
+- home hero moved and published (200); a re-run reports `unchanged`, there is no draft, and the before and after screenshots are pixel-identical (3/3 images);
+- privacy-policy, about and pricing render 200; contact is 404 because staging has no contact page (ticket 23's rule);
+- publish policy live: a throwaway page's empty features block was refused with `PUBLISH_REJECTED` (heading, items) and then deleted.
+
+Evidence: `.orchestrate/runs/2026-11-12-staging-adoption/`. Only the production box remains, and that's James's.
