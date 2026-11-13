@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:e0e088e4978816cf6222b98c766b71f5abb9010b98727d6625c85cd57fd5c79c",
+  "claims": [
+    {
+      "id": "claim_4bdf0224473f4ae5b544ac11861f79c0",
+      "statement": "Block schema fields stay optional so a new empty block autosaves as a draft; requiredness is enforced at publish by the plugin entry content:beforePublish hook reading each module requiredToPublish list (ADR 0003, decided after the admin autosave failed the first save of every new block).",
+      "evidence": [
+        {
+          "resource": "repo://docs/adr/0003-required-to-publish-not-to-save.md",
+          "version": "repo-file-v1:sha256:a23351ad033e0a889507c1259d878e3a3f7d31f559b28bd7435115542c104385"
+        },
+        {
+          "resource": "repo://src/plugin.ts#L53-L62",
+          "version": "repo-lines-v1:sha256:95f4778898ea6285a34600ec424e2a0f93a25026f51ced9719a59d3b53092b20:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5Y2U0OTYxODk0NGQwOGJmYmQ2NmFiMjdhMmJjMGI1MTA2MzRiNWYzN2RlNDBiMmUxNzFiNTI3YTA2ZTIxMTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmZGE5NWUxYTJiZDIxMWJlNDY3MzU4NGUwYTE1ZTlmNTdlOTAyNGIzOGZjZWYxZDA5Y2MxMDY0YTQ0OGRmN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNlNGVlMzcwMzk1ZTA1YWUxNjA0MjQ4OWQyZDQ4YmZmYzFhM2UxNjhlZDNiMjU1NzA0YjQ0ZmNhZjM5YzI4ZmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd181e8f35244245a0da7300502b7917",
+      "statement": "The plugin requests exactly one capability (hooks.content-policy:register), identifies as page-builder with the package version, and EmDash native loader calls the exported createPlugin factory at runtime, whose hook reads only the publish event content.",
+      "evidence": [
+        {
+          "resource": "repo://src/plugin.ts#L52-L60",
+          "version": "repo-lines-v1:sha256:af1d1ba114498ea433e41003dd10e3d53809358d28df1a19b3ea5739e14491fc:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTNjNGJmM2UwM2MzZjBmNzQ5YmNkMDY1MzZmNWQ1YzhjOWY1NTVlYzViM2VhMDlkNGFjNTNhMWE5YTM1MzMyNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2UyZTVkMzRlZTVmN2NlZDM0MjJiNmM5Nzc5MDRiMjcwY2M5YTdjYjIzNGZiYjE1ZGY3ZTU4N2I5NTY3OGJhZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmE1NDI3YTJkNTg5ZTdmZDM2NzNhNjk4ZjYyMjA2NDcwYzYxOGRmMzAxMjZhMDJhNmQ3YzdjMjBlNjZkOTI3MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2I3NTRhYjcyNDk3OTI5NDRiYmQwNzc0M2U2NGNjZjdmZWNjMTE4MjE1NDYzMGU4NGZjZmQ3YTUxYjAzODkzZiJ9"
+        },
+        {
+          "resource": "repo://src/plugin.ts#L7-L25",
+          "version": "repo-lines-v1:sha256:681f22829f2d70478c6faed37cbf325ff37ff95c9bcba5b6a0c4478e6cd27b15:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhM2I2ZDk3MTFkZmE4YTE4Nzg4ZjAxZDc2ZjBjZGU3Yjg5NDdiOGRhODFhNGE2YmEyYjY5OGNiYzBlOWM5OGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyMTM1NTMzZTIyMWY1NjI5OTNhYzNmOGEzYTFiNjcwOGNiNjhjNGExN2VjYTBiYTNmZGFiOGE5MTUzZjk2YzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3MWRlYjY1MmU5ZWViMmQ4MWE1NDg4MTg2ZTVlZWNiZmJlOGI5M2JhN2EzMjZiNjQ5MmZiMjM4NzY0NjFiNWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwZjBlMzE4MDM2YmM0ZDQxOTllMDcyMGNiZTMyNDQ5YmQxMTljMzE5YmI0MzQ5MjNlODg0YzQxNDRkMTczODYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_becfb2919eee4c5198616d0661e01827",
+      "statement": "findMissingInData recursively walks arrays and objects in content.data to check every layout including nested ones, judging only values whose _type is one of the package slugs with _key and _version present; unknown block types are left to their owners.",
+      "evidence": [
+        {
+          "resource": "repo://src/plugin.ts#L27-L46",
+          "version": "repo-lines-v1:sha256:71c8ce09897da7e992e1eabce4e1fc40d3e01c0a27ad8504c69265884ddb0bfc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyMDVjNGY0YTA5NjBmMTUxMTEzODMzY2MxM2NkOGRhZjVhMmM3NmY2MWM2ZTE0YTU3MTA4NDVlNDJiMzczMTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0ZmE0NjdjMjU5NDcwYWUxMjYxNjAwZTk4ZWYxMWUwYzNmMDkwN2U1NTdmNGE1NGZkYWM5OGU2YjlmZGEwMjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhNjE1NTE3YTZiZWFjZjZhMWU1MjVhNTFkODliMWFiM2YzMTk0ZTJiODYxYzk4ZDE4ODk0ZGQwMDczMjRlOTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0410662b4b694088abfabb40d5517650",
+      "statement": "findMissingToPublish upgrades the layout with migrateBlocks first, then checks each requiredToPublish rule (field slugs or repeater { field, minItems, fields }), reporting { blockKey, blockType, field } facts with zero-based repeater item paths, and is exported from blocks as a pure check.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L499-L530",
+          "version": "repo-lines-v1:sha256:f2f52bd64cba3debc86468a960752de80e94c3985223acb714f4f7423fc5adcf:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4MjljMzlmODhmNTZhNzc1MTgxODhiNDdhMWVhMjViNzViYTMxMjdkNjk4YWU4MjU0YmFmOTQ0MGE3YmI5YjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxN2FmMTEwMWM5N2I3YzJmNTI1NDA3ODJlNjM0Y2M0NDQwZjBlOTcwMzQxZTUyZjk3NTIzMTFkNzhiN2Q3ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiMTFkM2NiZDBlNWU2NzQ2MWNkODc0NGQ4OWU1N2VjZGE1MTQ2ZDExZTM3OTkyYmJmY2E2MzY3MTY4MWE0NjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2NjhiNmJjMjFkNmQ5ZmZiMTQ1MzI1ZDU3MDlmMDFmOGI4MTIzODg3YThiYzc2OTU3OTdlYmQxZDhkODE3MDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_172c4e51e3864b4d81d7bb0423c08c74",
+      "statement": "Rejection returns { cancel: true, reason } with a shared plain-text reason naming each block (key), type and field; interpolated stored keys have <, > and ASCII control characters replaced with spaces and are truncated to 80 characters, and the whole reason is kept within EmDash 500-character limit with a truncation suffix counting total missing fields.",
+      "evidence": [
+        {
+          "resource": "repo://src/plugin.ts#L48-L51",
+          "version": "repo-lines-v1:sha256:f72fd160d696c77599588b42827c55706d75cd0deb18af658e87e52c2bbf157f:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWZiZjMzZGE1YWQzYTMzNmQxYTAyNjliZDgzNDg0NWU1MjgyYTIyZTBmNjg5NmFhNGNmOTc4ZGE4ZTkzODVlOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGRmMTY5MzMzZjk5YTIxZTcyZWJhMmE3MTc2NmQ1YTM0NzUxYjdkNWQzNzM0ZjY5NWJhMjMxOGE4MWZkODc4ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDBhOTY5NTVhMGMyNDc2MDEyOWE4ZGNiYmFlM2VkMmM1NzEzNTYzNGUyMTI2YWFjYmM4ZmVmOWZhMjgwY2ZlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWUzMDAzZGNjMmY3NzdmYjgzNmEyN2ZmYzE2NDg3YmQzNzk4MjdkYWQ1OTUwOGUxNjg5MjQ0NzFlMTc4ZTFjYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_563550cd06754f4f83290b9967519022",
+      "statement": "The hook covers admin, API, MCP, visual-editor and scheduled publishing; a rejected scheduled publish is unscheduled with its reason on the dashboard, and EmDash returns PUBLISH_REJECTED.",
+      "evidence": [
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:d164917a3fdac60f8b02e39a97e875c13fc57fe34c1bcdf853b84f7a126814c0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

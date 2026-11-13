@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:30d945f208edc36387fd9d0f83726b8bc78dae018c6bf71b3ac2d3e63ad8b40f",
+  "claims": [
+    {
+      "id": "claim_d63e473398894a258b92c69194964b48",
+      "statement": "migrateBlocks is one pure chain for stored-content migration and render-time upgrades: it maps blocks in order, passes unknown _type through untouched, validates _version is an integer between 1 and the type currentVersion, and advances one migrations-map step at a time to currentVersion without mutating its input.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L447-L466",
+          "version": "repo-lines-v1:sha256:3f05f39caab07732908d233e23b16062b91d5bc3fdf6dc10fd24d4cd78e348c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzZDI0MGI1MTAxZGFjMGRiMTM2ZjNhNzkzZmRlM2NkYjAzOTBhYjFkMjQxMDU1MDYzNTdhZTYwOTAwNDc4NzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzYzRhMTUwMDI4MGJkMWYzNDQ3NDk0MDM5OWNhZWYxMThkYWMxNGIyYjE2MDM3NWU5YTdmMDg4ZmVlZjEzMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1YWUwY2JmYzAyMTU0YzI2MGQ4M2U3NDA3MjY2MmUyMWU1ODUzNjdiZmYxYjIxNDcxY2Y5OTdlNDY4MDhkMmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9d130003145e44518171f8e0993d7022",
+      "statement": "migrateBlocks throws one of three error classes naming the block and version: Unsupported version (non-integer, below 1 or above currentVersion), Missing migration (the map lacks the step for the stored version), and Invalid migration (a step does not preserve _key and _type and advance _version by exactly one).",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L455-L466",
+          "version": "repo-lines-v1:sha256:2f7da9960440d0862149730430888068fa6594573a7e5dc1139e4a5a33a088b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzOTBjNDhlZWMyNTRmNGFjYTIwYTRiNmVmZDk3Y2Y1Yzk0NjMzZTlmMzk2YjZlNGJhYWJiNDE4OThlMzNjNDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmMDBmYzUyZjQ2YjU1OWZmN2NhMWZmZTIyYTRkNjI4MWM0YWFhYmVmZjBhOTg4Y2NlOWM4OGJjNWQ2MzZmZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1YWUwY2JmYzAyMTU0YzI2MGQ4M2U3NDA3MjY2MmUyMWU1ODUzNjdiZmYxYjIxNDcxY2Y5OTdlNDY4MDhkMmEifQ"
+        },
+        {
+          "resource": "repo://test/blocks/migrations.test.js#L20-L32",
+          "version": "repo-lines-v1:sha256:aaac2b2c2ecc2162954b6330237d308d935f745c9970c70f3e4edf4986470d92:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzZjE3OGYyZmFhYzAwNjliOGJmYzJkNTI0NWI1M2ZhYmRhYzA2NmFmZTA5MzZlNGZkZTg0YzQwNTA0NDUyY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2ZjViNDBiMTU4NDU3ZDE3ODY0ZjIxNzkwNzg2ZGQ1YTJlY2RiNjRiNjZhNjUxZjc4OGQ0ZTI1Y2QzMzAzZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyNWFkOGE4NzcwZTQ1MWNkM2Y4MGI2MDVlNTc2MTY4NTBhYjBlYWE0YTM1MDI2NDNkZTU1NDQ4YThjODNhMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5ce2c287b85e4ee787237d1948028fe1",
+      "statement": "PageBuilder, layoutToMarkdown and findMissingToPublish all upgrade a layout with migrateBlocks before doing their work, so sections, Markdown renderings and publish rules only ever see current-version blocks.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/PageBuilder.astro#L21-L21",
+          "version": "repo-lines-v1:sha256:850288351d9217a2d6822662ab46ccbebceecedc2d19f7874bf1ce6c3c8d9d1e:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODUwMjg4MzUxZDkyMTdhMmQ2ODIyNjYyYWI0NmNjYmViY2VlY2VkYzJkMTlmNzg3NGJmMWNlNmMzYzhkOWQxZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODUwMjg4MzUxZDkyMTdhMmQ2ODIyNjYyYWI0NmNjYmViY2VlY2VkYzJkMTlmNzg3NGJmMWNlNmMzYzhkOWQxZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWM3N2ZlYzYzYTNhZTk0Nzc4ODJkZjU2ODUxYmNiMDI1NGRkMWE4Y2U0NmU5MDVjODZmNTIxMTY2ZWFlNjE3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmJkOGU4MzU4ZTUyNTY3ZTU5ZWJmMjJmYTM2YzVlYzRkYTBjOGE5ODgzM2ZmNjIwNjY5NjNmNjZjMDA2YWQyOCJ9"
+        },
+        {
+          "resource": "repo://src/blocks/core.ts#L486-L507",
+          "version": "repo-lines-v1:sha256:e2de0f2c92454558fe0e3bb544363a3457b24df0a0b4461e7fcdab7b2f4d77d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3YmQ3NjJiOTNhMTYwMDE3YjJjOGY4YWNkMzY5M2Y2MzM1YmM1ZjcwODlkZjdmYjk2YTdlZWE0MzM5ZTdjZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5MTg2YzNjN2IwYjM3Nzk1MDY5MGFjYzIwNmZlZGMzZWQ2ZWMzNjgxZjAzMjFhMDQ4NDg4NDMwNGU5YjM1MGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5MDM5YzRlODNkZGRmMDk3OThmNGIwMjdkMTFiYWM2NGM1MTFjNDE3N2ZmMzI1YTE3YmNjYWM4NjQ5NjRjMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2YTIzMDM3Nzc0OWYzNTRlNGE2ZTk0OWEyMGIxMWM2MjJjYTA2OWJhOGRiYTEwMTU3MmQzNWEzNmIyNzVkMTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d30bcae73e2c4f2ca73233c45f5f8243",
+      "statement": "A declared block version N must be breaking against N-1; buildPlan checks this before any write and errors asking to fold the change into the previous version, and test/blocks/versioning.test.js enforces the same condition in npm run check.",
+      "evidence": [
+        {
+          "resource": "repo://docs/lessons/emdash-decides-block-breaking-changes.md",
+          "version": "repo-file-v1:sha256:5dfa15f0f1205f1c3996e28e4a92ddbba9a6b5127037d38d8b0005fb7c704c25"
+        },
+        {
+          "resource": "repo://src/cli/plan.ts#L41-L56",
+          "version": "repo-lines-v1:sha256:3c2087164450580856c03d17df640448b594a573b89f7cdca8f4a200d543699a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3NzhkYzNlYTYxMTIzMzY3NzZlODczYWZmZGJmNjBmZjE0MmJhN2I0NGIzN2U4MDc2ZWZkNGM2ZjE1NDY2M2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NmU5ZmQ5YzAwNzZjOWVkNzRiNzk5ZDY3NzkxYWI2N2JlMzNhYzA5ZTdmYzdhZjViMTkwMjljN2UxYWU0OGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzODc4ZjE1ZTczYmEwMTk5MzI5NDc3N2EyY2FhODAxMDdlYWNlZWJlOWExNzc4MmU2MTJlMmU4ODI5YWE3YzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1NThiNWE4MzMwODQ1ZjQ5MWY3OGExOWY0NDNkYWQ0MzE2MTI4ZWJhYjAwODI4NmY1ODE0N2Q1ODdjZTYwMjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5b7b2cc675334d288781bfe5cc0031de",
+      "statement": "EmDash own field comparison decides whether a PUT with breaking true creates a new version: a compatible change rewrites the active version in place, so executePlan checks each PUT response and fails with a PlanError when the requested version did not appear.",
+      "evidence": [
+        {
+          "resource": "repo://docs/lessons/emdash-decides-block-breaking-changes.md",
+          "version": "repo-file-v1:sha256:5dfa15f0f1205f1c3996e28e4a92ddbba9a6b5127037d38d8b0005fb7c704c25"
+        },
+        {
+          "resource": "repo://src/cli/apply.ts#L79-L101",
+          "version": "repo-lines-v1:sha256:1407cb02afa6124e9039a8d9313993352d5a80ad5034dc54212cb65954cb9a65:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2Y2U1NGU2OTgwOTA0NjMzMzIyNjFkYWRhNTkxNTRmNzA3OTAyNDVlN2E3YzFmOTcxY2Y5OWI0ZDg5Y2NiNDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5NDkyMzk4MmNiNDA4ZWE0NmE5MzA2MjMyZGI3NmUwNTI2MThkMjQ5Nzk2ZjY2Njg2NzAzZGQ1YmE3YjQ4YmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwYjU0YTIzYTllMmQ3M2VlZDVjZjBjYTQ0M2IyOWY0NjY2ZjQxNDVlYmQxYzIwNjQ3MmJkMDgxMTkwMjRmOTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_89973b4eea7b4b04a47bbb34a2978b79",
+      "statement": "The CLI migration scan targets only the site active version when it matches the definition currentVersion (otherwise the type is reported as waiting on --activate), and migrateStoredBlocks upgrades stale blocks through the package migrateBlocks chain and writes them back with migrateBlocks true carrying the entry _rev.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/apply.ts#L154-L176",
+          "version": "repo-lines-v1:sha256:2b35fd8955722aade9766654400b7b127aad96394965a09fe4463c10826e5abd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3Y2RhODJkYTYwNjIzOGUwNWU2MjM5OTU2OWM1ZWUwMzk5MzQxOTY0OGFlNWQ0M2EyYmY4Y2Q2MzQ3ZjgyNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMmMwNmM1Njk0YjhkYjNiMWFlODFjYmNmYjBiYzRhMjU3OTY1OTRiNzdmODYyM2QxYTQwMTljMjEwNWVkZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJkODU1MDY1ZmQxZWEzYzE2NTY1NmY5OGE5OWI1YzYwYTBiZTY1NGIyZjJlZmQ0NTRkMmI1MDU3ZjhjMWMzNDYifQ"
+        },
+        {
+          "resource": "repo://src/cli/apply.ts#L248-L275",
+          "version": "repo-lines-v1:sha256:a7382fd2411b507122aa0ae2f4aba2e7341f6efccfc60277c59375e9f0952d92:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3MWU2MDIyYzdiYTYzY2FkNDU0ODg2OGU3MzVmYWU5OWY1MmZjYzIyYjhlNDUzZTdjNTQzZjU5ZjYwNDQ3MjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkZWM3YWM0YzZjNmJiNTczMjZkZjk3Y2ViYzM1MTJmYjE5MTNlZDQ2Y2M1YmQwN2Q2MzQwZjk1YTQzMjRkODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM2NDBlMGQyYzk2ZTMwMjNlNDY2ZDc5M2M0ZDY5NmNkZTQzZWVhNmZkZWZmM2U3ZDE0OGE4NWI5YzJhNGNhNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmMGY3MzY2ZjNiZjA3OGRmNmY0NDY5ZmIyOWU2MWMzODY0N2U0NjgxZDU5YmNlM2NhM2M4ZDViM2UwOTRlZDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6910e94a005c436d9981b37567522d20",
+      "statement": "All eleven shipped block types are currently at version 1 with empty migrations maps; the two-version machinery is proven by the example fixture whose v1-to-v2 migration renames heading to title.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/hero.ts#L55-L55",
+          "version": "repo-lines-v1:sha256:dcf06d1be049e7d5faeb1cb5a97f7ae327ddcdd7af3505948f119e5bb0cb0452:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGNmMDZkMWJlMDQ5ZTdkNWZhZWIxY2I1YTk3ZjdhZTMyN2RkY2RkN2FmMzUwNTk0OGYxMTllNWJiMGNiMDQ1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGNmMDZkMWJlMDQ5ZTdkNWZhZWIxY2I1YTk3ZjdhZTMyN2RkY2RkN2FmMzUwNTk0OGYxMTllNWJiMGNiMDQ1MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGYwMGNkNjkyZWRjMmFhZjMyMjBiNjAzZDg1M2I2MTVjNDUzNTkwMDE4OTA5ZjgxYTU1NGQxOGJkN2QyNmFmNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmFlZmVmOTE0YWE2MjY1ZTlmNDQyNzE5ZGRhNDk5YmEwZjJhZWFkMjUwMzAwOGUyMWI4MGFiOWEwZmMzYjEyZiJ9"
+        },
+        {
+          "resource": "repo://test/blocks/fixtures/example.ts#L1-L22",
+          "version": "repo-lines-v1:sha256:b78d622d7ce28b30f8b1d24c852cb636b58ed1ac9111121a224633e07c959736:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2NTJhMmFjNGYwOTA4MmNiNjNiZTkwNjI4ZmViOWQ3MWNjODM3YzA4YTY5Y2IwYTc2MWViNGM0OWU5OGI0NDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiMGZhOGM4MjRmMmJjOTM1YjJjNGQzN2NlMTI5MzI2NmVhYjhmYzI1NDk4MzliZDczM2YxYTE1MDEyZmMxODgifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

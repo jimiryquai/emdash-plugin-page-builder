@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:082ea7f03026dc88c5395ea8c0a1a43da2232a1469215cb46be9051a75566c99",
+  "claims": [
+    {
+      "id": "claim_dca4b95789d24cdfa34a16e0edd044bf",
+      "statement": "Tests are node:test files mirroring src/ under test/blocks, test/blocks/types, test/cli and test/plugin.test.js, run by npm test after a pretest build so they exercise compiled output.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L33-L40",
+          "version": "repo-lines-v1:sha256:922b8e78080da44f8b9ce8fda145d279d9fcff706cde8f475d69ad655e196114:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGUzZDYzYjExNjdmYmJjZDc5ZGMwNGE4ZTc5ZDUxZWFmMTY5NjM0Y2Y3NDk0MGZmNjI3MDU2MDVjNjE1OTEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2MxMWI5Yjc1ZWU3ODAwNjBmZmE0M2JhYzA1MWVlNjQ0ZWQzZmExMTRiMWE0MjVjM2NhZjMyNTBmNTgwYjFiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjE4NDYzYWYyOTE2NGFkMTc2N2M3ZTM5YTBiNjdkNDllMTQ2NWU1NTYyY2JkMzIzNDEyN2Y0NmNiNzU1YThhMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmIzNTc0MTg5ZWVlOGFlOGU2YzY2OTAzOTkzZjc1N2RiOWE1NGFjYmY0NjJjZGMwYjMwODEyOWZlNGRlMjI1MiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c932af16356742838ae4b3aa29011382",
+      "statement": "Tests of public behaviour import through the package exports (emdash-plugin-page-builder/blocks and blocks/PageBuilder.astro) rather than relative src paths, so a broken build or exports map fails a test (CODING_STANDARDS rule 8).",
+      "evidence": [
+        {
+          "resource": "repo://CODING_STANDARDS.md",
+          "version": "repo-file-v1:sha256:10b0e1dce1a47175c459b9c04c30bf382d9c051f524e216afb3d6b9f6fa058f4"
+        },
+        {
+          "resource": "repo://test/blocks/render.test.js#L1-L11",
+          "version": "repo-lines-v1:sha256:ab75e72529a41ebf6a9dc43b9fbca0853c12e3767d6d2fd3bd29bc0d2932cb51:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4ZWEwNzRhODM5MDQyOTFlY2IxZmVjODEwMDYxNmE2NDlhNDdmNWQ4NDQ0YTI4ZDNiOWI4OGVhZDgyMzBkOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMTAzMjNjNzk4NzBiZTU0NjE3ZTgzMzE3OTY1MjIwNTdjMTA0N2FkODdkZTY1MjQ4NDYxYzdhOWNkZDAyY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4ZTE5ZDY2MTAxNzE1OTNhY2M3ZDlhMjVjMjE0MWQzMmVlMDUxZDI1MDhlYjhhOTkxOWI4NzYwYTQ0OTU5YzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9b8cb21459bd459a81f6236a1b5dd9ee",
+      "statement": "The astro harness starts a Vite SSR server in middleware mode that stubs EmDash virtual modules, forces import.meta.env.DEV false, disables the dev toolbar, disables the Vite websocket so multiple servers coexist, and sets ASTRO_TELEMETRY_DISABLED=1; tests render PageBuilder through Astro experimental_AstroContainer with fixture sections.",
+      "evidence": [
+        {
+          "resource": "repo://test/blocks/astro-harness.js#L1-L18",
+          "version": "repo-lines-v1:sha256:2b771ed6539fb327f64cb096ff8e6053b1bc24653cc3ca6771c38eb21d553740:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5ZDllYjI0MDZmZmE5ZTU4ZGUzMmM2NWMwZmRkNmJhMDI1MGIxNDE5OTQxNjkyMDJhMzc3NzVlNWEwNmE3MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1NzNlODVjMTFiZmU2ZmFiZjhiMDliYTNkMjRmMGEzMWQ2MTliY2ZiY2EyMTk2NzQzNjcwNDUyOGUyZmFhMmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzNDFiMGQ1NWY1ZGJkNDkyZDE0OWYwNWQ0NjM3ZmY5MzY5YTI5YTI0YjE5ZWFjNTcyYTAzYjRjYzFkNTljMDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2b725349cd0049d1a13d99609bbdc20e",
+      "statement": "test/blocks/package.test.js packs the library and installs the tarball in a temporary consumer reusing the exact installed peer dependencies, importing and rendering the exported .astro component on both the oldest supported Astro from the peer range and the pinned devDependency Astro; successful tests remove the consumer and failed tests retain it and report the path.",
+      "evidence": [
+        {
+          "resource": "repo://test/blocks/package.test.js#L1-L50",
+          "version": "repo-lines-v1:sha256:56670b21909628db0b5c1b45b4c40fadb97b8bce4be191fafa27d3641e8095cb:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhOTY1Yjc3NjU2ZjVmMmRlZDc4NTAwNzEyOGU4NWZkM2E0ODlkNTE3NDFiMmIyN2ZjOTczOTFjOTJhMjhkNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZWE3ODlhYzA5MzRiMjkxODA0ZmE0YjFhNWIxMDVhODcxNzZkNWNlY2FkZjdkZDZlZDkxOTlmY2I5ZTJiMDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyMDYxNGViYjE5ZDNlODgyM2QzZjkzZjY1NjZmMGZkMmI2YmQyZWU2MWNmYjJhZDI0YWZmNzkzYmRkNGUyYzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ed848d7ac8ff43b4b12f5a25feeb5b01",
+      "statement": "test/cli/fake-site.mjs is an in-memory fake EmDash behind the injectable Transport that follows EmDash real versioning rules (compatible PUT updates the active version in place even with breaking true) using the ported compareBlockFields/fingerprintBlockFields, records requests, and lets no request leave the module.",
+      "evidence": [
+        {
+          "resource": "repo://test/cli/fake-site.mjs#L1-L14",
+          "version": "repo-lines-v1:sha256:d65d3956798b2b106c159d3f6e80302a66c2bd7352ca3c2f9e4c32582303c780:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyYjY5NTNhZDg5ZmJmMzBmZDNlYWVjZmM5OTQwYzNlOTU2ZDA3MmM3ZmUwNGQzNzdhZjQ2M2JjY2UwNzJhNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzZTZiYzRmNjRhMWRlMDE2OTA4ZTQ5MTk2NmIxMDc2Yzk1ZTdmNDI5YTdlMTk5MjQxY2ZhYzRlYjVjMmYyM2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_45e572df739540509cf2185ae135ca19",
+      "statement": "Source tests inject a fake QueryApi (list/get) so shared-content source behavior (cursor paging, group matching, count capping, cache hints) is proven without a real site.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L351-L386",
+          "version": "repo-lines-v1:sha256:b5cac4005c07b46f271b491f38c20a96d01047213d611726fbe126807de2f37a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjMjhjN2JiOWE3Mjk3MzNiYWE0ZDUzYmNmZmI3ZDFiYmFhZDNmNjE3ZmM2MTZlYTQ2MWQ3Zjg1NzlkZTExMGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlMmQ2ZmE5ZjVlZWY5ZGYwNzk2MTc0ZmZhZmNkNjY0MDRjYzA2NDliMzRlYzQ0Mjc1YzA2Njk3NzE4MjBlZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjMDUyOTVjNmYzM2UxMmZkNGNhNDZiNWIwYzgxMTBjNmJiZDEyNzBlMTYxMGY1ZWU5MTAzOTA2NzgxNjUyYzIifQ"
+        },
+        {
+          "resource": "repo://test/blocks/types/posts.test.js",
+          "version": "repo-file-v1:sha256:1b63a4ed7edf249fc9f8d2d3f59a5f0701f63ec9cdc0e6bf383952a786117305"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

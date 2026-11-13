@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:f7f23c92525bdf800ee8025226a81d38f930eff5e4faad25913ccc059da75fd6",
+  "claims": [
+    {
+      "id": "claim_bc7049ce5df349a092d8c19c7d194181",
+      "statement": "Each of the eleven block types is defined by exactly one module in src/blocks/types/ that owns its EmDash seed definition, variants, migrations, requiredToPublish rules and description, and src/blocks/index.ts merely re-exports core.ts and those modules.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/index.ts",
+          "version": "repo-file-v1:sha256:63dc25693f8df4242c42664214eae9a01ff41c5171070d1158fe463da7f9dfc4"
+        },
+        {
+          "resource": "repo://src/blocks/types/hero.ts",
+          "version": "repo-file-v1:sha256:47eeb510c806bfc4d2ef429d777834d411f13d6ffbdbdfd6fd5ddc08aa4eb7d4"
+        },
+        {
+          "resource": "repo://src/blocks/types/posts.ts",
+          "version": "repo-file-v1:sha256:5707ff060aef22acb04f0a192e7c240c162326f4c1b988e9157d89698c0de2c8"
+        }
+      ]
+    },
+    {
+      "id": "claim_18ce7a5e93924571b59af528d2e2785e",
+      "statement": "The BlockType interface in core.ts defines the module contract: definition (EmDash seed shape with slug, label, description, currentVersion and numbered versions), variants, migrations keyed by the version upgraded, requiredToPublish, and optional starter, toMarkdown and sourceContext members.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L243-L264",
+          "version": "repo-lines-v1:sha256:ea4b0d9b866fe9344ced9699ab704dd2dabe242ec87d0ae0cac01b872d65777f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2OTZjZjg5NWY3MjA2OTZmMjFlYzM5ZjlkZjk3ZjVhMmJkMDNjZWEzN2UzMzJhZjliZmU1N2MwOTAyMGY0MTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmNTUyYzNmMTYyYWRlYmYwZGZlYmFjMDUyODNhMGE2ZDQ1NjViYzczYzY1MTgwYzVmNTU4Y2UyYzRiNGE3OGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI5Y2ExZjc2ODZiNTAzODY4MWI3NTk2OGIyOTAwNzA5ZWI4YzRmMTUwYzgxMjUxZjE5NTdlY2M0MTIwMDYzZmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e825f1afac7e4d6887ae3686af4761f1",
+      "statement": "Shared field builders live only in core.ts with exported slug constants: variantField/VARIANT_FIELD_SLUG, linksField/LINKS_FIELD_SLUG, scopeField/SCOPE_FIELD_SLUG and countField/COUNT_FIELD_SLUG, and modules compose their schema fields from these helpers.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L181-L208",
+          "version": "repo-lines-v1:sha256:093c421c7fc4c007e597028d68682da7f5dff67b8a2087c319d5d18ca099e518:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5ZDMyYjNiOWUyYzI5NWU2NTVmY2YwOGU4YTRhMTZjNjRhYjVjZTA2ODcyMDFjMzAyNDg2ZTE2ZDE2NGZmYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyZGU3NDZjMDdiYjE3ZTkzMWUzYzE4MGQ1ZTU0OGE2YjA2MmNkN2U3ODc4YjYzOGY0NjU4ZTViZWI0Y2ZkOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM0NzZhMTU5ZDRlODJmODBlNmYwNDExNjcxMzMzZmNmYjBjOTRlZmI5MTQ4NGUxZDI4ZjQ2YjI1OTMzOWYxYTgifQ"
+        },
+        {
+          "resource": "repo://src/blocks/core.ts#L4-L29",
+          "version": "repo-lines-v1:sha256:033ed89504c82080d98cfad6204cc49177e7d3bcb0d5ad1a75111df33598b79c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5ZWZjOWQ4MDg4NmQ2MTEyZDNjYzdkYjJlYjBjNmIzOTkyYTA1MGY0NmFiNzA1ODgzYjJiMDIwYTc5Y2U5YWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxY2YxODMxZGQ2MzJkNjZmMGY0NTUxNzBmMjQ0Y2NjODU2ZDIwZjViN2FmNTgzNjkzODU4NTRkYzZkNGYyZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6acf068bab5343daaa6f582a8594a60f",
+      "statement": "isBlockType recognises block module exports structurally (definition, variants and migrations present), and both the publish-policy plugin and the CLI loadBlockTypes discover block types by filtering a module exports object with it instead of keeping a registry.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L266-L270",
+          "version": "repo-lines-v1:sha256:33e52633a564d1c89ef2bbfb75cbff2437b120051dac75351d3c8865b57edcee:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRlY2Q5MjBkMTViZWZjYTVmZTE3YjlhNWE3ZDQyNzI1ZDQ5YmU1NGM0ZjdlZDkzZGZhNzY5M2NlNTA0OWJlYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmU1OGFiN2UyMDZiMTU4MzZiNDEyYTkzZjM4MTNiMjNjYjViMTNmOWM3MzYxMmNjMmUzMjU2NTdlNTE3NDU3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODExMmQ5YzdmNjg1Njk4NDBjN2MzNGY1M2M5YTQ3ZDYxYmFmNjAwYWQ2M2E1NGViNDc2YzEwYWI5MjExYTY4MiJ9"
+        },
+        {
+          "resource": "repo://src/cli/main.ts#L90-L101",
+          "version": "repo-lines-v1:sha256:3d0c5741b3a4df6f201f3749bccf6770dc2b627feef1a9bf6cf97424471ccbaa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3Y2RhODJkYTYwNjIzOGUwNWU2MjM5OTU2OWM1ZWUwMzk5MzQxOTY0OGFlNWQ0M2EyYmY4Y2Q2MzQ3ZjgyNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMWVkZWQ4NWY1ZDk4YmQ1YTA2MDdhZDY3OTg3NjA1NDJkYTdiMWVjZTY5ZDZiYTFiMmY1ZWY4NTQxNDBmOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1NzhiYjgyMGRmY2Q2YWFiNzk0ZWYzMTI0NmE2OTllYmEzYjc3YzkzN2E3Y2RhNTA2M2FiNmYxZWMzMTJjNTIifQ"
+        },
+        {
+          "resource": "repo://src/plugin.ts#L7-L11",
+          "version": "repo-lines-v1:sha256:b44c998011ab21db3d000b0f112f94893815dc79d3e569c2e5b0e00bb3f56211:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmEzYjZkOTcxMWRmYThhMTg3ODhmMDFkNzZmMGNkZTdiODk0N2I4ZGE4MWE0YTZiYTJiNjk4Y2JjMGU5Yzk4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjcxZGViNjUyZTllZWIyZDgxYTU0ODgxODZlNWVlY2JmYmU4YjkzYmE3YTMyNmI2NDkyZmIyMzg3NjQ2MWI1YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWI2YzlhNjlkNmE5MjE5YzQ3ZTczOWRlNzI1YWUzYjQ0MGE3NGM4ZGI4ZGE1M2E0MWVkNzg0N2I1MGM0OWEwZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7af1c632e42e44a18fc688c5acd1666c",
+      "statement": "Block modules import shared pieces from core.ts, never from index.ts, because index.ts re-exports the modules and the reverse import would be circular.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/index.ts",
+          "version": "repo-file-v1:sha256:63dc25693f8df4242c42664214eae9a01ff41c5171070d1158fe463da7f9dfc4"
+        },
+        {
+          "resource": "repo://src/blocks/types/hero.ts#L1-L10",
+          "version": "repo-lines-v1:sha256:7c5abae3c79aaa051c4c41c42b7dd3bd08ca69058e3ff36b24cdd64fde271a44:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MjAwOTY0YTk3ODYzNTUyMmIyYWIwOTBjNjUwNjVkOGVmOGU4NWM0NzMwYmIyZWIwNDYwZDM0YzY3N2RkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1YjA5YzU0YTk0ZGEyMTU1OTBiZWQ0YTJmZWJiZmI4OWYxYjQ0YjJhYjM5YzMxMzZmYzM3MzUzNDczNWM4MjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1MWQ3OWNjZDIyMjJkODM0MzdhMjQxNzdkN2QyOWI3OWFjODk2M2E2YjI5YzE4YWM3YWFjZWFiYjBmMDVmZmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c68bb15b364149b8827ea675ee1afd87",
+      "statement": "Sites turn a package block module into a renderable SiteBlockType by attaching a sections map with a required default component and optional variant components; the package ships no visual components.",
+      "evidence": [
+        {
+          "resource": "repo://docs/adr/0001-package-owns-data-sites-own-collections-and-visuals.md",
+          "version": "repo-file-v1:sha256:3a1cef4e5bb1cf8f3597336abf8a5e8ee6057a98cdf6e382cb5bed89512589ce"
+        },
+        {
+          "resource": "repo://src/blocks/core.ts#L272-L282",
+          "version": "repo-lines-v1:sha256:0a285edeb2f9baa632006799db1533067de97b5e6b05523bc15f4ff08936182b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzN2FlYzZjMTQwNjcwZThjMzgyNGIyYzUwNzVmZTFlN2FlNGNhMDA3ZGQxNDc0NTQyNGFhNmM3MGJhNWI5OTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiMzBiMGJiYWU0MTNhNjIwMGMyYmJhZGUxOGVhODI4YTJlYjJiNTFjNDU1ZWM0YmZhMjQ4NGY4ZDQ3NjQ0YjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3MmEwYTVhNmE1N2EyMzU4OTI1NThjMzNmZGMwZDc3YjQ1NTAwYjQwYjBmOTYxODcyMzhiYzJmYTkxMDFlMzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0a0a45306a65456db22b46fb3fb9e5ac",
+      "statement": "Block schema fields are kept optional so a new empty block autosaves as a draft; requiredness is declared separately in each module requiredToPublish list and enforced at publish time (ADR 0003).",
+      "evidence": [
+        {
+          "resource": "repo://docs/adr/0003-required-to-publish-not-to-save.md",
+          "version": "repo-file-v1:sha256:a23351ad033e0a889507c1259d878e3a3f7d31f559b28bd7435115542c104385"
+        },
+        {
+          "resource": "repo://src/blocks/types/hero.ts#L63-L63",
+          "version": "repo-lines-v1:sha256:0afe6a92809fbfe96524e7bce11ee95bcc4f221dde449732cbcfb61598d83769:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFmZTZhOTI4MDlmYmZlOTY1MjRlN2JjZTExZWU5NWJjYzRmMjIxZGRlNDQ5NzMyY2JjZmI2MTU5OGQ4Mzc2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFmZTZhOTI4MDlmYmZlOTY1MjRlN2JjZTExZWU5NWJjYzRmMjIxZGRlNDQ5NzMyY2JjZmI2MTU5OGQ4Mzc2OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmZkYWJjNjczM2RmMTUwNjkzZDY5NGU1OWFkNjc2NWRmNTUzMGNmYWIxNjg3N2I2NDc4M2EwZTIwZmI0NDgzOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTMzZjhkNTFlOGYyZTU0MWUyOTQxZGJmMjA2NjQzM2Q1ZmYzN2JmYWYyMmFkZDE5NzNmOGM2NDQ5NzhhNzQ3OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7267523597f4632b812aaa643246996",
+      "statement": "A block variants vocabulary is fixed in the package definition and mapped by each site to sections, with an unmapped variant falling back to the default section (ADR 0002); adding a variant is a compatible change and removing one is breaking.",
+      "evidence": [
+        {
+          "resource": "repo://docs/adr/0002-fixed-variant-vocabulary.md",
+          "version": "repo-file-v1:sha256:b87ba72d863617e9f8c31ea0e1dd4c8ed6eef21b09c115483326dbca120d5649"
+        },
+        {
+          "resource": "repo://src/blocks/types/features.ts#L5-L20",
+          "version": "repo-lines-v1:sha256:709d8dcdad4d6345f7560482057437a04d24d8cc45854769d5bea233e0683f0c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliM2Y4ZTQxNGFkNjA1Y2ZjODlmZmVjNzhkMjA4YTAwNWM2YzBkNDRmYmUwNDE1MjQ4ODRiOWU2Y2JmOTM4NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlNzFjZmM4ZWRiOWNhMjNiMjc1NzViZmU0YmZlYzUxODkxODYyYzNjNmM2ZmMwZmY5ZTcyYjY0OGMzZmQ3ODIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkMzNiNjA4MGM4YzJmZTJkMGYwNzg2ZjcyYzk1NWQ0OWQ4MGQxOTgwYTUxYjUxYTUzOGE2YTljNDMyZjVlODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMjFmYmQ1ZjNlYjQxMzlhYjJkNWM3OGQ2MGZiY2U1M2IyOGQ0MGQ2MGE0NmIzNzliNDVmZjUyNDk1NmIyMzIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

@@ -1,0 +1,7 @@
+# Files
+
+- [Block module contract](block-module-contract.md) - How one module under src/blocks/types/ owns a block type end to end — its EmDash definition, variants, migrations and publish rules — and how the plugin, CLI and renderer discover modules without a registry.
+- [EmDash API client and field-contract port](emdash-api-contract.md) - The CLI's HTTP boundary to an EmDash site (EmdashClient over an injectable Transport) and its port of EmDash's block-field contract rules — canonicalisation, fingerprints and compatible-versus-breaking field changes.
+- [Package architecture and ownership](overview.md) - What emdash-plugin-page-builder is — the page-building layer on EmDash's own fields — its four public entries, and the package-owns-data / sites-own-collections-and-visuals boundary that shapes every module.
+- [Shared-content sources and starter collections](shared-content-sources.md) - The Source seam that lets shared-content blocks read a site's own collections — scope/group/count resolution, cache hints, createCollectionSource's paging, starter collections, and the taxonomy-based posts source.
+- [Block versioning and migrations](versioning-and-migrations.md) - How numbered versions, currentVersion and the pure migrateBlocks chain keep stored blocks renderable across breaking schema changes — at render time, at publish time and through the CLI's create-activate-migrate order.

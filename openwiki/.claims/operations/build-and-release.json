@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:3701e7ab66838835b80b2dd66d1823d1e2bd10ae64688a5bb615a8ff46c4240d",
+  "claims": [
+    {
+      "id": "claim_aef1c23403c74983bf2562cb839e7709",
+      "statement": "The library build is tsc over tsconfig.build.json with NodeNext module and moduleResolution, declaration output, and rootDir src into dist, so relative imports in src carry .js extensions for plain Node consumers while astro/tsconfigs/strict remains the base for typechecking src including the .astro component.",
+      "evidence": [
+        {
+          "resource": "repo://CODING_STANDARDS.md",
+          "version": "repo-file-v1:sha256:10b0e1dce1a47175c459b9c04c30bf382d9c051f524e216afb3d6b9f6fa058f4"
+        },
+        {
+          "resource": "repo://tsconfig.build.json",
+          "version": "repo-file-v1:sha256:08c5f9ac375c035685d12179e449832648a458b529b94376d1255d5a8654dd86"
+        },
+        {
+          "resource": "repo://tsconfig.json",
+          "version": "repo-file-v1:sha256:4b6e584d7701a73991e8d4b46cc9c9030ee89cc1c3c0bdc0536e7c2de52a479b"
+        }
+      ]
+    },
+    {
+      "id": "claim_a3a06733d87d497dbd6b2cbb0e91294e",
+      "statement": "npm run check runs the node --test suite (after a pretest build) and ASTRO_TELEMETRY_DISABLED=1 astro check, so tests execute against compiled output imported through the package exports.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L33-L40",
+          "version": "repo-lines-v1:sha256:922b8e78080da44f8b9ce8fda145d279d9fcff706cde8f475d69ad655e196114:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGUzZDYzYjExNjdmYmJjZDc5ZGMwNGE4ZTc5ZDUxZWFmMTY5NjM0Y2Y3NDk0MGZmNjI3MDU2MDVjNjE1OTEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2MxMWI5Yjc1ZWU3ODAwNjBmZmE0M2JhYzA1MWVlNjQ0ZWQzZmExMTRiMWE0MjVjM2NhZjMyNTBmNTgwYjFiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjE4NDYzYWYyOTE2NGFkMTc2N2M3ZTM5YTBiNjdkNDllMTQ2NWU1NTYyY2JkMzIzNDEyN2Y0NmNiNzU1YThhMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmIzNTc0MTg5ZWVlOGFlOGU2YzY2OTAzOTkzZjc1N2RiOWE1NGFjYmY0NjJjZGMwYjMwODEyOWZlNGRlMjI1MiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e9bfe4dd51324ccba8d473a15e1387ab",
+      "statement": "CI is ci.yml on pushes to master and pull requests: Node 24, npm ci, npm run check, with contents: read permission and telemetry disabled.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/ci.yml",
+          "version": "repo-file-v1:sha256:6337f54c60d2bc8113f54aa54c0f5b9480dd38003289b452a9b5f4f7afb6fa54"
+        }
+      ]
+    },
+    {
+      "id": "claim_e38fdd84b9164511b4afb0bd32c2e0fb",
+      "statement": "Publishing happens through publish.yml, triggered by a published GitHub release with a tag matching the package version: it installs npm 11.21.1 for trusted publishing (OIDC needs npm 11.5.1+), runs npm ci and npm run check, then npm publish --provenance --access public with id-token: write permission and no npm token secret.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/publish.yml",
+          "version": "repo-file-v1:sha256:ae6ecdfcf83806cfcc54e178e49406ac1f7ca1c583a188d6e7764531ede8f608"
+        },
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:d164917a3fdac60f8b02e39a97e875c13fc57fe34c1bcdf853b84f7a126814c0"
+        }
+      ]
+    },
+    {
+      "id": "claim_9265d68e282b4b4aa098bb14ca04d9ca",
+      "statement": "The lockfile lesson: the CI runner npm decides lockfile validity, because an older local npm can omit optional dependencies (EmDash pg) that the runner npm ci then refuses; regenerate the lockfile with the runner npm version when dependencies change.",
+      "evidence": [
+        {
+          "resource": "repo://docs/lessons/lockfile-npm-matches-ci.md",
+          "version": "repo-file-v1:sha256:a1a993e4576ec4a0d3db521059c267b8aeb256629eb3fce464b9a5b009c85386"
+        }
+      ]
+    },
+    {
+      "id": "claim_e12702f8ad7742448b95cee318afe272",
+      "statement": "The shipped files are dist and src/blocks/**/*.astro only, with prepack building dist so every tarball carries fresh compiled output.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L37-L39",
+          "version": "repo-lines-v1:sha256:6a9af540a24c37bf19e02e65a5970ca81a0425f3027e8045cd22d6741f781f63:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ4MzNkNTk0OWMwM2E0MGNhOTUyNDkxNjEwYTY2NTk2NDRiM2FhNDY2MzYyZjc5OTAyMGRiZjE5ODE1NDdkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjQ1YzE3YWZhNWMyMmM0YWIwNjZlMTI2MWY5ZDYwM2Y1MmZlNTI2OThiMTIzZTNkYThlODAzNzQyN2RiNzU0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGU4ZjhmZGY4M2Q3ZjAwNWE4MzU0OThkZDVlNTk5MTRkYTRmMTgyNmU4OTkwYjVjZTgzNDc4MzAyNTZiYzY1OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWRlNTc1MDU5Y2ExN2MwZmEwOGJjNTZhOWZiM2VjMmQ4NDIzZmMyYjhhZjkxZTE1MmNmM2U1OWMwZjIzZjBlNCJ9"
+        },
+        {
+          "resource": "repo://package.json#L43-L46",
+          "version": "repo-lines-v1:sha256:e8258205079416d2f888fe1ab656186f61c6db6be5eaf1d07de4a188ff6f15fe:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk2NmI3OWYzZmYyMjE0ZWU2NjJiNGZmNjliMzc1M2IyNjA1YjlhMjMxMzIyMDc2NWFjMDk3NjFmOGU5MGM1MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGQxODBhMGE1YzU5ZDA4M2UxOWI5NGJjM2IzMzA2MWI3NDg5YWUxODYzMmU4YzdjNTNkMTAyZjQ0MzU4ODJiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWRlNTc1MDU5Y2ExN2MwZmEwOGJjNTZhOWZiM2VjMmQ4NDIzZmMyYjhhZjkxZTE1MmNmM2U1OWMwZjIzZjBlNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDQzYzk2YzU2Y2EzYjZhZmVlMmRiZTdmN2Y5MjRhM2EzYTkxMTkzODIxNjYyNWJjMmYyOTY0OGMxNDc4ZGZiMyJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

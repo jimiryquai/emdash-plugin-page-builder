@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:63ceae9a1c4027f52841c5a9f575d85284c7edf563e46134e71d3283a0c51d75",
+  "claims": [
+    {
+      "id": "claim_dee75bbab45b4840bc6f12753bf45bd1",
+      "statement": "layoutToMarkdown upgrades the layout with migrateBlocks first, then dispatches each block to its module optional toMarkdown with the items passed for its _key, filters out non-strings and empty renderings, and joins results with one blank line; unknown block types and modules without toMarkdown are skipped, and only an unsupported stored version throws.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L486-L497",
+          "version": "repo-lines-v1:sha256:f60aab24fdc83bdb0f8ea9ea1da937d9ab491e7a4c29f30ede3ee4770f7312eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3YmQ3NjJiOTNhMTYwMDE3YjJjOGY4YWNkMzY5M2Y2MzM1YmM1ZjcwODlkZjdmYjk2YTdlZWE0MzM5ZTdjZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5MDM5YzRlODNkZGRmMDk3OThmNGIwMjdkMTFiYWM2NGM1MTFjNDE3N2ZmMzI1YTE3YmNjYWM4NjQ5NjRjMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwY2IxYzI1NGU2Mzk2M2E0ZGNjNWQ0Y2EzZTg0YjllZjc2YmIyMGVjZTc5ZGZmNTNhODgwYTI2NGMwNTljYzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fb6ee33f2bc84eb59d75ae06498b8cf1",
+      "statement": "The options.items map is keyed by block _key and carries what a site source read (the same items its sections receive, in the shape its Source produces), so shared-content blocks render their own heading plus caller-supplied items.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L478-L484",
+          "version": "repo-lines-v1:sha256:dbbecb92dba3d22665d2bdd26e8a7c07e3573fc1a7db4b00f8c9bd1dde526dd6:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTE0YzcyN2ZkODkyYThmNzEzMTdiZWE2ZGI2ZDcwNmZkYzZkZDVhN2QxMWE2OTRiNmY0NmEwODgyOGJjM2JiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjI2N2ZhMjNkYjdhYTIwMmI0MWQ2ZjQzN2ZiZGE5Yzc2NWZlMDI2NjdmYjQ5ZTE3NWQyYTU3YTUzNzdiNWJkMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTZjMDcyNzMyZDNkYjI3ZDBlYjEyZjUzZjY2YmEyYTIyZTZlYTA2NzQ0ZGFmYTdlZjY0MzNlYzUyZWYyNWE3MSJ9"
+        },
+        {
+          "resource": "repo://src/blocks/types/testimonials.ts#L91-L110",
+          "version": "repo-lines-v1:sha256:071e574f09539f5fe2a7ad35574a75d906e622389fa2dc3084d18ba58ce1a569:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4NmFkMDA1YzUxZWI0YTNjZWQ1ZDRjY2ExMTYxMTQxZDEwYzMzOTQxMjk5M2ZlZGNhZjRkODVlODZmNjhhZjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkZDI0NDU4MmI2ZmIwM2QyM2I4NDE1YWJlY2QzNDZiMGM5ZjQ2NmI2Zjc1MmIwNjgxODljZTdlOWEyZGMzNTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4ZWE3NjRiYWJhNDVkMGIzNWVlNDQ5N2E0MzcyZmZiYTU1MjY1OGRlNDRiODcyOTY4ZmJjYmM1Nzk0MmI5NzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0OGY4NTNiN2QxNWI5MzA1NTQ5NjhmNjU4ZDljNDAzZGFjMmUyMjExMjQ4MWU4YTRkZGVmZjc2NmMyYjdiNmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1851992f4022464b9335c977cad0123d",
+      "statement": "markdownImage resolves the URL from the stored media src, the provider previewUrl, or EmDash file URL /_emdash/api/media/file/<storageKey or id>, with alt from alt or caption; markdownLinks renders one - [label](url) bullet only for links with both non-empty label and url; markdownText returns trimmed non-empty text or undefined.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L33-L74",
+          "version": "repo-lines-v1:sha256:0a319c909c214661c49a22af3b8f56e08d8de3f37f253268283e9531b703c570:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxYzU5NjlmZjE2NTI4YzZmNTIxM2UyNjc4NDU5ZDcxY2Q2YTAyZDE1MjExZDY2NmRlNDg0OTQ1NTc2N2NkNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyMDQwZTA5NWE5NGUyYWRhNzRlNDIxZjM3MTg3NTFhOTFhODEwYmZkNjZmNDhmNGU5MzljN2I3NDgwZWI2NzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlZDUyYjE1Zjc0OGFlZmE2YWIxN2E5Y2ExMDY3MDczMzRmN2M2YmIwMDRmNmFjOGM4NTY2MmMwMjYwYWIzNzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_54765a1ecc5e45efac162069718281df",
+      "statement": "Heading-level convention: the hero heading is the page one # heading, every other block uses ## with ### for items, and shared-content blocks without a stored heading emit their definition label as the ## heading.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/hero.ts#L13-L27",
+          "version": "repo-lines-v1:sha256:847a22fd77477ca030040026ef971476f1c457dfde282f835f0074aaeb1bd34c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2Mzc5YzA5ODc1YjVjMDBiYjVjMjljMjc5ZmRkNTI0MjQ3ODRmYzliNWNmY2JkNzU2ZjRmYWI2MGRlYTQwMDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjZTNhODNlNGVlMzM3MzRhODRmM2EyMDhjNDkwMzljMjVhMWFkOTkzNTNhNTlhNGEzMDAxNzg0OGExMDUzMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE4ODEwNGY0Njk3ZGYzZTJhZjliNzIwZmJmMmM1NGZlMWQyMGNkNDBjYTIzZjViNTY3NDc4MzEzM2VhN2Y5YTEifQ"
+        },
+        {
+          "resource": "repo://src/blocks/types/testimonials.ts#L92-L92",
+          "version": "repo-lines-v1:sha256:80e9a498c91501fd86b7e0929a2e2e8c2e63038efc5d0a5e6c85706ceebbfca0:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODBlOWE0OThjOTE1MDFmZDg2YjdlMDkyOWEyZTJlOGMyZTYzMDM4ZWZjNWQwYTVlNmM4NTcwNmNlZWJiZmNhMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODBlOWE0OThjOTE1MDFmZDg2YjdlMDkyOWEyZTJlOGMyZTYzMDM4ZWZjNWQwYTVlNmM4NTcwNmNlZWJiZmNhMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjExMjM1MDNiZjVlZjgxNGM3YzJkMmUwOTIyOTQ1YWNiMmMzNzdiMWZkZTZjYTU3MTViYjJlNjAwYjhkOTZhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTM2Nzk1YjM2NTlmZDNkZGFiZDE0YjZkYmJmN2E4YzJmY2UwYjllY2NjODYxMmVhOTg4MzJjMjAzNWQzOTJmNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5d4c328125d846b784e06cdcbdb22141",
+      "statement": "portableTextToMarkdown renders normal paragraphs, h1-h6 headings, blockquotes, bullet and number lists with level nesting (per-level numbering that restarts after any other block, child items indented under the parent marker), code/em/strong marks with link markDefs, skipping unknown block and span types instead of throwing, with blocks separated by one blank line and list items by one newline.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L117-L180",
+          "version": "repo-lines-v1:sha256:a74d9a9175a2313ac89070720e44e2d0f71fdb72dd38c207bf4e495a80825a74:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4MmQxNzFhYWRhNjIzN2RhNjI1Y2NlMjE3MjY3NDM5MzJjNmMxZjM2OGM0OGJlZTllOThjZTYzNmRlZTY3ZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhNTkzNzJjZDZkZjdmYmE5NTcyMmY0YTFiMTUzY2FiZmRhYWJkN2JjYTU0ZWRmN2NmN2JiY2I4YWM0MjkzMjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_776a042af1b2414b8e8ff60fbf6dd47e",
+      "statement": "The comparison module renders its content as a Markdown table with Feature and column label headers, pipes escaped and newlines flattened in cells, and group-only rows rendered as bold group header rows.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/comparison.ts#L48-L82",
+          "version": "repo-lines-v1:sha256:92ed0fb28d3fd9795192cd6b899f2a1f58bf625c5216d7839a4633d9b6c47e96:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1YjA0NzQxYjM0MDE1OTNmMjY4NGY1Y2ViZjk5ZDMzM2Q1M2ZjYTJkZTIwYjgyM2M5NTczZmI2MzBhYjQ2ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2YjhkZmFlNzdiN2NmNDgzMGRiZmNlNmQ2NmQxODg1NmRmYjllNmVmZjhkMTM3YjNlYzMxN2MxYjY0M2ViYjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzMzA1NDUxMDc3YWJjMmMxOTUwN2JmMWMxZTgwYTBkNTlmN2Q4OWZmYjc4YTYzOGM0NTk0MTJlMDIzOTk5ZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA0NDFlNTAwNGRlOTJmMzFlYzlmYTBmYWY4ZDYwMTFmZDFkMWI0ZDc0ZmNmM2FjZGM0M2Q2ZWY3NWQ3YzM1YWYifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}
