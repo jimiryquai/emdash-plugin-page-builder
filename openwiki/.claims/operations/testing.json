@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:082ea7f03026dc88c5395ea8c0a1a43da2232a1469215cb46be9051a75566c99",
+  "pageVersion": "sha256:98a34012b7df97e5c27dd861d753192e199d304082f8c6763a183c92c6e290ce",
   "claims": [
     {
       "id": "claim_dca4b95789d24cdfa34a16e0edd044bf",
@@ -38,11 +38,11 @@
     },
     {
       "id": "claim_2b725349cd0049d1a13d99609bbdc20e",
-      "statement": "test/blocks/package.test.js packs the library and installs the tarball in a temporary consumer reusing the exact installed peer dependencies, importing and rendering the exported .astro component on both the oldest supported Astro from the peer range and the pinned devDependency Astro; successful tests remove the consumer and failed tests retain it and report the path.",
+      "statement": "test/blocks/package.test.js packs the library and installs the tarball with exact peer dependency versions selected from package.json in a temporary consumer, importing and rendering the exported .astro component on both the oldest supported Astro from the peer range and the pinned devDependency Astro; successful tests remove the consumer and failed tests retain it and report the path.",
       "evidence": [
         {
-          "resource": "repo://test/blocks/package.test.js#L1-L50",
-          "version": "repo-lines-v1:sha256:56670b21909628db0b5c1b45b4c40fadb97b8bce4be191fafa27d3641e8095cb:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhOTY1Yjc3NjU2ZjVmMmRlZDc4NTAwNzEyOGU4NWZkM2E0ODlkNTE3NDFiMmIyN2ZjOTczOTFjOTJhMjhkNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZWE3ODlhYzA5MzRiMjkxODA0ZmE0YjFhNWIxMDVhODcxNzZkNWNlY2FkZjdkZDZlZDkxOTlmY2I5ZTJiMDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyMDYxNGViYjE5ZDNlODgyM2QzZjkzZjY1NjZmMGZkMmI2YmQyZWU2MWNmYjJhZDI0YWZmNzkzYmRkNGUyYzUifQ"
+          "resource": "repo://test/blocks/package.test.js#L8-L54",
+          "version": "repo-lines-v1:sha256:9f62aff02864818a84617f49330fb2af03e8dfb9ee732fdf224d35d7e04a8cf9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxYzA3MzhkZTcyOTQzYzBmNTRkN2NlZDA1YmVjY2MyNDUwMDAxYTQyMGU2ZDE2ODRiZmI3MTlhZWY3ZDE2MmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwZTk3NDQ1M2ZlNDMxOTg1YThhNjM1NWIzMDczNTBiNmY1NGQ4ZDdkMDU3ZjIzMzEyZDNjOGM0ODNiMzQyNDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2Y2ZkMjQ5MzAwMjBkMDA3ODNkZDIxY2QxZmVmZTRhNjM5ZjhmNjlkZjg0MjBkYTY1MjkxNDhlOTkxYjkwOTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3NTE4MDRjZjQ2MDM5OWQ4Mjc5ZDkzN2ZjZDUyZjM4OGFjNTcyZDEyMTMyNDQ5ZWFhZjM4NGQ1ZGE1ZTNhMTYifQ"
         }
       ]
     },
@@ -73,6 +73,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-13T16:16:20.656Z"
+    "at": "2026-11-13T18:45:38.950Z"
   }
 }

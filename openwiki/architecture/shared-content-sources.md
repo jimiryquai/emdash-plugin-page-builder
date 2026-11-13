@@ -5,7 +5,7 @@ description: The Source seam that lets shared-content blocks read a site's own c
 tags: [sources, collections, scope, cache-hints]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-6c72aa398e15b80e013f80eb
     resource: repo://src/blocks/core.ts
@@ -19,7 +19,7 @@ sources:
     resource: repo://src/blocks/types/testimonials.ts
   - id: openwiki-source-0547748f6ce41077d22b75d1
     resource: repo://src/cli/main.ts
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # Shared-content sources and starter collections
@@ -33,8 +33,7 @@ type Source<T> = (context: SourceContext) =>
   SourceResult<T> | readonly T[] | Promise<SourceResult<T> | readonly T[]>;
 ```
 
-<!-- openwiki: broken internal link [/openwiki/workflows/page-rendering.md] link "/openwiki/workflows/page-rendering.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-A source returns either a bare array of items or `{ items, cacheHints }`. `PageBuilder` passes `items` to the section and merges every `cacheHints` entry into the page's `Astro.cache` when caching is enabled (see [Page rendering](/openwiki/workflows/page-rendering.md)). Inline blocks (hero, cta, features, comparison, stats, prose) need no source.
+A source returns either a bare array of items or `{ items, cacheHints }`. `PageBuilder` passes `items` to the section and merges every `cacheHints` entry into the page's `Astro.cache` when caching is enabled (see [Page rendering](../workflows/page-rendering.md)). Inline blocks (hero, cta, features, comparison, stats, prose) need no source.
 
 ## `SourceContext` resolution
 
@@ -86,7 +85,4 @@ Its `cacheHints` carry the single list read's hint.
 
 ## Relationship to rendering and testing
 
-<!-- openwiki: broken internal link [/openwiki/workflows/page-rendering.md] link "/openwiki/workflows/page-rendering.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-<!-- openwiki: broken internal link [/openwiki/workflows/markdown-export.md] link "/openwiki/workflows/markdown-export.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-<!-- openwiki: broken internal link [/openwiki/reference/block-types.md] link "/openwiki/reference/block-types.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-`PageBuilder` resolves sources per block before rendering (see [Page rendering](/openwiki/workflows/page-rendering.md)); the same items a section receives can be handed to `layoutToMarkdown` via its `items` option keyed by block `_key` (see [Markdown export](/openwiki/workflows/markdown-export.md)). The catalog of which blocks are shared-content, with their shapes and starters, is in [Block type catalog](/openwiki/reference/block-types.md). Tests exercise sources with fake `QueryApi`s — no real site or token is ever contacted.
+`PageBuilder` resolves sources per block before rendering (see [Page rendering](../workflows/page-rendering.md)); the same items a section receives can be handed to `layoutToMarkdown` via its `items` option keyed by block `_key` (see [Markdown export](../workflows/markdown-export.md)). The catalog of which blocks are shared-content, with their shapes and starters, is in [Block type catalog](../reference/block-types.md). Tests exercise sources with fake `QueryApi`s — no real site or token is ever contacted.

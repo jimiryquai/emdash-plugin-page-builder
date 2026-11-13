@@ -5,7 +5,7 @@ description: The eleven block modules in src/blocks/types/ — six inline and fi
 tags: [block-types, reference, catalog, variants]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-c40f3c5fcc7900f7e26d64d4
     resource: repo://src/blocks/index.ts
@@ -31,14 +31,12 @@ sources:
     resource: repo://src/blocks/types/testimonials.ts
   - id: openwiki-source-215d3ab70de159aab29e8b22
     resource: repo://test/blocks/types/hero.test.js
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # Block type catalog
 
-<!-- openwiki: broken internal link [/openwiki/architecture/block-module-contract.md] link "/openwiki/architecture/block-module-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-<!-- openwiki: broken internal link [/openwiki/workflows/markdown-export.md] link "/openwiki/workflows/markdown-export.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-Eleven block types, each one module in `src/blocks/types/` satisfying the `BlockType` contract ([Block module contract](/openwiki/architecture/block-module-contract.md)). All are at `currentVersion: 1` with empty `migrations` maps. Every module also carries a `toMarkdown` rendering (see [Markdown export](/openwiki/workflows/markdown-export.md)). Descriptions are written for an agent filling the block from EmDash's schema alone, including when *not* to use a block (priced plans → `pricing`; a later prompt to act → `cta`, opening section → `hero`; quotes → `testimonials`).
+Eleven block types, each one module in `src/blocks/types/` satisfying the `BlockType` contract ([Block module contract](../architecture/block-module-contract.md)). All are at `currentVersion: 1` with empty `migrations` maps. Every module also carries a `toMarkdown` rendering (see [Markdown export](../workflows/markdown-export.md)). Descriptions are written for an agent filling the block from EmDash's schema alone, including when *not* to use a block (priced plans → `pricing`; a later prompt to act → `cta`, opening section → `hero`; quotes → `testimonials`).
 
 ## Inline blocks
 
@@ -57,8 +55,7 @@ Typed value shapes exported beside the modules: `FeaturesBlockValue`/`FeatureIte
 
 ## Shared-content blocks
 
-<!-- openwiki: broken internal link [/openwiki/architecture/shared-content-sources.md] link "/openwiki/architecture/shared-content-sources.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-Content comes from a collection through a `Source` ([Shared-content sources](/openwiki/architecture/shared-content-sources.md)); the shape is the contract between source and section. Group-scoped blocks carry `scope` (`page | all`, via `scopeField()`) and — except `pricing` — `count` (1–24, via `countField()`).
+Content comes from a collection through a `Source` ([Shared-content sources](../architecture/shared-content-sources.md)); the shape is the contract between source and section. Group-scoped blocks carry `scope` (`page | all`, via `scopeField()`) and — except `pricing` — `count` (1–24, via `countField()`).
 
 | Block | Variants | Scope/Count | Shape | Starter collection |
 | --- | --- | --- | --- | --- |
@@ -74,5 +71,4 @@ None of the shared-content blocks enforce `requiredToPublish` — the items arri
 
 ## How these facts are enforced
 
-<!-- openwiki: broken internal link [/openwiki/workflows/page-rendering.md] link "/openwiki/workflows/page-rendering.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-Each module's sibling test (`test/blocks/types/<slug>.test.js`) pins the exact seed definition, variants, publish rules and Markdown output, so the catalog above fails a check when a module drifts. Sections are never part of the package: a site maps each variant to its own component with a required `default` ([Page rendering](/openwiki/workflows/page-rendering.md)).
+Each module's sibling test (`test/blocks/types/<slug>.test.js`) pins the exact seed definition, variants, publish rules and Markdown output, so the catalog above fails a check when a module drifts. Sections are never part of the package: a site maps each variant to its own component with a required `default` ([Page rendering](../workflows/page-rendering.md)).

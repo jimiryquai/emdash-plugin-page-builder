@@ -5,13 +5,13 @@ description: The CLI's HTTP boundary to an EmDash site (EmdashClient over an inj
 tags: [cli, emdash, http-client, schema-contract]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-4fe029403e1c15f1db22bb11
     resource: repo://src/cli/client.ts
   - id: openwiki-source-6f43ce95a02456a19df0688a
     resource: repo://src/cli/contract.ts
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # EmDash API client and field-contract port
@@ -27,8 +27,7 @@ Two modules own how the apply CLI sees an EmDash site:
 
 ## The transport and error model
 
-<!-- openwiki: broken internal link [/openwiki/workflows/apply-cli.md] link "/openwiki/workflows/apply-cli.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-A `Transport` is a fetch-like function from `{ method, path, query, body }` to `{ status, json }`, where `path` starts at `/_emdash/api`. The default `fetchTransport(siteUrl, token)` strips trailing slashes from the site URL, sends `content-type: application/json`, and — when a token exists — `authorization: Bearer <token>` (the token comes from `EMDASH_TOKEN` or `--token`; see [The apply CLI](/openwiki/workflows/apply-cli.md)).
+A `Transport` is a fetch-like function from `{ method, path, query, body }` to `{ status, json }`, where `path` starts at `/_emdash/api`. The default `fetchTransport(siteUrl, token)` strips trailing slashes from the site URL, sends `content-type: application/json`, and — when a token exists — `authorization: Bearer <token>` (the token comes from `EMDASH_TOKEN` or `--token`; see [The apply CLI](../workflows/apply-cli.md)).
 
 Every call goes through `EmdashClient.#request`, which unwraps EmDash's `{ success, data, error }` envelope. A call fails unless the HTTP status is 2xx (exactly 201 when a create is expected) **and** `success === true`; anything else throws `EmdashError`, which carries `operation` (the human phrase naming the call, e.g. `update block type hero`), `status`, the server's `code` and `message`, and optional `blockType`/`version` so error output locates the failing operation. The CLI wraps this into its JSON `{"errors": [...]}` payload.
 
@@ -61,6 +60,4 @@ This is what lets `buildPlan` reject a declared version N that isn't breaking ag
 
 ## Relationship to the rest of the CLI
 
-<!-- openwiki: broken internal link [/openwiki/workflows/apply-cli.md] link "/openwiki/workflows/apply-cli.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-<!-- openwiki: broken internal link [/openwiki/architecture/versioning-and-migrations.md] link "/openwiki/architecture/versioning-and-migrations.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-`main.ts` constructs one `EmdashClient` and hands it to `plan.ts` (pure, no HTTP — compares definitions against the site's reported schema) and `apply.ts` (executes, activates, scans and migrates). See [The apply CLI](/openwiki/workflows/apply-cli.md) for that flow, and [Versioning and migrations](/openwiki/architecture/versioning-and-migrations.md) for the create-activate-migrate order these endpoints serve.
+`main.ts` constructs one `EmdashClient` and hands it to `plan.ts` (pure, no HTTP — compares definitions against the site's reported schema) and `apply.ts` (executes, activates, scans and migrates). See [The apply CLI](../workflows/apply-cli.md) for that flow, and [Versioning and migrations](versioning-and-migrations.md) for the create-activate-migrate order these endpoints serve.

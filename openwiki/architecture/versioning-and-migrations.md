@@ -5,7 +5,7 @@ description: How numbered versions, currentVersion and the pure migrateBlocks ch
 tags: [versioning, migrations, block-types, schema]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-876f5ed47bf4158e6cb4a45c
     resource: repo://docs/lessons/emdash-decides-block-breaking-changes.md
@@ -23,18 +23,16 @@ sources:
     resource: repo://test/blocks/fixtures/example.ts
   - id: openwiki-source-f1aac1525135e709bf203195
     resource: repo://test/blocks/migrations.test.js
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # Block versioning and migrations
 
 ## The model
 
-<!-- openwiki: broken internal link [/openwiki/architecture/block-module-contract.md] link "/openwiki/architecture/block-module-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-Every block module declares numbered `versions: [{ version, fields }]` and a `currentVersion` in its EmDash seed definition ([Block module contract](/openwiki/architecture/block-module-contract.md)). Stored blocks carry `_version`; components and publish checks only ever see a block at its type's current version. Today all eleven block types sit at v1, but the machinery is proven by the two-version fixture `test/blocks/fixtures/example.ts` (v1 `heading` renamed to v2 `title`).
+Every block module declares numbered `versions: [{ version, fields }]` and a `currentVersion` in its EmDash seed definition ([Block module contract](block-module-contract.md)). Stored blocks carry `_version`; components and publish checks only ever see a block at its type's current version. Today all eleven block types sit at v1, but the machinery is proven by the two-version fixture `test/blocks/fixtures/example.ts` (v1 `heading` renamed to v2 `title`).
 
-<!-- openwiki: broken internal link [/openwiki/architecture/emdash-api-contract.md] link "/openwiki/architecture/emdash-api-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-The rule for adding a version: a declared version N must be a **breaking** change against N−1 — a field removed, a field added as required, a type changed, a constraint narrowed. A compatible change (optional field added, variant option added, validation relaxed) folds into the current version instead, because EmDash would amend the existing version in place whatever the request says. Two guards enforce this: `buildPlan` refuses a non-breaking declared version before anything is written, and `test/blocks/versioning.test.js` fails `npm run check` on the same condition. EmDash's own field comparison is the authority on breakingness — a PUT with `breaking: true` creates a new version only when EmDash finds the change incompatible ([lesson](../../../docs/lessons/emdash-decides-block-breaking-changes.md); the comparison logic is ported in [EmDash API client and field-contract port](/openwiki/architecture/emdash-api-contract.md)).
+The rule for adding a version: a declared version N must be a **breaking** change against N−1 — a field removed, a field added as required, a type changed, a constraint narrowed. A compatible change (optional field added, variant option added, validation relaxed) folds into the current version instead, because EmDash would amend the existing version in place whatever the request says. Two guards enforce this: `buildPlan` refuses a non-breaking declared version before anything is written, and `test/blocks/versioning.test.js` fails `npm run check` on the same condition. EmDash's own field comparison is the authority on breakingness — a PUT with `breaking: true` creates a new version only when EmDash finds the change incompatible ([lesson](../../../docs/lessons/emdash-decides-block-breaking-changes.md); the comparison logic is ported in [EmDash API client and field-contract port](emdash-api-contract.md)).
 
 ## `migrateBlocks`
 
@@ -65,8 +63,7 @@ Migration steps must be pure — no mutation of the input block (including neste
 
 ## CLI-side version lifecycle
 
-<!-- openwiki: broken internal link [/openwiki/workflows/apply-cli.md] link "/openwiki/workflows/apply-cli.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-The apply CLI walks EmDash's version lifecycle in order (see [The apply CLI](/openwiki/workflows/apply-cli.md)):
+The apply CLI walks EmDash's version lifecycle in order (see [The apply CLI](../workflows/apply-cli.md)):
 
 1. **Create** — a type the site lacks is created at v1 (active); each later version is created as a breaking, **inactive** version. A brand-new type's own `currentVersion` is then activated automatically (no stored blocks can exist for it).
 2. **Update** — a stored version whose fields differ from the definition is updated in place only when it is the site's current version; a differing inactive old version is a warning (the REST API cannot rewrite an old version's contract).
