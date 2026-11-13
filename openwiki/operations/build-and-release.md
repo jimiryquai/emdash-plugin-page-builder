@@ -5,7 +5,7 @@ description: How emdash-plugin-page-builder is compiled (NodeNext tsc to dist), 
 tags: [build, release, ci, npm]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-164e2da859b5277df81c7d94
     resource: repo://.github/workflows/ci.yml
@@ -23,7 +23,7 @@ sources:
     resource: repo://tsconfig.build.json
   - id: openwiki-source-98d5ddb014a0fd4d678f6f2a
     resource: repo://tsconfig.json
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # Build, checks, and release
@@ -32,15 +32,13 @@ generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
 
 The library build is `tsc -p tsconfig.build.json`: `module`/`moduleResolution` `NodeNext`, `declaration: true`, emitting `src/` → `dist/`. Because the runtime is Node as much as bundlers (tests and the apply CLI run in plain Node), relative imports in `src/` carry `.js` extensions (CODING_STANDARDS rule 1). The base `tsconfig.json` extends `astro/tsconfigs/strict` and includes all of `src/**/*`, so `astro check` type-checks the `.astro` component too. `allowImportingTsExtensions` is off in the build config — emitted code must not import `.ts` paths.
 
-<!-- openwiki: broken internal link [/openwiki/architecture/overview.md] link "/openwiki/architecture/overview.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-What ships (`files`) is `dist` plus `src/blocks/**/*.astro` — the `PageBuilder.astro` entry is served as source, not compiled (see [Package architecture](/openwiki/architecture/overview.md)). The npm `exports` map routes `./blocks` and `./plugin` to `dist`, and `./blocks/PageBuilder.astro` to the source file.
+What ships (`files`) is `dist` plus `src/blocks/**/*.astro` — the `PageBuilder.astro` entry is served as source, not compiled (see [Package architecture](../architecture/overview.md)). The npm `exports` map routes `./blocks` and `./plugin` to `dist`, and `./blocks/PageBuilder.astro` to the source file.
 
 ## Checks
 
 `npm run check` = `npm test` + `npm run typecheck`:
 
-<!-- openwiki: broken internal link [/openwiki/operations/testing.md] link "/openwiki/operations/testing.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-- `npm test` runs `node --test`, and `pretest` builds first, so tests run against the compiled output and import through the package's own `exports` (see [Testing strategy](/openwiki/operations/testing.md)).
+- `npm test` runs `node --test`, and `pretest` builds first, so tests run against the compiled output and import through the package's own `exports` (see [Testing strategy](testing.md)).
 - `npm run typecheck` runs `ASTRO_TELEMETRY_DISABLED=1 astro check`.
 
 Telemetry is disabled in the script itself (CODING_STANDARDS rule 9), not left to the environment — the same variable is set in CI and in the test harness.

@@ -5,7 +5,7 @@ description: How one module under src/blocks/types/ owns a block type end to end
 tags: [block-types, contract, modules, core]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-1b69c8fa631a6b1d7cf51794
     resource: repo://docs/adr/0001-package-owns-data-sites-own-collections-and-visuals.md
@@ -27,7 +27,7 @@ sources:
     resource: repo://src/cli/main.ts
   - id: openwiki-source-e357d61069f3b66782c52ded
     resource: repo://src/plugin.ts
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # Block module contract
@@ -46,13 +46,10 @@ The shared vocabulary those modules build on lives in `src/blocks/core.ts`, whic
 | --- | --- |
 | `definition` | EmDash's seed `blockTypes` entry: `{ slug, label, description, icon?, category?, currentVersion, versions: [{ version, fields }] }`. Fields are EmDash `BlockFieldDefinition`s — there is no separate package schema. Descriptions are written so an agent working through EmDash's MCP can choose and fill the block from the schema alone. |
 | `variants` | The fixed variant vocabulary (ADR 0002). Adding a variant is a compatible minor change; removing one is breaking. |
-<!-- openwiki: broken internal link [/openwiki/architecture/versioning-and-migrations.md] link "/openwiki/architecture/versioning-and-migrations.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| `migrations` | Map keyed by the version being upgraded; step `N` returns version `N + 1`, preserving `_key` and `_type` (see [Versioning and migrations](/openwiki/architecture/versioning-and-migrations.md)). Empty map for a block that has only version 1 — which is all eleven blocks today. |
-<!-- openwiki: broken internal link [/openwiki/workflows/publish-policy.md] link "/openwiki/workflows/publish-policy.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| `requiredToPublish` | Current-version publish rules: plain field slugs, or `{ field, minItems?, fields }` for repeaters. Empty lists are explicit for blocks with nothing to enforce (see [Publish policy](/openwiki/workflows/publish-policy.md)). |
+| `migrations` | Map keyed by the version being upgraded; step `N` returns version `N + 1`, preserving `_key` and `_type` (see [Versioning and migrations](versioning-and-migrations.md)). Empty map for a block that has only version 1 — which is all eleven blocks today. |
+| `requiredToPublish` | Current-version publish rules: plain field slugs, or `{ field, minItems?, fields }` for repeaters. Empty lists are explicit for blocks with nothing to enforce (see [Publish policy](../workflows/publish-policy.md)). |
 | `starter?` | Optional starter collection factory, parameterised by the site's grouping collection (`(groupCollection) => SeedCollection`). |
-<!-- openwiki: broken internal link [/openwiki/workflows/markdown-export.md] link "/openwiki/workflows/markdown-export.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| `toMarkdown?` | Plain Markdown for one current-version block, dispatched by `layoutToMarkdown` (see [Markdown export](/openwiki/workflows/markdown-export.md)). A module without one is skipped, never thrown on. |
+| `toMarkdown?` | Plain Markdown for one current-version block, dispatched by `layoutToMarkdown` (see [Markdown export](../workflows/markdown-export.md)). A module without one is skipped, never thrown on. |
 | `sourceContext?` | Optional block-specific `SourceContext` fields extracted from a stored block (for example `posts` forwarding a trimmed `category` slug), so `PageBuilder` can dispatch generically without switching on `_type`. |
 
 Block modules keep their fields optional in the schema deliberately: EmDash's admin autosaves a new, empty block as a draft and validates required fields on every write, so a schema-required field would break the first autosave ([ADR 0003](../../../docs/adr/0003-required-to-publish-not-to-save.md)). Completeness is enforced at publish time instead.
@@ -86,8 +83,7 @@ The package's block modules carry no visual components ([ADR 0001](../../../docs
 const blocks = [{ ...hero, sections: { default: HeroSection, featured: FeaturedHero } }];
 ```
 
-<!-- openwiki: broken internal link [/openwiki/workflows/page-rendering.md] link "/openwiki/workflows/page-rendering.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-`SiteBlockType extends BlockType` with that `sections` map. An unmapped variant falls back to `default`; a missing `default` is a site type error. Sections receive EmDash's `value`, `index` and `blockKey`, plus `items` when a source is supplied (see [Page rendering](/openwiki/workflows/page-rendering.md)).
+`SiteBlockType extends BlockType` with that `sections` map. An unmapped variant falls back to `default`; a missing `default` is a site type error. Sections receive EmDash's `value`, `index` and `blockKey`, plus `items` when a source is supplied (see [Page rendering](../workflows/page-rendering.md)).
 
 ## Import rule: `core.ts`, never `index.ts`
 

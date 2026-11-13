@@ -5,7 +5,7 @@ description: The emdash-page-builder apply command — plan-first JSON output, m
 tags: [cli, apply, plan, migrations]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-ae4ac769cf1f9e86b659c844
     resource: repo://CODING_STANDARDS.md
@@ -15,7 +15,7 @@ sources:
     resource: repo://src/cli/main.ts
   - id: openwiki-source-5a4a93ce049abf09d729a484
     resource: repo://src/cli/plan.ts
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # The apply CLI
@@ -35,8 +35,7 @@ Auth: the token comes from `EMDASH_TOKEN` (preferred) or `--token`; a `--token` 
 ## Run flow (`run()` in `src/cli/main.ts`)
 
 1. Parse arguments (`node:util` `parseArgs`); usage errors print the error payload plus usage on stderr with exit code 2.
-<!-- openwiki: broken internal link [/openwiki/architecture/block-module-contract.md] link "/openwiki/architecture/block-module-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-2. `loadBlockTypes(from)` — imports the module and keeps every export that satisfies `isBlockType` (definition + variants + migrations); no hand-kept list, the module is the source of truth ([Block module contract](/openwiki/architecture/block-module-contract.md)). Zero block types is an error. `--types` then restricts the set.
+2. `loadBlockTypes(from)` — imports the module and keeps every export that satisfies `isBlockType` (definition + variants + migrations); no hand-kept list, the module is the source of truth ([Block module contract](../architecture/block-module-contract.md)). Zero block types is an error. `--types` then restricts the set.
 3. `buildPlan(definitions, remote)` — pure, no HTTP: compares each definition against the site's reported block types (`listBlockTypes`).
 4. **Plan errors abort before any write** — even with `--apply`. Today that means a declared version N that isn't breaking against N−1 ("fold it into v…").
 5. `executePlan(client, plan, blockTypes, flags)` — performs creates/updates/activates the flags allow (below).
@@ -56,9 +55,7 @@ Auth: the token comes from `EMDASH_TOKEN` (preferred) or `--token`; a `--token` 
 - **Different fields on an old inactive version** → warning: the REST API cannot rewrite an inactive version's contract.
 - **Definition's `currentVersion` ahead of the site's** → `activate` requiring `--activate` ("deploy a renderer for both versions first"); ahead in the other direction → warning, no activation.
 
-<!-- openwiki: broken internal link [/openwiki/architecture/emdash-api-contract.md] link "/openwiki/architecture/emdash-api-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-<!-- openwiki: broken internal link [/openwiki/architecture/versioning-and-migrations.md] link "/openwiki/architecture/versioning-and-migrations.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-`executePlan` (with `--apply`) walks the actions in order, threading the remote block types through each write: **create → update → activate** (and content migration last, after the scan). Breaking-ness is EmDash's decision — each version-creating PUT is checked for the requested version actually appearing, else a `PlanError` reports the fold-in requirement ([EmDash API client](/openwiki/architecture/emdash-api-contract.md); [Versioning and migrations](/openwiki/architecture/versioning-and-migrations.md)). Activation waits for `--activate` because between creating a breaking version and migrating content, the site must first deploy a package release whose renderer handles both versions — `PageBuilder`'s render-time upgrade is what makes that window safe.
+`executePlan` (with `--apply`) walks the actions in order, threading the remote block types through each write: **create → update → activate** (and content migration last, after the scan). Breaking-ness is EmDash's decision — each version-creating PUT is checked for the requested version actually appearing, else a `PlanError` reports the fold-in requirement ([EmDash API client](../architecture/emdash-api-contract.md); [Versioning and migrations](../architecture/versioning-and-migrations.md)). Activation waits for `--activate` because between creating a breaking version and migrating content, the site must first deploy a package release whose renderer handles both versions — `PageBuilder`'s render-time upgrade is what makes that window safe.
 
 Without `--apply`, every non-`unchanged` action is marked `skipped` and nothing is written.
 
@@ -68,5 +65,4 @@ Without `--apply`, every non-`unchanged` action is marked `skipped` and nothing 
 
 ## What the tests prove
 
-<!-- openwiki: broken internal link [/openwiki/operations/testing.md] link "/openwiki/operations/testing.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-`test/cli/apply-cli.test.js` and `test/cli/bin.test.js` drive `run()` (and the real bin through `execFileSync`) against the fake site: plan-only writes nothing, `--apply` performs the planned actions, reruns are idempotent, bad `--types` and missing token fail with the documented payload, and migration/activation flags gate their writes. The fake site follows EmDash's real versioning rules, so the create-activate-migrate order is exercised against honest server behavior ([Testing strategy](/openwiki/operations/testing.md)).
+`test/cli/apply-cli.test.js` and `test/cli/bin.test.js` drive `run()` (and the real bin through `execFileSync`) against the fake site: plan-only writes nothing, `--apply` performs the planned actions, reruns are idempotent, bad `--types` and missing token fail with the documented payload, and migration/activation flags gate their writes. The fake site follows EmDash's real versioning rules, so the create-activate-migrate order is exercised against honest server behavior ([Testing strategy](../operations/testing.md)).

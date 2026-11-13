@@ -5,7 +5,7 @@ description: What emdash-plugin-page-builder is — the page-building layer on E
 tags: [architecture, package, ownership, entry-points]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-ae4ac769cf1f9e86b659c844
     resource: repo://CODING_STANDARDS.md
@@ -19,7 +19,7 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-537d08ef6d9c051bda03a9f0
     resource: repo://src/blocks/types/hero.ts
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # Package architecture and ownership
@@ -35,12 +35,9 @@ A page is an ordered composition of blocks (a **layout**) stored in a `blocks` f
 The `exports` map and `bin` in `package.json` define the public surface:
 
 1. **`emdash-plugin-page-builder/blocks`** → compiled `dist/blocks/index.js`: block modules, shapes, starter collections, sources and helpers (`migrateBlocks`, `layoutToMarkdown`, `findMissingToPublish`, …). Usable from plain Node — the CLI itself imports it.
-<!-- openwiki: broken internal link [/openwiki/workflows/page-rendering.md] link "/openwiki/workflows/page-rendering.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-2. **`emdash-plugin-page-builder/blocks/PageBuilder.astro`** → shipped as source (`src/blocks/PageBuilder.astro`), imported separately so Node-only consumers never load an Astro file. See [Page rendering](/openwiki/workflows/page-rendering.md).
-<!-- openwiki: broken internal link [/openwiki/workflows/publish-policy.md] link "/openwiki/workflows/publish-policy.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-3. **`emdash-plugin-page-builder/plugin`** → the native EmDash plugin entry (`src/plugin.ts`) that enforces required block fields before publishing. See [Publish policy](/openwiki/workflows/publish-policy.md).
-<!-- openwiki: broken internal link [/openwiki/workflows/apply-cli.md] link "/openwiki/workflows/apply-cli.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-4. **`bin: emdash-page-builder`** → the apply CLI (`dist/cli/main.js`) that plans and applies block types (and optional starter collections) to a site through EmDash's REST API. See [The apply CLI](/openwiki/workflows/apply-cli.md).
+2. **`emdash-plugin-page-builder/blocks/PageBuilder.astro`** → shipped as source (`src/blocks/PageBuilder.astro`), imported separately so Node-only consumers never load an Astro file. See [Page rendering](../workflows/page-rendering.md).
+3. **`emdash-plugin-page-builder/plugin`** → the native EmDash plugin entry (`src/plugin.ts`) that enforces required block fields before publishing. See [Publish policy](../workflows/publish-policy.md).
+4. **`bin: emdash-page-builder`** → the apply CLI (`dist/cli/main.js`) that plans and applies block types (and optional starter collections) to a site through EmDash's REST API. See [The apply CLI](../workflows/apply-cli.md).
 
 Requires Node.js ≥ 24 and peer dependencies `astro ^6.4.8 || ^7.2.8` and `emdash ^1.4.0` in the consuming site; devDependencies pin the exact versions the checks run against.
 
@@ -50,15 +47,12 @@ The central decision: **the package owns the data layer; each site owns its coll
 
 The package owns:
 
-<!-- openwiki: broken internal link [/openwiki/architecture/block-module-contract.md] link "/openwiki/architecture/block-module-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-- **Block definitions** — every numbered version, `currentVersion`, and descriptions written so an agent working through EmDash's MCP can choose and fill blocks from the schema alone ([Block module contract](/openwiki/architecture/block-module-contract.md)).
-<!-- openwiki: broken internal link [/openwiki/architecture/versioning-and-migrations.md] link "/openwiki/architecture/versioning-and-migrations.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-- **Migrations** — the same pure chain migrates stored blocks and upgrades old ones at render time ([Versioning and migrations](/openwiki/architecture/versioning-and-migrations.md)).
+- **Block definitions** — every numbered version, `currentVersion`, and descriptions written so an agent working through EmDash's MCP can choose and fill blocks from the schema alone ([Block module contract](block-module-contract.md)).
+- **Migrations** — the same pure chain migrates stored blocks and upgrades old ones at render time ([Versioning and migrations](versioning-and-migrations.md)).
 - **Shapes** — the typed content a shared-content block displays (`Testimonial`, `PricingTier`, `Faq`, `Post`, …), the contract between a source and a section.
 - **The variant vocabulary** — fixed per block; a site maps variants to its own sections, and an unmapped variant falls back to the site's default section (ADR 0002).
 - **The block layer** — `PageBuilder.astro` plus the source-resolution core.
-<!-- openwiki: broken internal link [/openwiki/architecture/shared-content-sources.md] link "/openwiki/architecture/shared-content-sources.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-- **Starter collections** — optional collection definitions with default sources, for a site with no collections of its own ([Shared-content sources](/openwiki/architecture/shared-content-sources.md)).
+- **Starter collections** — optional collection definitions with default sources, for a site with no collections of its own ([Shared-content sources](shared-content-sources.md)).
 - **Required-to-publish rules** — enforced by the plugin entry's `content:beforePublish` hook (ADR 0003).
 - **The apply CLI.**
 

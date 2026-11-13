@@ -5,7 +5,7 @@ description: How a stored layout becomes HTML — PageBuilder's props, upgrade-b
 tags: [rendering, astro, pagebuilder, edit-mode]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-3220fe7918026b6b5d10afb8
     resource: repo://docs/lessons/emdash-content-get-hydrates-pending-drafts.md
@@ -13,7 +13,7 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-b1bf8e0bb2cfae6497e9c844
     resource: repo://src/blocks/PageBuilder.astro
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # Page rendering with PageBuilder.astro
@@ -28,18 +28,15 @@ generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
 | Prop | Contract |
 | --- | --- |
 | `value` | The stored layout (`readonly StoredBlock[]`), or null/omitted — which renders nothing. |
-<!-- openwiki: broken internal link [/openwiki/architecture/block-module-contract.md] link "/openwiki/architecture/block-module-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| `blocks` | The site's `SiteBlockType[]`: package block modules with the site's `sections` attached ([Block module contract](/openwiki/architecture/block-module-contract.md)). |
-<!-- openwiki: broken internal link [/openwiki/architecture/shared-content-sources.md] link "/openwiki/architecture/shared-content-sources.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| `sources?` | `Record<blockSlug, Source>` for shared-content blocks ([Shared-content sources](/openwiki/architecture/shared-content-sources.md)). |
+| `blocks` | The site's `SiteBlockType[]`: package block modules with the site's `sections` attached ([Block module contract](../architecture/block-module-contract.md)). |
+| `sources?` | `Record<blockSlug, Source>` for shared-content blocks ([Shared-content sources](../architecture/shared-content-sources.md)). |
 | `group?` | The site's group identifier for `scope: page` resolution. |
 | `edit?` | Field-level edit attributes (e.g. `page.edit.layout`); see edit mode below. |
 | `fallback?` | Forwarded to EmDash's `<Blocks>`: renders the fallback in production, a diagnostic in development, nothing in production without a fallback. |
 
 ## The flow, one block at a time
 
-<!-- openwiki: broken internal link [/openwiki/architecture/versioning-and-migrations.md] link "/openwiki/architecture/versioning-and-migrations.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-1. **Upgrade first.** `migrateBlocks(value ?? [], blocks)` runs before anything else, so sources, sections and Markdown-like decisions all see current-version blocks ([Versioning and migrations](/openwiki/architecture/versioning-and-migrations.md)). Unknown `_type`s pass through untouched.
+1. **Upgrade first.** `migrateBlocks(value ?? [], blocks)` runs before anything else, so sources, sections and Markdown-like decisions all see current-version blocks ([Versioning and migrations](../architecture/versioning-and-migrations.md)). Unknown `_type`s pass through untouched.
 2. **Resolve sources.** For each upgraded block, if `sources[block._type]` exists, the source is awaited with `resolveSourceContext(block, blockType, group)` — scope (`page` stays `page` only with a `group`), count (stored positive number or the definition's declared default), and block-specific context such as posts' `category`. The result (bare array or `{ items, cacheHints }`) is stored in a `Map` keyed by the block object.
 3. **Apply cache hints.** Every hint a source read is merged (`mergeCacheHints`: union of tags, latest `lastModified`) and applied via `Astro.cache.set(hint)` when `Astro.cache?.enabled` — the same pattern EmDash's own templates use.
 4. **Wrap sections as components.** For each block type, `PageBuilder` builds an Astro component (via `createComponent` from Astro's server runtime — the `.astro` frontmatter needs a runtime component to hand to EmDash's `<Blocks>`) that closes over `sections` and the items `Map`.

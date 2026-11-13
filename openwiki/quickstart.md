@@ -5,7 +5,7 @@ description: A task-routing map for emdash-plugin-page-builder — which wiki pa
 tags: [quickstart, routing, orientation]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-ae4ac769cf1f9e86b659c844
     resource: repo://CODING_STANDARDS.md
@@ -15,7 +15,7 @@ sources:
     resource: repo://README.md
   - id: openwiki-source-8a4bfe73b9393905cb4d0906
     resource: repo://test/cli/fake-site.mjs
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # Quickstart
@@ -35,28 +35,16 @@ generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
 
 | I want to… | Read |
 | --- | --- |
-<!-- openwiki: broken internal link [/openwiki/architecture/overview.md] link "/openwiki/architecture/overview.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Understand the package, its ownership boundary, where the ADRs/spec/glossary live | [Package architecture and ownership](/openwiki/architecture/overview.md) |
-<!-- openwiki: broken internal link [/openwiki/architecture/block-module-contract.md] link "/openwiki/architecture/block-module-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-<!-- openwiki: broken internal link [/openwiki/reference/block-types.md] link "/openwiki/reference/block-types.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Add or change a block type (fields, variants, publish rules) | [Block module contract](/openwiki/architecture/block-module-contract.md) and the [Block type catalog](/openwiki/reference/block-types.md) |
-<!-- openwiki: broken internal link [/openwiki/architecture/versioning-and-migrations.md] link "/openwiki/architecture/versioning-and-migrations.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Add a new version of a block or change migrations | [Block versioning and migrations](/openwiki/architecture/versioning-and-migrations.md) |
-<!-- openwiki: broken internal link [/openwiki/workflows/page-rendering.md] link "/openwiki/workflows/page-rendering.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Change how layouts render (variants, sections, sources, edit mode, caching) | [Page rendering with PageBuilder.astro](/openwiki/workflows/page-rendering.md) |
-<!-- openwiki: broken internal link [/openwiki/architecture/shared-content-sources.md] link "/openwiki/architecture/shared-content-sources.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Wire a block to a collection (sources, scope, group, starter collections) | [Shared-content sources and starter collections](/openwiki/architecture/shared-content-sources.md) |
-<!-- openwiki: broken internal link [/openwiki/workflows/publish-policy.md] link "/openwiki/workflows/publish-policy.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Change publish validation (required fields, rejection reasons) | [Publish policy plugin](/openwiki/workflows/publish-policy.md) |
-<!-- openwiki: broken internal link [/openwiki/workflows/apply-cli.md] link "/openwiki/workflows/apply-cli.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-<!-- openwiki: broken internal link [/openwiki/architecture/emdash-api-contract.md] link "/openwiki/architecture/emdash-api-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Change the CLI (plan, apply, activate, migrate, `--field`, `--collections`) | [The apply CLI](/openwiki/workflows/apply-cli.md) and [EmDash API client and field-contract port](/openwiki/architecture/emdash-api-contract.md) |
-<!-- openwiki: broken internal link [/openwiki/workflows/markdown-export.md] link "/openwiki/workflows/markdown-export.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Change Markdown rendering for agents and LLMs | [Markdown export](/openwiki/workflows/markdown-export.md) |
-<!-- openwiki: broken internal link [/openwiki/operations/testing.md] link "/openwiki/operations/testing.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Write or debug a test | [Testing strategy](/openwiki/operations/testing.md) |
-<!-- openwiki: broken internal link [/openwiki/operations/build-and-release.md] link "/openwiki/operations/build-and-release.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-| Cut a release, fix CI, change the build | [Build, checks, and release](/openwiki/operations/build-and-release.md) |
+| Understand the package, its ownership boundary, where the ADRs/spec/glossary live | [Package architecture and ownership](architecture/overview.md) |
+| Add or change a block type (fields, variants, publish rules) | [Block module contract](architecture/block-module-contract.md) and the [Block type catalog](reference/block-types.md) |
+| Add a new version of a block or change migrations | [Block versioning and migrations](architecture/versioning-and-migrations.md) |
+| Change how layouts render (variants, sections, sources, edit mode, caching) | [Page rendering with PageBuilder.astro](workflows/page-rendering.md) |
+| Wire a block to a collection (sources, scope, group, starter collections) | [Shared-content sources and starter collections](architecture/shared-content-sources.md) |
+| Change publish validation (required fields, rejection reasons) | [Publish policy plugin](workflows/publish-policy.md) |
+| Change the CLI (plan, apply, activate, migrate, `--field`, `--collections`) | [The apply CLI](workflows/apply-cli.md) and [EmDash API client and field-contract port](architecture/emdash-api-contract.md) |
+| Change Markdown rendering for agents and LLMs | [Markdown export](workflows/markdown-export.md) |
+| Write or debug a test | [Testing strategy](operations/testing.md) |
+| Cut a release, fix CI, change the build | [Build, checks, and release](operations/build-and-release.md) |
 
 ## Prove it
 

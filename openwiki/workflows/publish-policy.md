@@ -5,7 +5,7 @@ description: The native plugin entry — emdash-plugin-page-builder/plugin — t
 tags: [publish-policy, plugin, emdash, validation]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-13T16:16:20.656Z
+    at: 2026-11-13T18:45:38.950Z
 sources:
   - id: openwiki-source-e40fe0d4a2e085e66b32997f
     resource: repo://docs/adr/0003-required-to-publish-not-to-save.md
@@ -15,7 +15,7 @@ sources:
     resource: repo://src/blocks/core.ts
   - id: openwiki-source-e357d61069f3b66782c52ded
     resource: repo://src/plugin.ts
-generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
+generated: { by: "claude-code", at: "2026-11-13T18:45:38.950Z" }
 ---
 
 # Publish policy plugin
@@ -24,8 +24,7 @@ generated: { by: "claude-code", at: "2026-11-13T16:16:20.656Z" }
 
 EmDash's admin autosaves a draft two seconds after every change with no setting to turn it off, and it validates required fields on every write — drafts included. A block always starts empty, so a schema-required field made the *first autosave of every new block fail*. The rejected options were patching autosave off (losing lost-work protection, redoing it on every upgrade, every site carrying the patch) and optional fields with no check (half-empty blocks going live).
 
-<!-- openwiki: broken internal link [/openwiki/architecture/block-module-contract.md] link "/openwiki/architecture/block-module-contract.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-The accepted design: **block fields are required to publish, not to save.** Schemas keep every block field optional so new blocks autosave; the package's plugin entry enforces each block module's `requiredToPublish` list with a `content:beforePublish` hook ([Block module contract](/openwiki/architecture/block-module-contract.md)).
+The accepted design: **block fields are required to publish, not to save.** Schemas keep every block field optional so new blocks autosave; the package's plugin entry enforces each block module's `requiredToPublish` list with a `content:beforePublish` hook ([Block module contract](../architecture/block-module-contract.md)).
 
 ## Registration and capability
 
@@ -42,8 +41,7 @@ The `blocks` library stays independently usable; publish validation requires reg
 1. **Collect the checked set.** `Object.values()` of the whole `blocks` entry filtered by `isBlockType` — no registry; unknown block types are left to their owners.
 2. **Walk the content.** `findMissingInData(event.content.data)` recurses arrays and objects, so it checks every layout in `content.data`, including nested layouts (a layout inside a repeater, a block inside another structure), at any depth.
 3. **Judge package blocks only.** An array is treated as a layout when it contains package-recognised blocks (`_type` in the package's slugs, plus `_key` and `_version`); other values are ignored.
-<!-- openwiki: broken internal link [/openwiki/architecture/versioning-and-migrations.md] link "/openwiki/architecture/versioning-and-migrations.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-4. **Check after upgrade.** `findMissingToPublish(value, blockTypes)` (also exported from `blocks` as a pure function for callers that need the same missing-field facts) runs `migrateBlocks` first, so old-version blocks are judged by current-version rules ([Versioning and migrations](/openwiki/architecture/versioning-and-migrations.md)). Each `requiredToPublish` rule — a field slug, or `{ field, minItems?, fields }` for repeaters — reports `MissingPublishField { blockKey, blockType, field }`, with repeater paths zero-based (`links[0].url`).
+4. **Check after upgrade.** `findMissingToPublish(value, blockTypes)` (also exported from `blocks` as a pure function for callers that need the same missing-field facts) runs `migrateBlocks` first, so old-version blocks are judged by current-version rules ([Versioning and migrations](../architecture/versioning-and-migrations.md)). Each `requiredToPublish` rule — a field slug, or `{ field, minItems?, fields }` for repeaters — reports `MissingPublishField { blockKey, blockType, field }`, with repeater paths zero-based (`links[0].url`).
 5. **Reject.** Any missing field returns `{ cancel: true, reason }`; the hook returns nothing (allow) otherwise. Complete layouts, unknown blocks and content without layouts publish freely.
 
 ## The rejection reason
@@ -62,5 +60,4 @@ The `content:beforePublish` hook covers every route to publishing — admin, RES
 
 ## Tests
 
-<!-- openwiki: broken internal link [/openwiki/operations/testing.md] link "/openwiki/operations/testing.md" is root-absolute, which no real consumer resolves against the repository root (not a coding agent reading the page, not GitHub's Markdown renderer, not a local viewer); use a path relative to this file instead. Fix the href or restore the target, then delete this comment. -->
-`test/plugin.test.js` drives the hook path: rejection with the shared reason and minimal capability, multiple and nested layouts walked with unrelated values ignored, complete layouts/unknown blocks/layout-free content allowed, and the reason staying plain text within 500 characters for large layouts and hostile keys ([Testing strategy](/openwiki/operations/testing.md)).
+`test/plugin.test.js` drives the hook path: rejection with the shared reason and minimal capability, multiple and nested layouts walked with unrelated values ignored, complete layouts/unknown blocks/layout-free content allowed, and the reason staying plain text within 500 characters for large layouts and hostile keys ([Testing strategy](../operations/testing.md)).
