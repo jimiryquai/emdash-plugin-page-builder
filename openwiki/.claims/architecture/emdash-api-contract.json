@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8b212454a9a5b3026b41ac4f8b23312b5c85bb51eff15b80c9068c0b5367549c",
+  "claims": [
+    {
+      "id": "claim_1ceefbc600c64bd9a4f4e185cd117fc7",
+      "statement": "All CLI requests to an EmDash site go through EmdashClient over an injectable Transport; the default fetchTransport speaks Bearer-authenticated JSON against /_emdash/api paths, and a response is an error unless HTTP status is 2xx (exactly 201 for creates) and the envelope success is true.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/client.ts#L114-L153",
+          "version": "repo-lines-v1:sha256:2a79f284f2709f83a3a54021237cf351996da6ec597de85117e5a9ab28a171d0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ZTA3OTUwMDJmMDYzOTA0NzI0NTZhNjJlNzM4YTVkMTY2MzkwOWRjMGNjY2JkODBkYjg0MmViZTA1NjEwZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5ZjMwODg3NWMzY2E4NTMyMjMzM2YwYjgyZGY5MzZhZmZiODI1YWZjMGEwY2UyMWQ4MDFjNzJkNmNhMDI5YWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5MTU3Njk3ZWY3YWZkOTVjZjE0MDE4OTliZTNkYjM3ZmMzNGViMDg2MzJkNGQ1ZjFjYTEzMGM0YzgxZThkNWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzZTcyYmIzZDU0N2IxYmM5OWY2YmM0ZWQ1ZDgzZGE5OWI3MTAxZGNhMjQzNmUyMmEwMjVkNTdmNzlmYjM2MjUifQ"
+        },
+        {
+          "resource": "repo://src/cli/client.ts#L52-L79",
+          "version": "repo-lines-v1:sha256:7795421ab063e9442f5b7137bb0d762537c6581fbbea1577817c058ccfb099e2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhNGI0NmYwZDE4OGMwNDQ5NDJkMGU0ZmZjNjg2M2U5NjYyNTg5MWRjMjAyNWVhZjRhOWQ5MTk2MjQwODAxNjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzN2JhYzJiZGNmMjRjZjFhMDA5ZDM3OWE0YTM0YmQ5MTk4YTk2YzJmYjEwODMwM2MzY2QzNzhkMDM2NWFlZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2Mjg0YmZlZTc0ZWViYjQ3OGY1MDdkMDUwM2FlZGNhMjA3NmU1NDdiOWMwZWM3YTE3M2IyYTJhZDc3ODVlODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0YmE3MjYzYzEwODcwMmE1NWNjOWRjZjU4MWYxMTMzMzc4Mjk3NmRlN2U2MDRkMTIxNWU2ZDhjZjUxYTA4ZmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fbb9c3e9f6834c9cb5250bf2962d0fd1",
+      "statement": "EmdashError names the failing operation, HTTP status, EmDash error code and message, plus optional blockType and version, so CLI error output locates the failure.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/client.ts#L23-L50",
+          "version": "repo-lines-v1:sha256:3921b68da5ff5c00807980b8db959079af28655c909ca0d9bcaeac25177989e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhZWRiYzgyM2IxOTUyNDZlODJhZTNkOGM1NzYxNmY5NmNlNzk4YzI0YmFiNjg0ZGI0ODZhODIxYjY5ZTI5Y2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjM2NlN2Q2MzkxNjQ5ZWM5YWQxNTZlOWRkNTA2ODJhZmEwYjgyODkyNTU2YWE4M2VlNzNjZWE0MDBkNmZjYWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjMTQ5NzQwMzBmNTFjNDdhOGE4MTVhOWRmZTI2ZjM3NmY2M2NlYjRhYmEwY2NhYWExMTI1ZjlkZTdhNjQzMWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2YjhmOGMzZTE5YjIxYjZlYzE1ZjRkMjE0MzFkY2M3YjYxN2Y4N2Q0NTc5ZGNlZGIwYzNiMTBlMmIyMzI4MGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4678171656364b67a952a32846bd6614",
+      "statement": "Activating a block type version posts expectedFingerprint carrying the fingerprint of the currently active version, not the target version, and migrating stored blocks uses PUT content with migrateBlocks true plus the entry _rev so lost updates conflict.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/client.ts#L224-L279",
+          "version": "repo-lines-v1:sha256:224c81f7f9ff4a34eeb05bc6c8ad44608dc973c00ca2e82200c8e9890aee9685:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5N2M1MDBjOTRlOTc2Yzk4MjNiMDU3NDcwNGVlOWRiNDc2Y2VkNGRmYzdiMDJkNjdlMzY2ZjNlZWE2NmE2ZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkODgzNzliZjYzNzlhOGViMmQzNWMwOWQwNTZhOThhOTczNWI4OTAzYzk2YTJhMGRjZmFlOWM3YjFiMjU3NGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4NTIwM2QzZDUyZGJhMDgyMDAyMDY4ZGM3ZjE0ODA0ZDczN2RjYzc0N2EzZDIxYzdmYTA0NTc3NjNlMGE3Y2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1ZDc1YTIwOTEwZjg4ODFjNjBlNDA3MjBhNTFkODRjMjMyNzVmNmQ1ZGZiYTE0OTY4NjJhNzllYzRiNWI1NGIifQ"
+        },
+        {
+          "resource": "repo://src/cli/client.ts#L301-L311",
+          "version": "repo-lines-v1:sha256:8f4c5f53e790d99c5e4fcb795cac1ca9405837977a20023899844aaae14ad789:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYzMxYTI4OGQzNGNmOTZlMzllYzRiMzRhOGVmY2JlYmE5NTM3MWM2ZjE3YmVkMGI5YmZkYmNmOWIyYTc3YjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkMWRlYmE1MWFkODRjZTE2MTVjZWM1ZGQ2ZDVjMGZjNzI1OGFiM2QzYjBkYTU3ZGMwMzg1ZWMzOGM5YmViYzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_52ba1589911a484c8de3de6944375f15",
+      "statement": "src/cli/contract.ts is a port of emdash 1.4.0 internal block-field-contract rules because emdash does not export them from its package root; it canonicalises field lists, reproduces block-type:v1:sha256 fingerprints via SHA-256 over canonical JSON, and classifies field differences as compatible or breaking including recursive repeater subFields.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/contract.ts#L1-L35",
+          "version": "repo-lines-v1:sha256:7a4c8d6d9eeb7eeb135d8dce5df6766bb4b32f428d80ba89622ceaf9f9061945:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2NmI4Y2NlMjYyY2ZiMzkyZDExYTg0NGQzNTYxY2NlYzUyYjU1N2UxY2E5NzMwMTM3ZWM4MWQ5MTFiZmFjMDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3MGE3YWY1MzE4ZmNkN2EwZWI3ZmEyMzFmOWU1ODA5ZTM4Mjc3NzY2MjA2YTEyZTE2MTNhNjkzMmM3Y2FjM2EifQ"
+        },
+        {
+          "resource": "repo://src/cli/contract.ts#L291-L297",
+          "version": "repo-lines-v1:sha256:b710f5d8031cf4b46c7f927cf829d110ecb766425972c493ec5a81410a99208b:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjY3OTQzNTc1Yzk1NWJkZDFkY2EzMDgxOGJjOTE5OGZlZWQwZmUyZDY5Mzk4YjUwNzk0MmMzNjE4NGZlMDQzYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDMxNDFiZDAzMTZlMDY1MjU4NDVjYjQyNjdiNzczOGZjYzFjZDhiZDQyOTVjZjFiN2ZmZTdiOTM3NDVkMzlmMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/cli/contract.ts#L92-L106",
+          "version": "repo-lines-v1:sha256:ff661f1d841e21e0085d3874d6e69b56fd2bff1a6676430f3b1cde2261f87cae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZTU5YTdkZDVhM2FiNWE4MmM0MmEyMzk3OTAwM2Q0YTBhMTBiNTY2MzAzOTg2ZTRiN2YzZDg5ZDk0ZWIyNzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjMTFhZWE2NzViNzRlYTRmMDk5Njk4OTkwOWUyNGNhM2FjODhhOWUyNTgwM2NkZjRhNzI1ZmZlMzllMWE0YjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3MDVhYjYxMGU0MzYzZGI3N2U0Nzg3YjNmYzI2ZTc5ZjAzZTM1ODRiZDI5YTRiZmU1OTQ5NzFhNDg1ZDJmNjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_60fd4d66c5e448a18e3b7993ae2d9e0a",
+      "statement": "listCollections fetches each collection detail with includeFields=true because the collections list endpoint returns no fields.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/client.ts#L230-L246",
+          "version": "repo-lines-v1:sha256:337b2aa4bf8243b1c7907e8cd53839de8ed4f9236e5b6760276091fcfee0cd0d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0MDA4MGQ2ZTM4NTcwNWRiMjgyNjQ1NDUyMzU5YTI4Y2JlZDE0ZGFjNDczYWZmMjhhNGI0MmE3YWEzNTdhM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzhhNTk3MDVhZDE1ZGQxODA2ZTlkZDUzMzkyMzkwMjcyYTgzNzRkYjlkMDg4ZmZlYWEzMTk5MGQzYWY1MmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwMTVhZDY5YTFiMTMzYzAzNWMzMzYyMjIyOTkzMTNjN2IyM2RlM2FhY2I2NDM4ZmVjMmMxNmZlYWEzZmExMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjNTA5MGZkYmE5MmEwMjY0MmVmYjcxYTVkNGM2ZTc1MDg0NjBiN2QwMjdiMDA1OWY0YjRmMmE2YzMxMzI3MWQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

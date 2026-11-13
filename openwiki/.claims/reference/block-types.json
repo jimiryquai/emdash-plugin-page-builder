@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:6272ebbe7fbebe6e10c485e7a62d02023918f2c2aa31de12b1f890015115cf89",
+  "claims": [
+    {
+      "id": "claim_f5275cc2f6704544af4f1c7bb70c540e",
+      "statement": "The package ships eleven block types at version 1 with empty migrations maps: six inline (hero, cta, features, comparison, stats, prose) and five shared-content (testimonials, pricing, team, faq, posts).",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/index.ts",
+          "version": "repo-file-v1:sha256:63dc25693f8df4242c42664214eae9a01ff41c5171070d1158fe463da7f9dfc4"
+        },
+        {
+          "resource": "repo://src/blocks/types/hero.ts#L54-L58",
+          "version": "repo-lines-v1:sha256:650de55eed74c0333c79a49e694384f3722215cbb08c79398bc48427428d7ba2:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWIzMTZiMDc3OTk0ODI0NjQ2MzkxYWJhMWEyYzEzMDI0MDYwYmI1NDYwZTZhNjg4ZGI2M2IxNDNmNzg2MzEzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjk3OGUyNTAzYjhjZjM3YTA2ZjdkNmYwYTNhNmI2ZmUzNTY5MWZiY2FiNTBiODc3NWNhYjZmYWJjNzFjNTkyYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2Q4ZmViZmVhZWQ3YTViOTg5M2JjM2NmZDE5YWU1YmNhZmRmODY0YjZkMWEwM2UyNzgyNmE0M2I5OTM1YmFmNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQ4NzVlMTRjMWU3NWE1NzA1MWNjOWI4OWFiNDc2ZDRkNzk5ZmExM2MyNzAxNTYxYmQwOThlMWQxMDcyYWIyNyJ9"
+        },
+        {
+          "resource": "repo://src/blocks/types/prose.ts#L39-L43",
+          "version": "repo-lines-v1:sha256:71cda70653aa7e5c36830184734f2b89aebaf89df570930014a67fa4f8006683:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjk3OGUyNTAzYjhjZjM3YTA2ZjdkNmYwYTNhNmI2ZmUzNTY5MWZiY2FiNTBiODc3NWNhYjZmYWJjNzFjNTkyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFlOTVhOGU4YzY5NjgxNzlmNDhjOGZlYWZhMjQyYWVhYWI0ZDhlMjMxNDQ4N2E3NDk4YmI4ZTcyZTJmMzJjZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODVhYjA0ODY5MGJlMDg4NzgzNThhY2ZmZGM5ZDA3NTJhZmU2MTM5MjY0ZGIxZjAyZmJjMWU2ODBlZThlNjEyMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTA0MzcxNzJjN2ZiNGM5NjhhZGNjNDYyMjQ4NTNiMzYyYTNiMzZjYmE1OWUzZWM0YTZiZWEzMDc5MzZhMmYzZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_45568104f85f4eb9b3eca0c59e4b535d",
+      "statement": "Inline block publish rules: hero and cta require heading and complete links; features requires heading, at least one item, and each item title; comparison requires at least one column with key and label and rows with name; stats requires heading, at least one item with value; prose requires heading and content.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/comparison.ts#L133-L133",
+          "version": "repo-lines-v1:sha256:105c0dac6e9e85764eb00e96bf7bedd0598dd936eb0dc9b1cce9e86b2656f757:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTA1YzBkYWM2ZTllODU3NjRlYjAwZTk2YmY3YmVkZDA1OThkZDkzNmViMGRjOWIxY2NlOWU4NmIyNjU2Zjc1NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTA1YzBkYWM2ZTllODU3NjRlYjAwZTk2YmY3YmVkZDA1OThkZDkzNmViMGRjOWIxY2NlOWU4NmIyNjU2Zjc1NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODI2ZjVlYjg4YWJhNGUyMzJiNWQ3NWZkN2JkYmRhNzRjMTMwNzUyN2UyMzMwMzNhNjQyMTBkYzg4NDI3ZGZhZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTMzZjhkNTFlOGYyZTU0MWUyOTQxZGJmMjA2NjQzM2Q1ZmYzN2JmYWYyMmFkZDE5NzNmOGM2NDQ5NzhhNzQ3OSJ9"
+        },
+        {
+          "resource": "repo://src/blocks/types/features.ts#L114-L114",
+          "version": "repo-lines-v1:sha256:4d5cd2fb4f3df884515255b39523f2f8b5472beea9f566ffca204db802561041:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmViNWUxODJjOTZkNTNjYzdjYjUxNThhZmJhYjkzYzhlYjQyYzUxZWU2ZjIyMzM0Y2IxMmI3ZWVlNjEwY2U5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWNiN2ZjYzg3NTNlZThjY2E4MGZiNjM2YzA1NDg4OGZhNzY0ZDA4ZjcwYWM5MWQ4MWEyMTNmOWZjODgxMjQ2MCJ9"
+        },
+        {
+          "resource": "repo://src/blocks/types/hero.ts#L63-L63",
+          "version": "repo-lines-v1:sha256:0afe6a92809fbfe96524e7bce11ee95bcc4f221dde449732cbcfb61598d83769:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFmZTZhOTI4MDlmYmZlOTY1MjRlN2JjZTExZWU5NWJjYzRmMjIxZGRlNDQ5NzMyY2JjZmI2MTU5OGQ4Mzc2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFmZTZhOTI4MDlmYmZlOTY1MjRlN2JjZTExZWU5NWJjYzRmMjIxZGRlNDQ5NzMyY2JjZmI2MTU5OGQ4Mzc2OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmZkYWJjNjczM2RmMTUwNjkzZDY5NGU1OWFkNjc2NWRmNTUzMGNmYWIxNjg3N2I2NDc4M2EwZTIwZmI0NDgzOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTMzZjhkNTFlOGYyZTU0MWUyOTQxZGJmMjA2NjQzM2Q1ZmYzN2JmYWYyMmFkZDE5NzNmOGM2NDQ5NzhhNzQ3OSJ9"
+        },
+        {
+          "resource": "repo://src/blocks/types/prose.ts#L43-L43",
+          "version": "repo-lines-v1:sha256:0ae95a8e8c6968179f48c8feafa242aeaab4d8e2314487a7498bb8e72e2f32cd:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFlOTVhOGU4YzY5NjgxNzlmNDhjOGZlYWZhMjQyYWVhYWI0ZDhlMjMxNDQ4N2E3NDk4YmI4ZTcyZTJmMzJjZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFlOTVhOGU4YzY5NjgxNzlmNDhjOGZlYWZhMjQyYWVhYWI0ZDhlMjMxNDQ4N2E3NDk4YmI4ZTcyZTJmMzJjZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGQ4NzVlMTRjMWU3NWE1NzA1MWNjOWI4OWFiNDc2ZDRkNzk5ZmExM2MyNzAxNTYxYmQwOThlMWQxMDcyYWIyNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTA0MzcxNzJjN2ZiNGM5NjhhZGNjNDYyMjQ4NTNiMzYyYTNiMzZjYmE1OWUzZWM0YTZiZWEzMDc5MzZhMmYzZCJ9"
+        },
+        {
+          "resource": "repo://src/blocks/types/stats.ts#L88-L88",
+          "version": "repo-lines-v1:sha256:94fd4ffdf316814899a496b0b31fadd76a6c8842967306b8319dbab68f4d09d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTRmZDRmZmRmMzE2ODE0ODk5YTQ5NmIwYjMxZmFkZDc2YTZjODg0Mjk2NzMwNmI4MzE5ZGJhYjY4ZjRkMDlkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTRmZDRmZmRmMzE2ODE0ODk5YTQ5NmIwYjMxZmFkZDc2YTZjODg0Mjk2NzMwNmI4MzE5ZGJhYjY4ZjRkMDlkNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWNmOTdhOGU4YjA4YjUwMjY3MDEwNWY3MzMzNmFlNDhkZWZhN2VhZWZjNzQ0NmY1Njg4MWY2MjBkYjMxOTQ3NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGMyODBhYjk2NzYwOTdlNDJkMTQ1N2UwY2E2MWY4MjAyZDE3MzkwMzA0NDg1YzQxM2I0NTFhMzBjNzkwYzE0YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_609e7e6098e74f29a1349859d6340074",
+      "statement": "Shared-content block variants and fields: testimonials (single/grid/split, scope+count, Testimonial shape, starter collection titled by author), pricing (tiers/toggle/single, scope only with no count because a pricing table shows the complete set of tiers, PricingTier shape), team (four-column/three-column, scope+count, TeamMember shape), faq (two-column/centered, scope+count, Faq shape), posts (featured-grid/grid/list, optional heading, count defaulting to 4, category taxonomy slug, Post shape).",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/faq.ts#L84-L105",
+          "version": "repo-lines-v1:sha256:e12cf0310f4a9950303ef1cddabab13e618692361b45ea3fa5260e65594fae86:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1YTk4YmUyYjRjMGY3YjY3MmYyYjNmOGZkY2E5Y2UyNjhlM2M4OGU0ZmJiNzgxYTY0NjM1MzkwYWQxY2YwM2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5MDRkMTI1YzU0MjMwN2ZiNzAyNDJiMDAzNjEzNzNkMzNiNThkMjQzOWI2ODEzMTYzOGM3MzUwZTgzYTJjZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4YzdiMWQ4Y2JmMTFhOThlMDBkZmI0ODZhMTIyMWYxOGRhYmM5MTE1NDgzYjJmZGJlM2ZkOTMxNGU2M2NlZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzM2Y4ZDUxZThmMmU1NDFlMjk0MWRiZjIwNjY0MzNkNWZmMzdiZmFmMjJhZGQxOTczZjhjNjQ0OTc4YTc0NzkifQ"
+        },
+        {
+          "resource": "repo://src/blocks/types/posts.ts#L203-L249",
+          "version": "repo-lines-v1:sha256:7c1ab2cf7c7defa0a9e7fd70953695e02cfea2801f2ed60d3632c0de4a902839:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwZGIzNjcxNGYzN2NlYTU0MWQxMWE3YzM0ZGM3OWMzN2MzMzIwMDcwMDE4YjQ5NzgyZDE1ZDViNjdjZjEwMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0YTBhM2MzYTQ2Y2Y4MGQyY2M5ZmUwZThmODM1NDU2NDkwMTdmZjUwNjAyYjFhYzQzMGY1ZWEwOTU5OTA3YTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwMjgzNjE5MDQ4ZmNlNGM1Nzg1MDMwYjE0N2Q5NjVjMDVmYmIxZDA3ZjJhOTU0ZjM2MDg2MDk4MWJlY2QzMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzM2Y4ZDUxZThmMmU1NDFlMjk0MWRiZjIwNjY0MzNkNWZmMzdiZmFmMjJhZGQxOTczZjhjNjQ0OTc4YTc0NzkifQ"
+        },
+        {
+          "resource": "repo://src/blocks/types/pricing.ts#L129-L164",
+          "version": "repo-lines-v1:sha256:e46cd7ff7863296db82a31cb567efbc2f1561d976fdf9a366c3d8236f8b3dfa9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2YjQwOWMxYTE2YWY3ZDU0NWQzMzdmYzJkMmQ3ZmFmZThlZWY0MWIzMzIwNWVlNTVkOGVlODY5NGI4ZjY5ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2NTM3YWJhY2UzY2YwODY2N2JkMjQzODA5YzljMTliZTc2ZDZiZTgzNDkwYmVjMmViOTMxOGY3ZTBjYzkzMzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlMGE5ZjE4OTQ0NTFjOGU5MmM2NGU4YWEyMzY5MzBjZWI5NmY5OWY5MTc4ZGM4ZGU5N2Q1ODI0OGMwYThlNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzM2Y4ZDUxZThmMmU1NDFlMjk0MWRiZjIwNjY0MzNkNWZmMzdiZmFmMjJhZGQxOTczZjhjNjQ0OTc4YTc0NzkifQ"
+        },
+        {
+          "resource": "repo://src/blocks/types/team.ts#L95-L116",
+          "version": "repo-lines-v1:sha256:a5a433316ac7f34da33a75ac800a5743617a1bd37d960c7ee90ae740418c6119:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwMzNjNzg1MjlhMjNkNjJhZTU4ZTUzMmQ5OTQ0MzMzODE1NmM2NGRlZTBmM2Y3OWJiMjA0ZjQ0NjIwMjkwOTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhMDJmMjViZTA3ZDljYmE5N2NkOGY3MmM2MTA3NTM5ODdkYWE0OGRkN2NmNzEwOWEwMTczMDY2ZTJjMjAyZmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUwODE3MGZlMDRlZDc3ZDU5ZGE3NzFkMzgyOTM0YjUxMDdjNWRlNzdmYTViNDg3NmQ4MTIxZmI2YjI0MDBmZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzM2Y4ZDUxZThmMmU1NDFlMjk0MWRiZjIwNjY0MzNkNWZmMzdiZmFmMjJhZGQxOTczZjhjNjQ0OTc4YTc0NzkifQ"
+        },
+        {
+          "resource": "repo://src/blocks/types/testimonials.ts#L108-L141",
+          "version": "repo-lines-v1:sha256:ce6a77a4177130539cab4faa037fbb024117fb0e1bf8943917d28c2f6570c703:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlYzFmYjIyZWM2NzIzY2E4MGQwNTI4ZTQyYWJmNGMxYmE4NTJjMDg5MDk2OWJiOTQ1YmE3YWQ2MWM1Mjc3ZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0ZDBjYTE4YWRlY2YzOTY4NjQ0ZTFhN2Y3NWM3NWU3OThmZjQzNGU1M2M3NmQzODc2MDE0OTJkNTYwZDY2N2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2YmI3NzhlNTFiNWUxNDRkMDkzYzQxMmEzNWI4OTIxY2ZjMDZjZmQ4MGI5OGNlMmU1Y2ZhMzQ5NTczMGZmMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzM2Y4ZDUxZThmMmU1NDFlMjk0MWRiZjIwNjY0MzNkNWZmMzdiZmFmMjJhZGQxOTczZjhjNjQ0OTc4YTc0NzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3aed23bb07034028b4f17b0e77743ebc",
+      "statement": "No shared-content block declares requiredToPublish rules (each exports an empty list), because their items come from a source rather than the editor.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/posts.ts#L247-L247",
+          "version": "repo-lines-v1:sha256:0f0e5b49a5d0d603ae88196a7bf34a382bf6fd4988a3933d6f19dcc0f30b2361:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYwZTViNDlhNWQwZDYwM2FlODgxOTZhN2JmMzRhMzgyYmY2ZmQ0OTg4YTM5MzNkNmYxOWRjYzBmMzBiMjM2MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYwZTViNDlhNWQwZDYwM2FlODgxOTZhN2JmMzRhMzgyYmY2ZmQ0OTg4YTM5MzNkNmYxOWRjYzBmMzBiMjM2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODUwNmUyNDU3OWIyNTQzN2E2Mzg2OTY1MmM4OTMzMTQ5OGJkYmQxYTRmOWI2NGNiYzQ2ZjhiYWM0ZTk5MTE5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTkxMmNiZjNlNDMxYjRlYTNkZDBmYjJjZmNiNGJlMDFlNTI3MjNkMDQyMjY2OTFiODk4OWIwYWU3ZTcxYjg3MCJ9"
+        },
+        {
+          "resource": "repo://src/blocks/types/pricing.ts#L163-L163",
+          "version": "repo-lines-v1:sha256:0f0e5b49a5d0d603ae88196a7bf34a382bf6fd4988a3933d6f19dcc0f30b2361:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYwZTViNDlhNWQwZDYwM2FlODgxOTZhN2JmMzRhMzgyYmY2ZmQ0OTg4YTM5MzNkNmYxOWRjYzBmMzBiMjM2MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYwZTViNDlhNWQwZDYwM2FlODgxOTZhN2JmMzRhMzgyYmY2ZmQ0OTg4YTM5MzNkNmYxOWRjYzBmMzBiMjM2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODUwNmUyNDU3OWIyNTQzN2E2Mzg2OTY1MmM4OTMzMTQ5OGJkYmQxYTRmOWI2NGNiYzQ2ZjhiYWM0ZTk5MTE5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2ZiODYzYmJlOGNjMmE0ZDc3YjkyMzU2ZGQ4NjJiYjY1NDljNWQwODFiMzE2Zjc5NjgwMmRjZmU2NzRjNzgyYyJ9"
+        },
+        {
+          "resource": "repo://src/blocks/types/testimonials.ts#L140-L140",
+          "version": "repo-lines-v1:sha256:0f0e5b49a5d0d603ae88196a7bf34a382bf6fd4988a3933d6f19dcc0f30b2361:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYwZTViNDlhNWQwZDYwM2FlODgxOTZhN2JmMzRhMzgyYmY2ZmQ0OTg4YTM5MzNkNmYxOWRjYzBmMzBiMjM2MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYwZTViNDlhNWQwZDYwM2FlODgxOTZhN2JmMzRhMzgyYmY2ZmQ0OTg4YTM5MzNkNmYxOWRjYzBmMzBiMjM2MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODUwNmUyNDU3OWIyNTQzN2E2Mzg2OTY1MmM4OTMzMTQ5OGJkYmQxYTRmOWI2NGNiYzQ2ZjhiYWM0ZTk5MTE5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTgzZmMwNDE5NDc1ZTcyZjdiYjNjNGYxNmEwYjhiYTY2YzE4MTRkZDJlN2NlZTZkZTZiMTU4YWZmMDg3Njc3NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d48dd78c83b749f69b601e5ae2df58cd",
+      "statement": "The posts block classifies entries by taxonomy rather than a page-group reference: its starter ignores the group collection parameter, and its category string is forwarded through sourceContext into a single list read filtered by where on the category taxonomy with published_at desc ordering.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/posts.ts#L166-L199",
+          "version": "repo-lines-v1:sha256:b39f6d61293d2bf8ede267416fbe727f46c396e703c64825cfc784f28ef1ef51:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmNmEyMGE2YTM3NTc1NTk0ZjI3NmIxNWJjNzIyYmJiYTBlNmUzYjM1MDk0NDc1NzkzM2UwN2ZiOTMxZWFkZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0NmZjZjZlMDhhODllOWMxOWRkYzM2MTJhZGNkNDIwOGI0ODYzNGNiMzJjNmQxMzkyODY1MGFlNjYyMTVhZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQwMjgzNjE5MDQ4ZmNlNGM1Nzg1MDMwYjE0N2Q5NjVjMDVmYmIxZDA3ZjJhOTU0ZjM2MDg2MDk4MWJlY2QzMmIifQ"
+        },
+        {
+          "resource": "repo://src/blocks/types/posts.ts#L93-L115",
+          "version": "repo-lines-v1:sha256:8f254111571e045c42a53bc7c4ebf6fe22931ba7576774dc197b746d1d83ebad:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzYzhmODFlOTI5NjMwMTEyNzBkMWIyNzBhOWM4N2IyMDgyNDUzOWEwYjg2NmU3ZTViZmM3ZDgxOGUzZDA2ZTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmODFmYTAwMjI1NzlmNGQ5ODc3ZjVmZjYzYTEzMGI5OWMxN2IzMWFkYjljZDE2MDk0ODRkYmU4YzRmNDRhYmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlZWNhOWFmY2U1ZjIwMzVkOTdjYjgwNGEwNjI4MmE0YTEyMjM5ZWM1YTI0YWJiNmFlZmVlNzAzZTQ4YjhjODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1Y2Y1MGJhNjNiNzg0NmM4ZGQzMDU2NmU0NTQ1ODRhMDgxN2RhYjYzYzZjYjMwYTIyZmY5YjkzOGQ2ZmMwYWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c5b2b7ae752a400e95c31aa6361d388a",
+      "statement": "Each block module has a sibling test under test/blocks/types/ pinning its seed definition fields, variants, publish rules and Markdown rendering.",
+      "evidence": [
+        {
+          "resource": "repo://test/blocks/types/hero.test.js#L7-L24",
+          "version": "repo-lines-v1:sha256:9dfd21c8612cb0c2098ae3fb8d0c265f791ac1d24840bcfa168a78bd2a0c5214:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhYjkyYTU4MWI2ZTBhN2NjMDQ0ZDdiZmU1ODAyMDJmYzkxMzg3YWU2ZGNkYWQyNTc1ZTU0OWU4MDE4NWVmZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmOWRiYzdmMmYyNGI1Mjg0MzU3Zjk4NjMwNmZlZjA0MTdjYzZmODFhODNhMDJiZjgxNTBmNzExMmY4ODNiMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhYzYwOWFjZGU3Y2NiNzQxNDBkZDM2NzUyZTgxNjkyMDI3MjZjYzZiZWMzYmQwN2I1YTgwODYwMDgwM2EwYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlNzY5MTI1ZDAwZWE5NTBkMDBiNDU3MDRkMWMzZWI0ZTk2OWJkYjlkNGRiZGEwNDEyNWZlZDIwYjlmMGI4NjAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

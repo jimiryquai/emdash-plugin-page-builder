@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:627c464a2245a13f55572ff500e0eeaaa3833bfb759d930003d51336b0116dd7",
+  "claims": [
+    {
+      "id": "claim_b74adb9ee85c446dbb4d950e4e720855",
+      "statement": "PageBuilder upgrades the stored layout with migrateBlocks before any other work, so source resolution, variant selection and section rendering only ever see current-version blocks, and unknown _type blocks pass through untouched to EmDash Blocks.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/PageBuilder.astro#L19-L21",
+          "version": "repo-lines-v1:sha256:44e634e7e9424596c8bba752840da24bc00ec07ce2944a3496cb868d6335d3c1:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGNhMjlkMDA0YTMwYmQ4MTRiZDNmZjc5ZWFmZjM5MWMzYmRmN2U5NzBhMGYwMWRjMjRkYWRhOTYzMGJiMzZlZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODUwMjg4MzUxZDkyMTdhMmQ2ODIyNjYyYWI0NmNjYmViY2VlY2VkYzJkMTlmNzg3NGJmMWNlNmMzYzhkOWQxZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWMzNTg3ZTZhYWU4Y2RmNDNhODY3YmQyY2UwYWQ1MmFlNDI5YThkYTQ5NWRlM2Q5YzU5NzU4OWM4YjEwNzYwNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmJkOGU4MzU4ZTUyNTY3ZTU5ZWJmMjJmYTM2YzVlYzRkYTBjOGE5ODgzM2ZmNjIwNjY5NjNmNjZjMDA2YWQyOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9f7224c164264fff8702adc6bc6c1ba4",
+      "statement": "For each upgraded block with a matching sources entry, PageBuilder awaits the source with resolveSourceContext(block, blockType, group), stores the items in a Map keyed by the block, and merges every cacheHint read into Astro.cache via mergeCacheHints when Astro.cache is enabled.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/PageBuilder.astro#L22-L34",
+          "version": "repo-lines-v1:sha256:fe51ec89e12b8ca8c1973b334f27e6bde83ca31e99b6b061a4b0656de6f1692e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYTBlM2NmOTI3NDE5MzBjNzVkOTEyODk3ZmMyM2E4OTNlYTE4MjgzZjNlODQ5NGUzYmQ4NjFkODY4M2U3NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjOWQ5OWI4MDM3YjA2NWQ5NGJkY2E0Nzg3MTNlNTBlMDMyMWIwOTIxZWY0YzU0YzNjNmY3NDkwNDg0ZjdjZWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0ZTYzNGU3ZTk0MjQ1OTZjOGJiYTc1Mjg0MGRhMjRiYzAwZWMwN2NlMjk0NGEzNDk2Y2I4NjhkNjMzNWQzYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlYmRlMTg5MmU4Mjg3OGQxZWVjNGM3ZTY0OWEwMGU3MjAwOTZjNDNkM2NlNTJkNWY4YTA1ZmMzZGI0MzgyYzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c568bdcc117f4cf7958999696f9b5ddc",
+      "statement": "Section selection reads the stored variant through VARIANT_FIELD_SLUG and uses sections[variant] only when the site mapped it (Object.hasOwn), otherwise the required sections.default, invoking the section with the original props plus items for that block.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/PageBuilder.astro#L37-L46",
+          "version": "repo-lines-v1:sha256:b35ffc97c8b09da7d6daf68716c754290999bc60a0600b9188ec1b984b9a6983:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MGQ5ODdjYTZlY2JhZjRjYjNhOWQxZDFlMTVhMGZmYWEyNGE0ZmE5NTUxOTEzNmZmYzYxYjE0NTdlNGUwODciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2ZTY5OTA4MDQ3YTI4OWE4N2JjNDMxZjIxMmM2NWE1MGFlNzNjNDNkODViOWQxMjgwOTM0NjMyMWU5MzM5ZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyNDlhNDE1OTY2YmNiZWI2ZmUzZWVjMTAxOTVhODZhYzcwNzBkZGQ2ZTM1YWJkNGQwZWI4ZDA2OTc0OTlhY2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_67d6f612821f42568cb302dce962039d",
+      "statement": "When edit carries at least one defined attribute, each rendered block is wrapped in one div with style display:contents carrying those attributes; when edit is absent or has no attributes, no wrapper is rendered and the HTML is byte-for-byte unchanged.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/PageBuilder.astro#L17-L18",
+          "version": "repo-lines-v1:sha256:dcb4cd5226eb46897f47366be07240d24fd96a8a27353d9cdf6a1ea5dfd5996d:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc4NzMxNGU0MDg5MzU4YTBjMTIwMmZlMzYzMTcyNjE0M2YyYWUxYmViNmFmZjg2YjAyZjhmN2I0MGYxOGNiZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWJkMDFiNGVlODk5ZWU5ZWVjNTFiZjU3OTBmZDA3M2I1MDBlOWFlODg3MzE4ZTU5OWQ0ODAyOTExODg1NzY5NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDRlNjM0ZTdlOTQyNDU5NmM4YmJhNzUyODQwZGEyNGJjMDBlYzA3Y2UyOTQ0YTM0OTZjYjg2OGQ2MzM1ZDNjMSJ9"
+        },
+        {
+          "resource": "repo://src/blocks/PageBuilder.astro#L46-L51",
+          "version": "repo-lines-v1:sha256:d70d107c8c10acff87cd864b0c0edb6633256e83b2778b398f0e33945f38e9b6:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTkwZDk4N2NhNmVjYmFmNGNiM2E5ZDFkMWUxNWEwZmZhYTI0YTRmYTk1NTE5MTM2ZmZjNjFiMTQ1N2U0ZTA4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJlNmZjZGQ0ZDcyNzQ4N2U4YjhkN2E0Mzc3ZjA2MmNkMWJjZTU5NDQ0ZDZkNzNhYTg4Y2E1ODQ4Zjk0YjRlMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzUxM2M3NDk0ZTA4NGE2MGFiMjI4MmFkMjFiNmRlNTU1OTU5NzVmMTdjYjFkZDQwZGUxYmI3OWRhYjcxZDUyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzYxZmY2YjFlZDFjY2UyYzA2OWYyZTgxYTI3NzEzOTJlMDFjY2IyMzFmODQ3NzU3NDQ0N2RkZDRmNTc4YzZkZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d9ec2cf5e5ef43d1a10f14a2c6d04e85",
+      "statement": "Clicking a block in EmDash edit mode opens the page Layout field in the admin because the visual editor resolves data-emdash-ref by top-level field slug and saves data keyed by that field, so nested fields inside a blocks field cannot be edited in place and unrecognised field types open the entry in the admin.",
+      "evidence": [
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:d164917a3fdac60f8b02e39a97e875c13fc57fe34c1bcdf853b84f7a126814c0"
+        }
+      ]
+    },
+    {
+      "id": "claim_290b6cde92c444e18a92514378088235",
+      "statement": "A null or omitted value renders nothing, and the optional fallback prop is forwarded to EmDash Blocks (fallback rendered in production, diagnostic in development, nothing in production without a fallback).",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/PageBuilder.astro#L19-L19",
+          "version": "repo-lines-v1:sha256:0ca29d004a30bd814bd3ff79eaff391c3bdf7e970a0f01dc24dada9630bb36ef:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGNhMjlkMDA0YTMwYmQ4MTRiZDNmZjc5ZWFmZjM5MWMzYmRmN2U5NzBhMGYwMWRjMjRkYWRhOTYzMGJiMzZlZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGNhMjlkMDA0YTMwYmQ4MTRiZDNmZjc5ZWFmZjM5MWMzYmRmN2U5NzBhMGYwMWRjMjRkYWRhOTYzMGJiMzZlZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWMzNTg3ZTZhYWU4Y2RmNDNhODY3YmQyY2UwYWQ1MmFlNDI5YThkYTQ5NWRlM2Q5YzU5NzU4OWM4YjEwNzYwNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE1NGE0OTA5Y2M2MTBlN2I0MzM2MTQ3MzNmYWI3ZjI1YmE5NGY3MWNlNTk3NDFhZjdmM2U0NDJjODkxNjRlMCJ9"
+        },
+        {
+          "resource": "repo://src/blocks/PageBuilder.astro#L53-L53",
+          "version": "repo-lines-v1:sha256:f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjUyZDcxMTEwM2Q1MGE0Mzc4MzBjNmZiY2QwNGZiNGJhYjQ5YTBmODJmNmQyNmQxYzc5MWM2ZTg0ODhkZDA5MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjUyZDcxMTEwM2Q1MGE0Mzc4MzBjNmZiY2QwNGZiNGJhYjQ5YTBmODJmNmQyNmQxYzc5MWM2ZTg0ODhkZDA5MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjU0NmJkZmU2NmVkYjY4N2Q2OTQxYmI1NTFiY2FlYzg4Mjg3ODdmZTY2ODQwMDkyMzI3OTY5N2I2MTA2MTFmZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWEzNzFmNzA4OTcxMTBkMWY0Y2MzNWMzNDlhMGU1YWJjZTZjZmExYzg2ZGQ1ZTJmOTE4MGJlOWQ1MzkyZjgyNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b6a4bbb205db4a62b84bb1321b92a576",
+      "statement": "An authenticated content GET of a published entry with a pending draft hydrates the draft into item.data (published columns in item.liveData), so read-back comparisons must classify pending drafts.",
+      "evidence": [
+        {
+          "resource": "repo://docs/lessons/emdash-content-get-hydrates-pending-drafts.md",
+          "version": "repo-file-v1:sha256:a5870359a66d08c2b311b38d72a75ccf9b85e4708aa6ab2bec85176d69336b78"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

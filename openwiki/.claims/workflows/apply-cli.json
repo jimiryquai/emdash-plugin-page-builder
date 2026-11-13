@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:309da9168b6ab8d491284e928784b155470f38d9a4f71ca70814e49b68f09a2c",
+  "claims": [
+    {
+      "id": "claim_78364bd4698041f9a9fb81839eb74d83",
+      "statement": "The CLI plans by default and writes nothing without --apply; stdout is JSON for success and failure, errors are {\"errors\": [...]} entries locating operation, code, status, blockType and version, failure sets a nonzero exit code, and a failure mid-apply includes the partial plan in the payload.",
+      "evidence": [
+        {
+          "resource": "repo://CODING_STANDARDS.md",
+          "version": "repo-file-v1:sha256:10b0e1dce1a47175c459b9c04c30bf382d9c051f524e216afb3d6b9f6fa058f4"
+        },
+        {
+          "resource": "repo://src/cli/main.ts#L60-L92",
+          "version": "repo-lines-v1:sha256:5dd4202871b0c653a7bad0bc6282a77407f3677c87e63be7330759d0bad7b41d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlOGRjMWQ1MGExMWU4Y2YxOWY0ZGM5MjRjYzExNmExNmI1ZmYwN2YzOGQyYjA3NjJmMWRjMjQ2YTk4ZWM0MGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmMWE3ZjEzMWZjMzMyNWNhZmI3NTI0YWZlZWE4Y2NhODBjNDEwODQyMTVmNWM3MTBjMGE5NDIxY2VkZjY0OTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_592a870a47c241a2bec2028233022dec",
+      "statement": "The token is taken from EMDASH_TOKEN (preferred) or --token, and the run fails with exit code 1 when neither is set and no transport was injected.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/main.ts#L147-L152",
+          "version": "repo-lines-v1:sha256:10029ee1d418bfa44ac087adb38de17e72d0a53006a2020a779dd87498f812bb:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQwMmIzMTRkYmU3ZTNiNmNhNGYxOGU5OTcyNDljZDQzNzBjZGEyZWE0NWU4MGUyNzUxMjg5Y2M2YTEyMjZkNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjhlZjkwMTZlZmJiZGVkNDdlMmZmZWY0OTJiMTc4ODVlN2FhZWZjOTQ3MTIyYzg3Y2MyZmYxNGU1ZjIwMTI1OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTEyYWRjZmZjNDBiYWY4ZmUzYzc4YjE1NmI4Y2Q2YmYwZTRmNjdlNzAyNThlZmMwMWRjMGNlM2JhNWE0MDg0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzNkOWQ4YTE3NzI3YzllNTIxZmVjNjM5Yjg0ZTU4YzFkMjEyMzM4NDM5MTc5YTUxMjhmYWU4MDE5NGEzZGM1NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e2dc92d73211453cbb42932210db335f",
+      "statement": "loadBlockTypes imports the --from module (default emdash-plugin-page-builder/blocks) and keeps every export satisfying isBlockType, failing when none is exported; --types restricts the run and an unknown slug fails before any request, naming the available slugs.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/main.ts#L112-L131",
+          "version": "repo-lines-v1:sha256:ea96d1922ee2d873d7802a10511eeefc2912374dfcc1bf81a8143c00d826adf7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1NTVmODE0YjI4MmZlMWEzNTI4NTNjNmI2NDRmNTQ3MTAwMzM1NDc3OTY3OWUxOGJjNzk1ZTg4ZGIxZmMwZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAwM2IwNWVhNDE1MzE4YTAyNzIzODYyZDQzZDBmNDNhYmNmNzgxOGE3NWRkMjE3ZjI5NzFlNmVhYzY2Zjc4YTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2ZTg2NWU0OTQ4ZDJkZTU5MGE0MWEzYWZlNzRiMGM1NTc5ZjAyMGQwMjUxODlmYzFjMTZjYmMzZmI2NTg5ZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4MWExMmFhZDVlMzJmZDVmNTEwMGI4NTM0MmRkMTgxZGMwNmMzZDZjNGE2MWQ4NGNhODRhZDU0Mjc0MzM1YmQifQ"
+        },
+        {
+          "resource": "repo://src/cli/main.ts#L90-L109",
+          "version": "repo-lines-v1:sha256:788833ed5766de5a44d43424e06d99332fcb26494f4ec957cc80c2fa6ea4c483:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3Y2RhODJkYTYwNjIzOGUwNWU2MjM5OTU2OWM1ZWUwMzk5MzQxOTY0OGFlNWQ0M2EyYmY4Y2Q2MzQ3ZjgyNjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkYTA0ZWY3NjI3ZGE3MWE4NTQ3NWUxZjBkNmRhM2E2ZmI4NWU0ZDhlYzI1MWIzOWViMTgyM2UxY2MwOThhOWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkMWVkZWQ4NWY1ZDk4YmQ1YTA2MDdhZDY3OTg3NjA1NDJkYTdiMWVjZTY5ZDZiYTFiMmY1ZWY4NTQxNDBmOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwMDMwMTMwYzkzZTg2NWVlMjQ5MWRiMTUwYTZiNmUzYTc5OWQxMzhjMWIxMWMzYzQ3ZWE4NGUzZmU3Njk3MGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2020c52d59744da9adac3976273c5c93",
+      "statement": "Plan errors abort before any write even with --apply: buildPlan errors on a declared version that is not breaking against its predecessor, and run() returns 1 after printing the error payload with the plan.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/main.ts#L154-L170",
+          "version": "repo-lines-v1:sha256:a2f3072e8bde8768826e31b3be035a16f14235c72567f2a60ac8969a4084f6c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiYzBlNjgyYzY2YmZiMDI0ZDE5MTExYTUwZTkyNGIyNTE4N2YzN2FjMDdiMjNlNGRmMWRmNGIxMjlkNzA4NDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0ZWZjNDk0MThkMjZkY2YxMjliMjJhNmFhMjExMDhjZWVjMzc2NzdhMzJkMDhlOWQ1ZmVlMzVkZGE2NmJiOWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNGZkYjliN2MwZDRiMTUyOGRkNDI3MTFjNTg5MDYyNjliYmFhNDYwYWY1ZDk0YmM3NmVhZTA3ODc5NmZmMDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjYzcwZmVhNGE2MzRiMTc1M2NlNmQwNmRiZjg3ODk5NGJmNzRjNmQzMjFkNzRlNGRiMTI0MDk3ZGZiZjRjMTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6c2cd5f982484e7eb334142044d67632",
+      "statement": "The migration scan runs after the schema operations so a just-run --activate makes more blocks eligible, and migrateStoredBlocks runs only with --apply --migrate, writing each pending entry back with migrateBlocks true and the entry _rev.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/main.ts#L171-L196",
+          "version": "repo-lines-v1:sha256:9b204f7ea422cfb22a6b4d8b1f44ad36ca2c89eb37611e61707be105aa43e514:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMTFjNjg4YzE2MjRjNWIwNGUxMjM1MWY2NTBlMzE0ZmJkMTU5YWM4YzNiZjUxMzdkMWY4YzdmODk2ZGIwYjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzMWIxN2I2MzhiZmEwZDdhY2JmODc1NDI1NWUyNGI1YTBlNzkzNjVmMjQxYWY2MDE0ZTRlMWIwZDc2YzgwYjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxYzE0MTEzMTFlNDU5MGMwYWJiZmQ4YWI0MmNkODhmNDQ5YTU0MzEyNzQxNDc5YWE5MmFmN2UwOGJhODYwMzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cb00ef499e5145a9a892450f3d68dd80",
+      "statement": "Starter collections derive from the block modules starter factories: --collections requires --group naming the site grouping collection, creates each missing collection, then its fields one at a time, then sets the titleField once its column exists.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/main.ts#L223-L257",
+          "version": "repo-lines-v1:sha256:88f004ca81abcd2654f8831daba6921274814502c361446600ce4b53d823c8bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmZGYyNjBjMzIwZjE5M2JiMDhmZTM4ZWU5M2FkMmM1ZDc4ODI5ZmJkMjJlNjdmOWNkYWJkYWVmZGQ0YzY2NTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE4YjJhMWNjOTQ3YjZiYWE5MTcwZGU4MmU4N2ZmYzkyYmFhM2M3NTQ3YTVlZjJkYTdjY2U0NDc3NTZlY2NhNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmNWVjMGY0NTYzNjg5NzY5NTI0NGNmM2M2MzNlNDNlY2Y2NGQxNDQ0NGE2MmYxZDkyMTIwNmQ0ODhhOTA4YzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyOTY0MDc5YzNjNWM4MTUyMGVmMzNhMmI5ZDJlMTVhMWI4NGQ3MjgwZGI4NTkwZGNkNjU3NDdlM2UwMTJhNDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_baa78a8a75714786b2afa55830daafa0",
+      "statement": "--field <collection>/<fieldSlug> computes which block type slugs would be added to a blocks field allowedTypes, refuses non-blocks fields and unknown collections or fields, and writes the merged validation only with --apply.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/main.ts#L262-L293",
+          "version": "repo-lines-v1:sha256:702e1ac9e20bfd9fd5a8da7d5b9e3be377e515ea03e1ee685a4b85aec3afbd33:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2OWQzM2Q4MDhlNDk4YzUyMjZlYzNkYjA4OWFlNjgyNGFlMmUzNDI2ODY2N2E4MzNkOGE1Y2QzMWQ2MzZjNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzMTE1YmQ0ZTI4MzAwOGNlNGVlOGRmZmJiMzZmMWVhZGRmODM3NTYzZDJlMDk4OTQyNjZlZDY1ZmM5YmE2YmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3OTI5ZTkxZTBmOTljM2U4MjVkZTY5YjQzNWZiNjQ4NGQxYjBhMWRmMmY0NjU2MWFiZjFhMjlmMDQxODhiODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViMDEzNDNhYjQ3MWZlZjFlZDVkYmQ4MzU5NDgwNWQ2MmRiNWRmNzI3MzkzNGJiMDkwNjcwY2JjYTVkZTY0M2EifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8a7ce2f89a724c93b259a1e604cc9883",
+      "statement": "main.ts runs only when invoked as an entry, comparing import.meta.url with the realpath of process.argv[1] so an installed .bin symlink still matches and importing the module runs nothing.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/main.ts#L298-L334",
+          "version": "repo-lines-v1:sha256:f080cb0bc58264be2c054fe6f7407d20082b86177181416335cbb707fd719d36:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NjU3YjRhMjBhZTI0YzhlZGY3NmU1Yjk2NGNhNjY4NWE3YjliNzM2NGQwZTRkMTcyMzUyYTA2NWI0NjAyNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlYzQzYTcyM2FlZDNkZTIyMzRjNDMxOTRhYmFkZTk2MWYzMTM1NTJjNmZmYTBiNjAwNjc3YzdiMTYyOWQyZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c22c634bafa6473b8a0f333a7477f2e6",
+      "statement": "Activation of a new breaking version of an existing type requires --activate because the site must first deploy a package release rendering both versions; a brand-new type activates its own currentVersion automatically since it can hold no stored blocks.",
+      "evidence": [
+        {
+          "resource": "repo://src/cli/apply.ts#L52-L77",
+          "version": "repo-lines-v1:sha256:0e090dfca53513417d2bbb1e9c48b66c9beb84a44406dbeb9b6941928bd1c577:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExMjkwZjUwNjg4MzQwODA4Yzg5Y2QwZjI4OGY0MDEzODdhMGYzMTczNWEwNTVlNDViOThmY2Y1NWVjZjRkZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhMmIyNzU4ODY5ZjE4YjAzMTNkZmNmN2RlNjliNTkzYjY5ZTFmYzk4NDk3MGY1MWYzM2YyYmVjMjQ0ZDU2ZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkMjRhNTYzYzAzOTVkNGIwN2ZjZTEwNDNhYzQwNmUzYjU4YTBiZGE2ZDU4OGUwMjg3ZjhlM2FmNTBiMjUxMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzZDkxYWEwNWRlYzY5OGJjYzZkNDM0ZjVlZTU1NGU1YWRmMTcxMzQ1OWNlMTlhYWI4NzRiMjllMDZmMTYxMjQifQ"
+        },
+        {
+          "resource": "repo://src/cli/plan.ts#L57-L73",
+          "version": "repo-lines-v1:sha256:b44e0bc0c67b85f95c8e255648bc63a60c3cdc4e00a7df4d12648ff85e2bdea9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5NjJiMzUyZTEwZDU0YzQyMTZkYTI3Zjk1MjM5MmU5NjA3YTFlMDM3YWQxZDMzY2IyOWQ1NDg3MjBmNWM3MmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2ODA2ZjE1NWM1YWMxYWUyNzIyY2EwNmYyYWM5Y2FkY2I4ODFiOTEyM2NiNjI0YTNjMTA0NzViNDQ0OWRjMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEwZGRkNzVlM2E1OWI2NjBhNTU1ZDA4ZmEwZDczM2VkNjk2MDA0YWFlN2YwZjk3ZmEwZWQ3NDZjNTliZDUxODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiMzcyZDY0YTAxZjc3ZmIxNjNjNGYwOTg1NWE5ZmQ1NDUyNmJhNTlhOThkOGU5NzZhMmViM2UyOTNkMDY2NmMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

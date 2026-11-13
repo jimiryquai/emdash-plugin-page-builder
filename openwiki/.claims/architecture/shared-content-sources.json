@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:f1edf65419fdae11bfe5edb7d989d3721fab7e409a44c27a1b26861ff0aa0dc3",
+  "claims": [
+    {
+      "id": "claim_62db46e0fde1428f8c0bea157dc44fcc",
+      "statement": "A Source is a site-supplied typed function receiving SourceContext and returning either a bare array of a block shape or { items, cacheHints }; PageBuilder passes items to the section and merges every cacheHint into Astro.cache when caching is enabled.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/PageBuilder.astro#L24-L34",
+          "version": "repo-lines-v1:sha256:8281a967273049b60f5e978d85be065dc93f1a6402b0399b67875a5e93f7c53a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1ZDUxMjYxZTM1MDEyMDQ0ZjFhMGQ5ZDUyZmE3MzgyNjBiZjA4Y2Q2NjA4Nzg1YzJkOGQwYjFjY2EzYTY4NmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjOWQ5OWI4MDM3YjA2NWQ5NGJkY2E0Nzg3MTNlNTBlMDMyMWIwOTIxZWY0YzU0YzNjNmY3NDkwNDg0ZjdjZWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjOTBhYjNmNWNhZDU5MDg4ZDQ1OTM5NTU2MTdkYTc1MWQ0ZTdiMTJlZjA5NjEwYWJmYmYwMTkzMzUyYWY2NTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlYmRlMTg5MmU4Mjg3OGQxZWVjNGM3ZTY0OWEwMGU3MjAwOTZjNDNkM2NlNTJkNWY4YTA1ZmMzZGI0MzgyYzUifQ"
+        },
+        {
+          "resource": "repo://src/blocks/core.ts#L284-L305",
+          "version": "repo-lines-v1:sha256:7acfdb1f43d835494b08ef2ed16227bc7f4f4c0ac30e673d639cfe32361c1872:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzMWZjYjU5ZWY5OGFlOTNkZDExYmY3NjY0ZTdmN2M2MjJmNmU3NjIwZDVjMWYzNjJiZTBkNDEzZDg3YWJkN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0ZDBlNTk0ZGQxODM3ZTVmZjI3ODI3N2UyZmM4ZTc5ZTE5MWY5YmU5YWU3Mjc5M2JmMTAxNjE2M2EyOWJlNzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkZWEzNjFjOGM4OTIxY2UyM2NlMDcwMjYwNWI2ZmIwYzBhZjUwMTAzNjI3MjY5N2M5MGVmYjNkZGQ4ZjE5M2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3NDFmMmYxOTY4YmRlM2FlOGU4NjM2NzcxN2NiYTBhOGVmZDliYmMyNWE3MjZhZjg2ZTFkMzQzOGE1ZDQ5MWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_338900232b984e4b83d3b836f2e1b174",
+      "statement": "resolveSourceContext maps a stored scope page to page only when a group is configured (otherwise all), keeps all as all, resolves count as a positive stored number or the count field declared defaultValue, and merges any block-module sourceContext hook such as posts forwarding a trimmed category slug.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L322-L338",
+          "version": "repo-lines-v1:sha256:73edcf562d9fa379a6a672318cfeebbcbeccf2824c33c0ad4fc87a8a429929d4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiYzAyMzdmNzJlOWFjM2Y4MzIzNzhhNmUzMzkyOGEwMmExMGUyNzg3OGNlZTcyYzNiMDU3ZjkxYTQ3NzRiODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2Yjg1ZGI4ZTI4YjI4ODZlMzExMmRjZDJhZjgzNzA5NjYzNjEwOWFkNjdkNzQyZDhlZDY5ZDg1MDVmM2JhYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhNTk4OWZjZTlmMmIyMjMzZmU1NTc0ZGVkMTU3YmRlNDg0ODNlOGIwNGZmZjZiZWEwNjVmZWRlMzEzNmU5MzIifQ"
+        },
+        {
+          "resource": "repo://src/blocks/types/posts.ts#L196-L199",
+          "version": "repo-lines-v1:sha256:a0f6e61f8fd55793d263b26bbb9dfddc140f0f6c7299d4c2d180738c2623a4ef:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGY2YTIwYTZhMzc1NzU1OTRmMjc2YjE1YmM3MjJiYmJhMGU2ZTNiMzUwOTQ0NzU3OTMzZTA3ZmI5MzFlYWRkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODRkMjg5N2IwYmE4NTU1NGNiYmUwZDJhNzJhYjcwMGEzMjliMWVkNTQwMmMxNTc3MWZjNTc5OTk3OWI4ODQ2NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDAyODM2MTkwNDhmY2U0YzU3ODUwMzBiMTQ3ZDk2NWMwNWZiYjFkMDdmMmE5NTRmMzYwODYwOTgxYmVjZDMyYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_90596cb727974b00b45da73f0d6b5c9e",
+      "statement": "createCollectionSource serves as the default source factory for the group-scoped shared-content blocks: scope all does one list read with limit when count resolved, while scope page with a group pages the collection through list cursors and issues a per-entry get with references on the group field, keeping entries whose reference resolves to the group, stopping once count is reached, and returning the cache hints of every read.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L427-L466",
+          "version": "repo-lines-v1:sha256:92802c001499d4c67de29807f48de2021b01c9b3e8f06cdbf407c3ffad3060f5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhODEwMzFmNzc4NWU3MDY1ODc2ZjA0MGY4MWQyY2RjYzdhZjg1NzcwYzUyOGY0YzBhMWI2YmFkNDU2YWU0MWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkOGNlNzg3ZjEyYjhiMjJiOGIwMjM0MjA1YThiZDBiYTczNjI4ZjFjY2MzYmI5ZDgyMWJhZDhkZWIwNDY1NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1YWUwY2JmYzAyMTU0YzI2MGQ4M2U3NDA3MjY2MmUyMWU1ODUzNjdiZmYxYjIxNDcxY2Y5OTdlNDY4MDhkMmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c15d7f397ec42d19f8d7580c23cdc12",
+      "statement": "createTestimonialsSource, createPricingSource, createTeamSource and createFaqSource are createCollectionSource configured with each starter collection slug, group field and entry-to-shape mapper, and accept collection/groupField/query overrides.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/faq.ts#L61-L67",
+          "version": "repo-lines-v1:sha256:e6387dcb590a9211d59e6f14c172ee150234af29dd98f4c66cf7babd7c8c8bf8:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjA1YzQyMmNjMTVkMzNjNmU3NDE5NjUzZjVhMDYyNTZiYjVlNThkNWI1OGZiNGIzMTk3ZTBhYWE0ODE0YTA2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmYzMjNmOWZlNWVhMjA4ZjhmZThlMWRlOWYwMzNjZTI5YzRjNmNjOTI0ZjY2NjA2YmM4OTllOGYxZDlkOTM0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzc5MjllOTFlMGY5OWMzZTgyNWRlNjliNDM1ZmI2NDg0ZDFiMGExZGYyZjQ2NTYxYWJmMWEyOWYwNDE4OGI4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDFkZGJiODk4ODg3N2NjNmI4ZmMwOWYwYmMzNjE4MGYwZWRmODE5MmE5MDBlYWFjNmMxMjQwZjY0OWUwNTJiMSJ9"
+        },
+        {
+          "resource": "repo://src/blocks/types/testimonials.ts#L84-L90",
+          "version": "repo-lines-v1:sha256:477003890de48b391ec4822b9c362f4702d3bb4de4d91c66233bc376781cd5c4:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjA5NTE1ZjA4YTlhNjcxNGE1MDUwNmEyNDliMzJmYjRjMTFkZDg2OGNjMjkwNTQ1NjYwNGVhNTNhMjc1YWI4NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmI3NGI2MDFlYzBmMWQ5NjU4MGQ1Nzk2N2ZiZWUxZjMxZmUxMjVjM2ZlZTAxZGRlZjEzNmMyYmNmNGZkODE4ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzc5MjllOTFlMGY5OWMzZTgyNWRlNjliNDM1ZmI2NDg0ZDFiMGExZGYyZjQ2NTYxYWJmMWEyOWYwNDE4OGI4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDQzMzJkZjdmOTZiYTA0ZGVjMzA1NDZiODE5ZDcyMDQwMjA4YTQ4ZTkyZmIzZTM4MDE1ZWUzMzIwNGE2MDE2ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f3c2fffc89804ea4b97de87bac2a57e4",
+      "statement": "Each group-scoped block module exports a starter collection parameterised by the site grouping collection, whose group field is a reference with validation.targetCollection set to that collection; starters are applied only on request through the CLI --collections option with --group.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/testimonials.ts#L48-L73",
+          "version": "repo-lines-v1:sha256:7dd88d775ad5e488da61bdbbbca29e6bfab3e205e2182aec0001150dd636b1ac:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmMjA5NjM5OGVkZTRjZTFkYTg4MDljYzJhMjgwYTYxNWNiNzIwYjJhMTg1YzkwMTQ2NGEyYTgxOTdiZmRkM2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiNTU4NjNiNTk5MjZhOTc3Y2UzZDA4ZDVhYTZiNzIwMTc2ZWI3ZDU3YmY3YTNmOTA1YjEzN2I4YzdmN2FhMjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI5OGM1YjI3ZjU3YTNhYzZjOWJmYTAzZWJkNjUxMmVjMDg4Mzk4MzkxNWNhOTYwOGYzNDNlNGRlYWQ2ZjViNWUifQ"
+        },
+        {
+          "resource": "repo://src/cli/main.ts#L223-L240",
+          "version": "repo-lines-v1:sha256:f996255257c67fb094ab3c7980332662e8947b881f2745da077e0e3cb9052557:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmZGYyNjBjMzIwZjE5M2JiMDhmZTM4ZWU5M2FkMmM1ZDc4ODI5ZmJkMjJlNjdmOWNkYWJkYWVmZGQ0YzY2NTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0ZWZjNDk0MThkMjZkY2YxMjliMjJhNmFhMjExMDhjZWVjMzc2NzdhMzJkMDhlOWQ1ZmVlMzVkZGE2NmJiOWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmNWVjMGY0NTYzNjg5NzY5NTI0NGNmM2M2MzNlNDNlY2Y2NGQxNDQ0NGE2MmYxZDkyMTIwNmQ0ODhhOTA4YzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRiOTA1NjkyYWRjZDllNmNiZjRlMDFmNDNlYTk3ODYzOWFiOGYxMzFjY2Q5N2EyYjA5ZTM1YzI3ODFmNGY2NGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_60a43f9f81394edc801562abf3b4c801",
+      "statement": "createPostsSource differs from the group-scoped sources: one list read ordered published_at desc, optional where filter on the category taxonomy, limit capped to count (block default 4), default mapper producing Post with a /collection/id URL and hydrated terms and bylines, and overridable mapEntry/collection/taxonomies/orderBy/query.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/types/posts.ts#L166-L194",
+          "version": "repo-lines-v1:sha256:2d1f0a1bc5078c309c4732ac6719948c75e2f46a182d45bacdeb5c1ad7a79387:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0NmZjZjZlMDhhODllOWMxOWRkYzM2MTJhZGNkNDIwOGI0ODYzNGNiMzJjNmQxMzkyODY1MGFlNjYyMTVhZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5NDk4MzQyNzFiODJmNjYxNjU5N2UwMTdlNTRhMDllMGExNmJlYTQ5ZjkyMjJmMjFhZWMyOTgyOTU4NGYxMGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_70a8a57686da414ea340468b66ab0b78",
+      "statement": "The QueryApi interface exposed to sources is deliberately narrow (list with cursor/where/orderBy filters and get with reference selections) and defaults to a wrapper over EmDash getEmDashCollection and getEmDashEntry, so tests inject a fake.",
+      "evidence": [
+        {
+          "resource": "repo://src/blocks/core.ts#L351-L386",
+          "version": "repo-lines-v1:sha256:b5cac4005c07b46f271b491f38c20a96d01047213d611726fbe126807de2f37a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjMjhjN2JiOWE3Mjk3MzNiYWE0ZDUzYmNmZmI3ZDFiYmFhZDNmNjE3ZmM2MTZlYTQ2MWQ3Zjg1NzlkZTExMGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlMmQ2ZmE5ZjVlZWY5ZGYwNzk2MTc0ZmZhZmNkNjY0MDRjYzA2NDliMzRlYzQ0Mjc1YzA2Njk3NzE4MjBlZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjMDUyOTVjNmYzM2UxMmZkNGNhNDZiNWIwYzgxMTBjNmJiZDEyNzBlMTYxMGY1ZWU5MTAzOTA2NzgxNjUyYzIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

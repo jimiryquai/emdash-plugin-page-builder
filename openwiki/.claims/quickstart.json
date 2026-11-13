@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:262e7c390af13dd72683cf4632da47c90014ae598c43f7e31bd4d9189aa4b194",
+  "claims": [
+    {
+      "id": "claim_ecb5374e763f4676a66eddb026fd17e5",
+      "statement": "The package exposes the blocks runtime library, the PageBuilder.astro renderer imported separately so plain Node consumers never load Astro, the plugin publish-policy entry, and the emdash-page-builder CLI binary that plans and applies block types with EMDASH_TOKEN authentication.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L26-L40",
+          "version": "repo-lines-v1:sha256:635657fd44b373922e220882d2e63743edd0c2dec0a07b27ebcb6767b59ef575:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4ODQ1ZTBiZTI3ZWM3ZGNiODRkOTdkNjA0MmQwNTY5YjQ5Mzc3OWY5ODAwNDk1YTdjYTVmY2E0Y2RiNzk5ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzOGM0M2U2N2E4MThkNTcyNWYxMzhkM2U1ZTlmNTBjMTJlMTgyOWZlODFiYjJmOGVmMDgwOTgyNTNiYjY0NWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxOWE1ZTY4NDgyNmIxOWMwMjBlNTEyY2ZiNzJjMDMxMTFmNzM0OWVjZGYwOGRhM2Q0MGZjNGRmNWVmZTY3YzAifQ"
+        },
+        {
+          "resource": "repo://package.json#L20-L32",
+          "version": "repo-lines-v1:sha256:69cab179a357711187a51bd8eda29bad7e5bd9ec3ab96a1825f2b8a8984a00fe:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTZlYzZjYzk2ODI0MDFkZGFhNzExMDYzODM5ZmVjNzFlOGViMDBhYWE3MWY1ZDljN2MwYWU4YmMwM2M2M2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZmE0MDQ0N2Q2M2M0YmEzZGJhNTRmZmJlZTI2ZmY0NGVkNDVhY2M1ZDY2NTYzNzMwYjlmOGZhMzNlMzYwMzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3ZDYwN2M2MDMwZDc4OTQ0ZmIyOGQ1ZWE2MWQ5NzVkOGQ4M2EwNjczZDNhMzUwZDA4NjY3MDlmZWY3NDFkZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhNzcxZDA3MGM0MzIyZmM4MTk2ZjIxZDg3MDU2NTdjZTE4ZWE1YmMzOTY1YTRjNGQ2MWJhM2EzODQ4OWZkNDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_081b204c9fa0431a843e567d5cd11626",
+      "statement": "npm run check proves a change by running the node --test suite against the compiled build plus ASTRO_TELEMETRY_DISABLED astro check, and no test writes to a real EmDash site (fake transport, fake query API, packed temp consumer).",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L33-L40",
+          "version": "repo-lines-v1:sha256:922b8e78080da44f8b9ce8fda145d279d9fcff706cde8f475d69ad655e196114:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGUzZDYzYjExNjdmYmJjZDc5ZGMwNGE4ZTc5ZDUxZWFmMTY5NjM0Y2Y3NDk0MGZmNjI3MDU2MDVjNjE1OTEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2MxMWI5Yjc1ZWU3ODAwNjBmZmE0M2JhYzA1MWVlNjQ0ZWQzZmExMTRiMWE0MjVjM2NhZjMyNTBmNTgwYjFiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjE4NDYzYWYyOTE2NGFkMTc2N2M3ZTM5YTBiNjdkNDllMTQ2NWU1NTYyY2JkMzIzNDEyN2Y0NmNiNzU1YThhMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmIzNTc0MTg5ZWVlOGFlOGU2YzY2OTAzOTkzZjc1N2RiOWE1NGFjYmY0NjJjZGMwYjMwODEyOWZlNGRlMjI1MiJ9"
+        },
+        {
+          "resource": "repo://test/cli/fake-site.mjs#L1-L14",
+          "version": "repo-lines-v1:sha256:d65d3956798b2b106c159d3f6e80302a66c2bd7352ca3c2f9e4c32582303c780:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyYjY5NTNhZDg5ZmJmMzBmZDNlYWVjZmM5OTQwYzNlOTU2ZDA3MmM3ZmUwNGQzNzdhZjQ2M2JjY2UwNzJhNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzZTZiYzRmNjRhMWRlMDE2OTA4ZTQ5MTk2NmIxMDc2Yzk1ZTdmNDI5YTdlMTk5MjQxY2ZhYzRlYjVjMmYyM2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_763c79a680b24584888bf4038f95af37",
+      "statement": "The repository coding standards bind every change: one module per block type, pure migrations preserving _key with a test per step, optional block schema fields with publish-time enforcement, no site knowledge in src/, no telemetry, and NodeNext .js-suffixed relative imports.",
+      "evidence": [
+        {
+          "resource": "repo://CODING_STANDARDS.md",
+          "version": "repo-file-v1:sha256:10b0e1dce1a47175c459b9c04c30bf382d9c051f524e216afb3d6b9f6fa058f4"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}

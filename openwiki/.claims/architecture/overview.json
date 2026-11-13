@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:2a3552cca0ab78110a87cadc219765bc0aa66bc3cb794cce2d917452ca0b0dae",
+  "claims": [
+    {
+      "id": "claim_8a7061e574694e07b68b378cbbf8d27c",
+      "statement": "The package exposes four public entries through package.json exports and bin: the blocks runtime library, blocks/PageBuilder.astro shipped as source so Node-only consumers never load an Astro file, the plugin publish-policy entry, and the emdash-page-builder CLI binary.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L20-L32",
+          "version": "repo-lines-v1:sha256:69cab179a357711187a51bd8eda29bad7e5bd9ec3ab96a1825f2b8a8984a00fe:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTZlYzZjYzk2ODI0MDFkZGFhNzExMDYzODM5ZmVjNzFlOGViMDBhYWE3MWY1ZDljN2MwYWU4YmMwM2M2M2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZmE0MDQ0N2Q2M2M0YmEzZGJhNTRmZmJlZTI2ZmY0NGVkNDVhY2M1ZDY2NTYzNzMwYjlmOGZhMzNlMzYwMzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3ZDYwN2M2MDMwZDc4OTQ0ZmIyOGQ1ZWE2MWQ5NzVkOGQ4M2EwNjczZDNhMzUwZDA4NjY3MDlmZWY3NDFkZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhNzcxZDA3MGM0MzIyZmM4MTk2ZjIxZDg3MDU2NTdjZTE4ZWE1YmMzOTY1YTRjNGQ2MWJhM2EzODQ4OWZkNDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fcd5a81672fc47bfad22c9a92ca095ab",
+      "statement": "The package requires Node.js >= 24 and peer dependencies astro ^6.4.8 || ^7.2.8 and emdash ^1.4.0, while devDependencies pin the exact versions the checks run against.",
+      "evidence": [
+        {
+          "resource": "repo://CODING_STANDARDS.md",
+          "version": "repo-file-v1:sha256:10b0e1dce1a47175c459b9c04c30bf382d9c051f524e216afb3d6b9f6fa058f4"
+        },
+        {
+          "resource": "repo://package.json#L10-L27",
+          "version": "repo-lines-v1:sha256:ad06b16c4285fae3dea5b0e5110d5f5327a89bd83d0c085fcfcf7ac617a4508b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxOTU0MTUwOTZkZTBiMmVmM2I5YmQ4MWYyMDYzNTQ4MTJmYTNjZjVkMGFjMzgxZGZiMWU0OTgyNWEyNDk5YjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkZWNjMzIxY2QzM2ZhZTY2ZWJjMGQ5NDYxZDkxZDk3NjQ0MzQ5MzdmZGQ4NGQzYWRlZDg5YTMwYmUyOTAzNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3NDcyN2ExNzI1NWE0Yzk0MDNhOTU3OGEyMWNlN2EwODRmY2IzNjAwMWMxNWEyYzIzMGFlYzQ3ZWRlNjMwYzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d5ddcb8bdc4a4e0595465f9e8644de2c",
+      "statement": "The package owns block definitions with all numbered versions, migrations, content shapes, fixed variant vocabularies, the block layer, starter collections, required-to-publish rules and the apply CLI, while each site owns its collections (mapped through typed sources), its visual sections, its grouping reference and its page schema (ADR 0001).",
+      "evidence": [
+        {
+          "resource": "repo://docs/adr/0001-package-owns-data-sites-own-collections-and-visuals.md",
+          "version": "repo-file-v1:sha256:3a1cef4e5bb1cf8f3597336abf8a5e8ee6057a98cdf6e382cb5bed89512589ce"
+        },
+        {
+          "resource": "repo://docs/specs/v1-page-builder.md",
+          "version": "repo-file-v1:sha256:00d152b56dab1add5e9ec3d3bac2986aae228e321532a4fce83cd7c5b0d7f43b"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b304c6520da44ac83aa460a83270f98",
+      "statement": "Sources are typed against EmDash generated collection types so a renamed field fails the build instead of rendering an empty block, and the package ships no visual components in v1.",
+      "evidence": [
+        {
+          "resource": "repo://docs/adr/0001-package-owns-data-sites-own-collections-and-visuals.md",
+          "version": "repo-file-v1:sha256:3a1cef4e5bb1cf8f3597336abf8a5e8ee6057a98cdf6e382cb5bed89512589ce"
+        }
+      ]
+    },
+    {
+      "id": "claim_6de7a3c5b31d4d8eb2243ce68f071c10",
+      "statement": "CODING_STANDARDS rule 4 forbids site knowledge in src/ (collection names, grouping collection, field mappings, visual components) except as documented defaults of the starter collections.",
+      "evidence": [
+        {
+          "resource": "repo://CODING_STANDARDS.md",
+          "version": "repo-file-v1:sha256:10b0e1dce1a47175c459b9c04c30bf382d9c051f524e216afb3d6b9f6fa058f4"
+        }
+      ]
+    },
+    {
+      "id": "claim_67418cc9d7384ad8b481bfa71917182b",
+      "statement": "The package is a page-building layer built on EmDash blocks, repeater, image and reference fields: a page layout is an ordered composition of blocks stored in a blocks field on the site own page collection.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L1-L12",
+          "version": "repo-lines-v1:sha256:776fcd84a138935e0db99e1b84806df151ff6ea7965bd9ede5a4ff62ea77a902:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1YWE1OTg0ZmExMTZmOTU0Yjg3MWU3MDRlNDk4YzJjMjdhNGZmYzY4Y2NiMTY5NzRlYTZkZTc4OGExYzIxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwOTlhN2U2OTMyZTFjYTI3MmQ2OGY5YmYxMzUzNjdjMmZhOTVhMjMzMmQ0NTA1NWM4MjQ0MGI4MjJkYTkyODAifQ"
+        },
+        {
+          "resource": "repo://docs/specs/v1-page-builder.md",
+          "version": "repo-file-v1:sha256:00d152b56dab1add5e9ec3d3bac2986aae228e321532a4fce83cd7c5b0d7f43b"
+        }
+      ]
+    },
+    {
+      "id": "claim_e0f4f69847414dd5b1c3b12d7fe157bb",
+      "statement": "Block definitions carry descriptions written so an agent working through EmDash MCP can choose and fill blocks from the schema alone.",
+      "evidence": [
+        {
+          "resource": "repo://docs/specs/v1-page-builder.md",
+          "version": "repo-file-v1:sha256:00d152b56dab1add5e9ec3d3bac2986aae228e321532a4fce83cd7c5b0d7f43b"
+        },
+        {
+          "resource": "repo://src/blocks/types/hero.ts#L42-L52",
+          "version": "repo-lines-v1:sha256:504eca5bdcc9f86b2005978035a46b576ed6096e11bd15aa88aec7bcdea5b3a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3MDVjNGY4NDc3ODA2MTUxNjMwNTQwMWFlMWI5YjMyNWJlM2I2MGMyMGRlNzc4Y2NhMDBjNTUxYTUyYzU4YjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NWU5NDE4ODUyNGVmY2M3Mjk3ZmZjZmQzYzMzZTZjN2M2YjAxNGI5ZDJmZWQ0MzQ1MWU5OWQ5YWM0YmY5YzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjOGJhNWZlOWI1ZThhNDUwMGYzOGNhMWY5NDBhYmE1ZjE2MzU2ODA0ZmJkNTFhNjJkOWEzMGE5ZmI1ZjkwZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2MTg3MWU1ZGJhOTE5YmU2N2YyZTZlMDVlZjdlODNhNTUxNmYyNjYzYWMzMDE4MmNiZTUzOTg5ZWExZDdjNjQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-13T16:16:20.656Z"
+  }
+}
